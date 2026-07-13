@@ -5,13 +5,6 @@
     font-family: "Segoe UI", sans-serif;
 }
 
-body {
-    background: #f4f7fb;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
 
 .login-box {
     width: 380px;
@@ -131,23 +124,6 @@ select {
 
 .signup-btn:hover {
     background: #f1f5f9;
-}
-
-.switch-text {
-    text-align: center;
-    margin-top: 16px;
-    font-size: 14px;
-    color: #64748b;
-}
-
-.switch-text a {
-    color: #02529c;
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.switch-text a:hover {
-    text-decoration: underline;
 }
 
 .error {

@@ -5,6 +5,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: http://localhost/clinic1/view/login/login.php");
     exit();
 }
+
+require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
+require_once 'C:\xampp\htdocs\clinic1\model\User.php';
+
+$database = new Database();
+$conn = $database->connect();
+$user = new User($conn);
+
+$user_info = $user->getUserById($_SESSION['user_id']);
 ?>
 
 <!DOCTYPE html>
@@ -30,13 +39,27 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     <main class="main-content">
         <header class="topbar">
             <div class="topbar-left">
-                <img src="http://localhost/clinic1/logo.jpg" class="clinic-logo">
                 <div class="clinic-text">
-                    <h1>SwiftCare Clinic</h1>
-                    <p>Patient Registration</p>
+                    <h1>Patient Registration</h1>
                 </div>
             </div>
-            <div class="admin-box">Admin</div>
+
+            <div class="user-menu">
+                <button type="button" class="user-menu-toggle" onclick="toggleUserMenu(this)">
+                    <?php if(!empty($user_info['profile_photo'])): ?>
+                    <img src="../../uploads/<?php echo $user_info['profile_photo']; ?>" class="user-avatar" style="object-fit: cover;">
+                    <?php else: ?>
+                    <div class="user-avatar"></div>
+                    <?php endif; ?>
+                    <span class="user-name"><?php echo $_SESSION['name']; ?></span>
+                    <span class="user-role-badge">Admin</span>
+                    <span class="dropdown-arrow">&#9662;</span>
+                </button>
+                <div class="user-dropdown">
+                    <a href="http://localhost/clinic1/view/admin/my_profile.php" class="dropdown-item">My Profile</a>
+                    <a href="http://localhost/clinic1/controller/logoutController.php" class="dropdown-item signout" onclick="return confirm('Logout?')">Sign Out</a>
+                </div>
+            </div>
         </header>
 
         <!-- FORM -->
@@ -103,6 +126,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     </main>
 
 </div>
+
+<script>
+function toggleUserMenu(btn){
+    var menu = btn.closest('.user-menu');
+    var isOpen = menu.classList.contains('open');
+    document.querySelectorAll('.user-menu.open').forEach(function(m){ m.classList.remove('open'); });
+    if(!isOpen){ menu.classList.add('open'); }
+}
+document.addEventListener('click', function(e){
+    if(!e.target.closest('.user-menu')){
+        document.querySelectorAll('.user-menu.open').forEach(function(m){ m.classList.remove('open'); });
+    }
+});
+</script>
 
 </body>
 </html>

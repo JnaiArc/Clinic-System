@@ -103,90 +103,67 @@ class User {
     }
 
     
-    // CHECK IF USER EXISTS
-    function checkUserExists($email, $username, $license_number){
-        
-        if(!empty($email)){
-            $query = "SELECT id FROM users WHERE email = :email";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":email", $email);
-            $stmt->execute();
-            if($stmt->rowCount() > 0) return true;
-        }
-        
-        if(!empty($username)){
-            $query = "SELECT id FROM users WHERE username = :username";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":username", $username);
-            $stmt->execute();
-            if($stmt->rowCount() > 0) return true;
-        }
-        
-        if(!empty($license_number)){
-            $query = "SELECT id FROM users WHERE license_number = :license_number";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":license_number", $license_number);
-            $stmt->execute();
-            if($stmt->rowCount() > 0) return true;
-        }
-        
-        return false;
-    }
-
-    // LOGIN USER
-    function loginUser($userType, $loginInput, $password){
-        
-        if($userType === "admin"){
-            $query = "SELECT * FROM users WHERE username = :loginInput AND role = 'admin'";
-        } else {
-            $query = "SELECT * FROM users WHERE license_number = :loginInput AND role = 'doctor'";
-        }
-
+    // CHECK IF USERNAME EXISTS
+    function usernameExists($username){
+        if(empty($username)) return false;
+        $query = "SELECT id FROM users WHERE username = :username";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":loginInput", $loginInput);
+        $stmt->bindParam(":username", $username);
         $stmt->execute();
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row && password_verify($password, $row['password'])) {
-            return $row;
-        } else {
-            return false;
-        }
+        return $stmt->rowCount() > 0;
     }
 
-    // RESET PASSWORD (forgot password)
-    function resetPassword($userType, $email, $loginInput, $newPassword){
-        
-        if($userType === "admin"){
-            $query = "SELECT * FROM users WHERE username = :loginInput AND email = :email AND role = 'admin'";
-        } else {
-            // for doctor liscence number
-            $query = "SELECT * FROM users WHERE license_number = :loginInput AND email = :email AND role = 'doctor'";
-        }
-        
+    // CHECK IF EMAIL EXISTS
+    function emailExists($email){
+        if(empty($email)) return false;
+        $query = "SELECT id FROM users WHERE email = :email";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":loginInput", $loginInput);
         $stmt->bindParam(":email", $email);
         $stmt->execute();
-        
-        if($stmt->rowCount() > 0){
-            $hashed_password = password_hash($newPassword, PASSWORD_DEFAULT);
-            
-            if($userType === "admin"){
-                $query = "UPDATE users SET password = :password WHERE username = :loginInput AND email = :email";
-            } else {
-                $query = "UPDATE users SET password = :password WHERE license_number = :loginInput AND email = :email";
-            }
-            
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":password", $hashed_password);
-            $stmt->bindParam(":loginInput", $loginInput);
-            $stmt->bindParam(":email", $email);
-            return $stmt->execute();
-        }
-        
-        return false;
+        return $stmt->rowCount() > 0;
+    }
+
+    // CHECK IF LICENSE NUMBER EXISTS
+    function licenseExists($license_number){
+        if(empty($license_number)) return false;
+        $query = "SELECT id FROM users WHERE license_number = :license_number";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":license_number", $license_number);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
+
+    // FIND USER BY USERNAME (admin/patient username, or doctor license number)
+    function findByLogin($loginInput){
+        $query = "SELECT * FROM users WHERE username = :loginInput OR license_number = :loginInput";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":loginInput", $loginInput);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // VERIFY PASSWORD AGAINST HASH
+    function verifyPassword($password, $hashed_password){
+        return password_verify($password, $hashed_password);
+    }
+
+    // GET USER BY EMAIL (forgot password)
+    function getUserByEmail($email){
+        $query = "SELECT * FROM users WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":email", $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // UPDATE PASSWORD BY EMAIL (forgot password)
+    function updatePasswordByEmail($email, $newPassword){
+        $hashed_password = password_hash($newPassword, PASSWORD_DEFAULT);
+        $query = "UPDATE users SET password = :password WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":password", $hashed_password);
+        $stmt->bindParam(":email", $email);
+        return $stmt->execute();
     }
 
 

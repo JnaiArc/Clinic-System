@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'patient') {
+    header("Location: http://localhost/clinic1/view/login/login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,15 +27,15 @@
         <nav class="sidebar-menu">
             <a href="patient_dashboard.php" class="menu-item active">Home</a>
             <a href="#" class="menu-item">Patient Profile</a>
-            <a href="request_consultation.php" class="menu-item">Request Consultation</a>
-            <a href="view_consultation_request.php" class="menu-item">View Request Status</a>
+            <a href="#" class="menu-item">Request Consultation</a>
+            <a href="#" class="menu-item">View Request Status</a>
             <a href="#" class="menu-item">Appointments</a>
             <a href="#" class="menu-item">Request Medical Documents</a>
 
             <a href="#" class="menu-item">Services</a>
 
             <a href="#" class="menu-item">Account</a>
-            <a href="#" class="menu-item logout-btn" onclick="return confirm('Logout?')">Logout</a>
+            <a href="http://localhost/clinic1/controller/logoutController.php" class="menu-item logout-btn" onclick="return confirm('Logout?')">Logout</a>
         </nav>
 
     </aside>

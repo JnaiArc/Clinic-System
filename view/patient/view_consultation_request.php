@@ -30,7 +30,7 @@
             <a href="#" class="menu-item">Services</a>
 
             <a href="#" class="menu-item">Account</a>
-            <a href="#" class="menu-item logout-btn" onclick="return confirm('Logout?')">Logout</a>
+            <a href="http://localhost/clinic1/controller/logoutController.php" class="menu-item logout-btn" onclick="return confirm('Logout?')">Logout</a>
         </nav>
 
     </aside>

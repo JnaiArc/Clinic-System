@@ -7,25 +7,21 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'doctor') {
 }
 
 require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
-require_once 'C:\xampp\htdocs\clinic1\model\Appointment.php';
 require_once 'C:\xampp\htdocs\clinic1\model\User.php';
 
 $database = new Database();
 $conn = $database->connect();
-
-$appointment_model = new Appointment($conn);
 $user_model = new User($conn);
 
 $doctor_info = $user_model->getUserById($_SESSION['user_id']);
-$today_appointments = $appointment_model->getDoctorTodayAppointments($_SESSION['user_id']);
-$followups_count = $appointment_model->getDoctorFollowUps($_SESSION['user_id'])->rowCount();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Doctor Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
     <link rel="stylesheet" href="../css/doctor.css">
 </head>
 
@@ -43,7 +39,7 @@ $followups_count = $appointment_model->getDoctorFollowUps($_SESSION['user_id'])-
         </div>
 
         <nav class="sidebar-menu">
-            <a href="http://localhost/clinic1/view/doctor/doctor_dashboard.php" class="menu-item active">Dashboard</a>
+            <a href="http://localhost/clinic1/view/doctor/doctor_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_appointments.php" class="menu-item">My Appointments</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item">Follow-Up</a>
         </nav>
@@ -55,9 +51,10 @@ $followups_count = $appointment_model->getDoctorFollowUps($_SESSION['user_id'])-
         <header class="topbar">
             <div class="topbar-left">
                 <div class="clinic-text">
-                    <h1>Doctor Portal</h1>
+                    <h1>My Profile</h1>
                 </div>
             </div>
+
             <div class="user-menu">
                 <button type="button" class="user-menu-toggle" onclick="toggleUserMenu(this)">
                     <?php if(!empty($doctor_info['profile_photo'])): ?>
@@ -76,57 +73,63 @@ $followups_count = $appointment_model->getDoctorFollowUps($_SESSION['user_id'])-
             </div>
         </header>
 
-        <section class="stats-grid">
-
-            <div class="stat-card">
-                <h3>Today's Appointments</h3>
-                <p><?php echo $today_appointments->rowCount(); ?></p>
-            </div>
-
-            <div class="stat-card">
-                <h3>Follow-Ups</h3>
-                <p><?php echo $followups_count; ?></p>
-            </div>
-
-        </section>
-
         <section class="table-section">
 
-            <div class="section-header">Today's Appointments</div>
+            <div class="section-header">
+                Account Information
+            </div>
 
-            <table class="appointment-table">
-                <thead>
-                    <tr>
-                        <th>Patient Name</th>
-                        <th>Time</th>
-                        <th>Purpose</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($today_appointments->rowCount() > 0): ?>
-                        <?php while ($row = $today_appointments->fetch(PDO::FETCH_ASSOC)): ?>
-                        <tr>
-                            <td><?php echo $row['patient_name']; ?></td>
-                            <td><?php echo $row['appointment_time']; ?></td>
-                            <td><?php echo $row['purpose']; ?></td>
-                            <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
-                        </tr>
-                        <?php endwhile; ?>
+            <div class="info-grid" style="padding:25px;">
+
+                <div class="info-item" style="grid-column: 1 / -1; text-align:center;">
+                    <?php if(!empty($doctor_info['profile_photo'])): ?>
+                    <img src="http://localhost/clinic1/uploads/<?php echo $doctor_info['profile_photo']; ?>" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
                     <?php else: ?>
-                        <tr>
-                            <td colspan="4" style="text-align: center; color: #64748b;">No appointments today</td>
-                        </tr>
+                    <div style="width:100px;height:100px;border-radius:50%;background:#e2e8f0;margin:0 auto;"></div>
                     <?php endif; ?>
-                </tbody>
-            </table>
+                </div>
+
+                <div class="info-item">
+                    <label>First Name</label>
+                    <span><?php echo htmlspecialchars($doctor_info['first_name']); ?></span>
+                </div>
+
+                <div class="info-item">
+                    <label>Last Name</label>
+                    <span><?php echo htmlspecialchars($doctor_info['last_name']); ?></span>
+                </div>
+
+                <div class="info-item">
+                    <label>License Number</label>
+                    <span><?php echo htmlspecialchars($doctor_info['license_number']); ?></span>
+                </div>
+
+                <div class="info-item">
+                    <label>Email</label>
+                    <span><?php echo htmlspecialchars($doctor_info['email']); ?></span>
+                </div>
+
+                <div class="info-item">
+                    <label>Schedule Days</label>
+                    <span><?php echo htmlspecialchars($doctor_info['schedule_days']); ?></span>
+                </div>
+
+                <div class="info-item">
+                    <label>Schedule Time</label>
+                    <span><?php echo htmlspecialchars($doctor_info['schedule_time_start'] . ' - ' . $doctor_info['schedule_time_end']); ?></span>
+                </div>
+
+            </div>
+
+            <div style="padding: 0 25px 25px;">
+                <p style="color:#64748b; font-size:13px;">Editing profile photo, name, and password will be available soon.</p>
+            </div>
 
         </section>
 
     </main>
 
 </div>
-
 
 <script>
 function toggleUserMenu(btn){
@@ -141,6 +144,6 @@ document.addEventListener('click', function(e){
     }
 });
 </script>
-</body>
 
+</body>
 </html>

@@ -38,6 +38,20 @@ class Validation {
         }
     }
 
+    public function patientRegister($first_name, $last_name, $email, $username, $password, $confirm_password) {
+        $this->validateRegisterShared($first_name, $last_name, $email, $password, $confirm_password);
+
+        if (empty($username)) {
+            throw new Exception("Username is required.");
+        }
+        if (!preg_match('/^[A-Za-z0-9_]+$/', $username)) {
+            throw new Exception("Username must contain only letters, numbers, or underscore.");
+        }
+        if (strlen($username) < 3 || strlen($username) > 30) {
+            throw new Exception("Username must be between 3 and 30 characters.");
+        }
+    }
+
     public function doctorRegister($first_name, $last_name, $email, $license_number, $schedule_days, $schedule_time_start, $schedule_time_end, $password, $confirm_password) {
         $this->validateRegisterShared($first_name, $last_name, $email, $password, $confirm_password);
 
@@ -66,12 +80,24 @@ class Validation {
     }
 
     // FORGOT PASSWORD ------------------------
-    public function forgotPassword($email, $loginInput, $newPassword, $confirmPassword) {
-        if (empty($email) || empty($loginInput) || empty($newPassword) || empty($confirmPassword)) {
-            throw new Exception("All fields are required.");
+    public function forgotPasswordEmail($email) {
+        if (empty($email)) {
+            throw new Exception("Email address is required.");
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Please enter a valid email address.");
+        }
+    }
+
+    public function forgotPasswordOtp($otp_code) {
+        if (empty($otp_code)) {
+            throw new Exception("Verification code is required.");
+        }
+    }
+
+    public function forgotPasswordReset($newPassword, $confirmPassword) {
+        if (empty($newPassword) || empty($confirmPassword)) {
+            throw new Exception("All fields are required.");
         }
         if (strlen($newPassword) < 6) {
             throw new Exception("New password must be at least 6 characters.");

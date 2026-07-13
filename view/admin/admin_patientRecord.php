@@ -42,13 +42,9 @@ if (!empty($search)) {
     <aside class="sidebar">
 
         <div class="sidebar-top">
-            <?php if(!empty($user_info['profile_photo'])): ?>
-            <img src="../../uploads/<?php echo $user_info['profile_photo']; ?>" class="profile-circle" style="object-fit: cover;">
-            <?php else: ?>
-            <div class="profile-circle"></div>
-            <?php endif; ?>
-            <div class="profile-name">
-                <h2><?php echo $_SESSION['name']; ?></h2>
+            <img src="http://localhost/clinic1/logo.jpg" class="sidebar-logo">
+            <div class="sidebar-clinic-name">
+                <h2>SwiftCare</h2>
             </div>
         </div>
 
@@ -59,20 +55,32 @@ if (!empty($search)) {
             <a href="http://localhost/clinic1/view/admin/admin_followup.php" class="menu-item">Follow-Up Checkup</a>
             <a href="http://localhost/clinic1/view/admin/admin_doctors.php" class="menu-item">Doctors</a>
             <a href="http://localhost/clinic1/view/admin/admin_staff.php" class="menu-item">Staff</a>
-            <a href="http://localhost/clinic1/controller/logoutController.php" class="menu-item logout-btn" onclick="return confirm('Logout?')">Logout</a>
         </nav>
 
     </aside>
     <main class="main-content">
         <header class="topbar">
             <div class="topbar-left">
-                <img src="http://localhost/clinic1/logo.jpg" class="clinic-logo">
                 <div class="clinic-text">
-                    <h1>SwiftCare Clinic</h1>
-                    <p>Patient Records</p>
+                    <h1>Patient Records</h1>
                 </div>
             </div>
-            <div class="admin-box">Admin</div>
+            <div class="user-menu">
+                <button type="button" class="user-menu-toggle" onclick="toggleUserMenu(this)">
+                    <?php if(!empty($user_info['profile_photo'])): ?>
+                    <img src="../../uploads/<?php echo $user_info['profile_photo']; ?>" class="user-avatar" style="object-fit: cover;">
+                    <?php else: ?>
+                    <div class="user-avatar"></div>
+                    <?php endif; ?>
+                    <span class="user-name"><?php echo $_SESSION['name']; ?></span>
+                    <span class="user-role-badge">Admin</span>
+                    <span class="dropdown-arrow">&#9662;</span>
+                </button>
+                <div class="user-dropdown">
+                    <a href="http://localhost/clinic1/view/admin/my_profile.php" class="dropdown-item">My Profile</a>
+                    <a href="http://localhost/clinic1/controller/logoutController.php" class="dropdown-item signout" onclick="return confirm('Logout?')">Sign Out</a>
+                </div>
+            </div>
         </header>
 
         <!-- SEARCH AND ADD -->
@@ -136,5 +144,19 @@ if (!empty($search)) {
 </div>
 <script src="../js/admin.js"></script>
 
+
+<script>
+function toggleUserMenu(btn){
+    var menu = btn.closest('.user-menu');
+    var isOpen = menu.classList.contains('open');
+    document.querySelectorAll('.user-menu.open').forEach(function(m){ m.classList.remove('open'); });
+    if(!isOpen){ menu.classList.add('open'); }
+}
+document.addEventListener('click', function(e){
+    if(!e.target.closest('.user-menu')){
+        document.querySelectorAll('.user-menu.open').forEach(function(m){ m.classList.remove('open'); });
+    }
+});
+</script>
 </body>
 </html>

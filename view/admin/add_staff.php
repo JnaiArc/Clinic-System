@@ -14,14 +14,7 @@ $user = new User($conn);
 
 $user_info = $user->getUserById($_SESSION['user_id']);
 
-$users_result = $user->getAllUsers();
-
-$edit_mode = isset($_GET['edit']) && $_GET['edit'] == 1;
-$edit_id = $_GET['edit_id'] ?? 0;
-$edit_user = $edit_id ? $user->getUserById($edit_id) : null;
-
-$add_mode = isset($_GET['add']) && $_GET['add'] == 1;
-$add_error = $_SESSION['error'] ?? "";
+$error = $_SESSION['error'] ?? "";
 unset($_SESSION['error']);
 ?>
 
@@ -29,12 +22,13 @@ unset($_SESSION['error']);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Staff Management</title>
+    <title>Add Staff</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
     <link rel="stylesheet" href="../css/admin_patients.css">
     <link rel="stylesheet" href="../css/admin_add_view.css">
     <link rel="stylesheet" href="../css/admin_appointment.css">
     <link rel="stylesheet" href="../css/add_staff.css">
+
 </head>
 
 <body>
@@ -42,7 +36,7 @@ unset($_SESSION['error']);
 <div class="dashboard-container">
 
     <aside class="sidebar">
-        
+
         <div class="sidebar-top">
             <img src="http://localhost/clinic1/logo.jpg" class="sidebar-logo">
             <div class="sidebar-clinic-name">
@@ -65,7 +59,7 @@ unset($_SESSION['error']);
         <header class="topbar">
             <div class="topbar-left">
                 <div class="clinic-text">
-                    <h1><?php echo $edit_mode ? 'Edit User' : ($add_mode ? 'Add Staff' : 'Staff Management'); ?></h1>
+                    <h1>Add Staff</h1>
                 </div>
             </div>
             <div class="user-menu">
@@ -88,21 +82,12 @@ unset($_SESSION['error']);
 
         <section class="table-section">
 
-            <div class="section-header" style="display:flex; align-items:center; justify-content:space-between;">
-                <span><?php echo $edit_mode ? 'Edit User' : ($add_mode ? 'Create Admin / Doctor Account' : 'Staff List'); ?></span>
-                <?php if (!$edit_mode && !$add_mode): ?>
-                <a href="http://localhost/clinic1/view/admin/admin_staff.php?add=1" class="save-btn" style="text-decoration:none;">Add Staff</a>
-                <?php elseif ($add_mode): ?>
-                <a href="http://localhost/clinic1/view/admin/admin_staff.php" style="color:#64748b; font-weight:600; text-decoration:none;">&larr; Cancel</a>
-                <?php endif; ?>
-            </div>
+            <div class="section-header">Create Admin / Doctor Account</div>
 
-            <?php if ($add_mode): ?>
-            <!-- ADD STAFF FORM -->
             <div class="login-box" style="margin: 20px auto;">
 
-                <?php if($add_error): ?>
-                <div class="error-box"><?php echo nl2br(htmlspecialchars($add_error)); ?></div>
+                <?php if($error): ?>
+                <div class="error-box"><?php echo nl2br(htmlspecialchars($error)); ?></div>
                 <?php endif; ?>
 
                 <form action="http://localhost/clinic1/controller/StaffController.php" method="POST" enctype="multipart/form-data">
@@ -223,125 +208,14 @@ unset($_SESSION['error']);
 
             </div>
 
-            <?php elseif ($edit_mode && $edit_user): ?>
-            <!-- EDIT FORM -->
-            <form method="POST" action="http://localhost/clinic1/controller/UserController.php" class="appointment-body">
-                <input type="hidden" name="id" value="<?php echo $edit_id; ?>">
-                <input type="hidden" name="role" value="<?php echo $edit_user['role']; ?>">
-
-                <div class="form-group">
-                    <label>Role</label>
-                    <input type="text" value="<?php echo ucfirst($edit_user['role']); ?>" disabled style="background:#f1f5f9;color:#64748b;cursor:not-allowed;border:1px solid #cbd5e1;">
-                </div>
-
-                <div class="form-group">
-                    <label>First Name <span style="color:red">*</span></label>
-                    <input type="text" name="first_name" value="<?php echo $edit_user['first_name']; ?>" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Last Name <span style="color:red">*</span></label>
-                    <input type="text" name="last_name" value="<?php echo $edit_user['last_name']; ?>" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Email <span style="color:red">*</span></label>
-                    <input type="email" name="email" value="<?php echo $edit_user['email']; ?>" required>
-                </div>
-
-                <?php if($edit_user['role'] == 'admin'): ?>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" value="<?php echo $edit_user['username']; ?>">
-                </div>
-                <?php else: ?>
-                <div class="form-group">
-                    <label>License Number</label>
-                    <input type="text" name="license_number" value="<?php echo $edit_user['license_number']; ?>">
-                </div>
-                <div class="form-group">
-                    <label>Schedule Days</label>
-                    <input type="text" name="schedule_days" value="<?php echo $edit_user['schedule_days']; ?>">
-                </div>
-                <div class="form-group">
-                    <label>Start Time</label>
-                    <select name="schedule_time_start">
-                        <option value="">Select Start Time</option>
-                        <?php $times = ['8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM']; foreach($times as $t): ?>
-                        <option value="<?php echo $t; ?>" <?php echo $edit_user['schedule_time_start']==$t?'selected':''; ?>><?php echo $t; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>End Time</label>
-                    <select name="schedule_time_end">
-                        <option value="">Select End Time</option>
-                        <?php $times_end = ['9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM']; foreach($times_end as $t): ?>
-                        <option value="<?php echo $t; ?>" <?php echo $edit_user['schedule_time_end']==$t?'selected':''; ?>><?php echo $t; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <?php endif; ?>
-
-                <div class="view-buttons" style="grid-column: span 2;">
-                    <button type="submit" name="updateUser" class="save-btn">Update</button>
-                    <a href="http://localhost/clinic1/view/admin/admin_staff.php" class="back-link">Cancel</a>
-                </div>
-            </form>
-
-            <?php else: ?>
-            <!-- LIST TABLE -->
-            <table class="appointment-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th>Email</th>
-                        <th>Details</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($users_result->rowCount() > 0): ?>
-                        <?php while ($row = $users_result->fetch(PDO::FETCH_ASSOC)): ?>
-                        <tr>
-                            <td><?php echo $row['first_name'].' '.$row['last_name']; ?></td>
-                            <td><span class="status <?php echo $row['role']; ?>"><?php echo ucfirst($row['role']); ?></span></td>
-                            <td><?php echo $row['email']; ?></td>
-                            <td>
-                                <?php if($row['role'] == 'admin'): ?>
-                                User: <?php echo $row['username']; ?>
-                                <?php else: ?>
-                                License: <?php echo $row['license_number']; ?>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <a href="http://localhost/clinic1/view/admin/admin_staff.php?edit=1&edit_id=<?php echo $row['id']; ?>" class="action-btn view-btn">Edit</a>
-                                
-                                <form method="POST" action="http://localhost/clinic1/controller/UserController.php" style="display:inline;">
-                                    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                                    <button type="submit" name="deleteUser" class="action-btn delete-btn" onclick="return confirm('Delete user?')">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="5" style="text-align: center; color: #64748b;">No users found</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-            <?php endif; ?>
-
         </section>
 
     </main>
 
 </div>
 
-
 <script src="../js/login.js"></script>
+
 
 <script>
 function toggleUserMenu(btn){

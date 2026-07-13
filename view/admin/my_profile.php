@@ -8,21 +8,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
 require_once 'C:\xampp\htdocs\clinic1\model\User.php';
-require_once 'C:\xampp\htdocs\clinic1\model\Patient.php';
-require_once 'C:\xampp\htdocs\clinic1\model\Appointment.php';
 
 $database = new Database();
 $conn = $database->connect();
 $user = new User($conn);
-$patient = new Patient($conn);
-$appointment = new Appointment($conn);
 
 $user_info = $user->getUserById($_SESSION['user_id']);
-$total_patients = $patient->countTotal();
-$today_appointments = $appointment->countToday();
-$followups_count = $appointment->countFollowUps();
-$doctors_count = $user->countDoctors();
-$recent_appointments = $appointment->getTodayAppointments();
 ?>
 
 <!DOCTYPE html>
@@ -30,8 +21,9 @@ $recent_appointments = $appointment->getTodayAppointments();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>My Profile</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
+    <link rel="stylesheet" href="../css/admin_info.css">
 </head>
 
 <body>
@@ -48,7 +40,7 @@ $recent_appointments = $appointment->getTodayAppointments();
         </div>
 
         <nav class="sidebar-menu">
-            <a href="http://localhost/clinic1/view/admin/admin_dashboard.php" class="menu-item active">Dashboard</a>
+            <a href="http://localhost/clinic1/view/admin/admin_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/admin/admin_patientRecord.php" class="menu-item">Patient Records</a>
             <a href="http://localhost/clinic1/view/admin/admin_appointments.php" class="menu-item">Appointments</a>
             <a href="http://localhost/clinic1/view/admin/admin_followup.php" class="menu-item">Follow-Up Checkup</a>
@@ -61,10 +53,9 @@ $recent_appointments = $appointment->getTodayAppointments();
     <main class="main-content">
 
         <header class="topbar">
-
             <div class="topbar-left">
                 <div class="clinic-text">
-                    <h1>Clinic Appointment System</h1>
+                    <h1>My Profile</h1>
                 </div>
             </div>
 
@@ -84,75 +75,60 @@ $recent_appointments = $appointment->getTodayAppointments();
                     <a href="http://localhost/clinic1/controller/logoutController.php" class="dropdown-item signout" onclick="return confirm('Logout?')">Sign Out</a>
                 </div>
             </div>
-
         </header>
-
-        <section class="stats-grid">
-
-            <div class="stat-card">
-                <h3>Today's Appointments</h3>
-                <p><?php echo $today_appointments; ?></p>
-            </div>
-
-            <div class="stat-card">
-                <h3>Follow Ups</h3>
-                <p><?php echo $followups_count; ?></p>
-            </div>
-
-            <div class="stat-card">
-                <h3>Total Patients</h3>
-                <p><?php echo $total_patients; ?></p>
-            </div>
-
-            <div class="stat-card">
-                <h3>Doctors</h3>
-                <p><?php echo $doctors_count; ?></p>
-            </div>
-
-        </section>
 
         <section class="table-section">
 
             <div class="section-header">
-                Today's Appointments
+                Account Information
             </div>
 
-            <table class="appointment-table">
+            <div class="info-grid info-grid-pad">
 
-                <thead>
-                    <tr>
-                        <th>Patient Name</th>
-                        <th>Doctor</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <?php if ($recent_appointments->rowCount() > 0): ?>
-                        <?php while ($row = $recent_appointments->fetch(PDO::FETCH_ASSOC)): ?>
-                        <tr>
-                            <td><?php echo $row['patient_name']; ?></td>
-                            <td>Dr. <?php echo $row['doctor_name']; ?></td>
-                            <td><?php echo $row['appointment_date']; ?></td>
-                            <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
-                        </tr>
-                        <?php endwhile; ?>
+                <div class="info-item" style="grid-column: 1 / -1; text-align:center;">
+                    <?php if(!empty($user_info['profile_photo'])): ?>
+                    <img src="../../uploads/<?php echo $user_info['profile_photo']; ?>" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
                     <?php else: ?>
-                        <tr>
-                            <td colspan="4" style="text-align: center; color: #64748b;">No appointments yet</td>
-                        </tr>
+                    <div style="width:100px;height:100px;border-radius:50%;background:#e2e8f0;margin:0 auto;"></div>
                     <?php endif; ?>
-                </tbody>
+                </div>
 
-            </table>
+                <div class="info-item">
+                    <label>First Name</label>
+                    <span><?php echo htmlspecialchars($user_info['first_name']); ?></span>
+                </div>
+
+                <div class="info-item">
+                    <label>Last Name</label>
+                    <span><?php echo htmlspecialchars($user_info['last_name']); ?></span>
+                </div>
+
+                <div class="info-item">
+                    <label>Username</label>
+                    <span><?php echo htmlspecialchars($user_info['username']); ?></span>
+                </div>
+
+                <div class="info-item">
+                    <label>Email</label>
+                    <span><?php echo htmlspecialchars($user_info['email']); ?></span>
+                </div>
+
+                <div class="info-item">
+                    <label>Role</label>
+                    <span><?php echo ucfirst($user_info['role']); ?></span>
+                </div>
+
+            </div>
+
+            <div class="btn-row">
+                <p style="color:#64748b; font-size:13px;">Editing profile photo, name, and password will be available soon.</p>
+            </div>
 
         </section>
 
     </main>
 
 </div>
-
 
 <script>
 function toggleUserMenu(btn){
@@ -167,6 +143,6 @@ document.addEventListener('click', function(e){
     }
 });
 </script>
-</body>
 
+</body>
 </html>

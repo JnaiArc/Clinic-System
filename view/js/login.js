@@ -10,21 +10,6 @@ function togglePw(id, btn) {
     }
 }
 
-// LOGIN: switch username/license label
-function changeLoginField() {
-    var userType = document.getElementById('userType');
-    if (!userType) return;
-    var loginLabel = document.getElementById('loginLabel');
-    var loginInput = document.getElementById('loginInput');
-    if (userType.value === 'admin') {
-        loginLabel.innerText = 'Username';
-        loginInput.placeholder = 'Enter Username';
-    } else if (userType.value === 'doctor') {
-        loginLabel.innerText = 'License Number';
-        loginInput.placeholder = 'Enter License Number';
-    }
-}
-
 // REGISTER: show role-specific fields
 function showFields() {
     var role = document.getElementById('role');

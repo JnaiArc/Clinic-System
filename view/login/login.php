@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clinic Login</title>
+    <title>Login</title>
     <link rel="stylesheet" href="../css/login.css">
     <style>
         #loginPw::-ms-reveal,
@@ -18,22 +18,13 @@
 <div class="login-box">
 
     <div class="login-header">
-        <h2>CLINIC LOGIN</h2>
+        <h2>LOGIN</h2>
     </div>
 
     <form action="http://localhost/clinic1/controller/LoginController.php" method="POST">
 
         <div class="form-group">
-            <label>User Type</label>
-            <select name="userType" id="userType" required onchange="changeLoginField()">
-                <option value="" disabled selected>Select User Type</option>
-                <option value="admin">Admin</option>
-                <option value="doctor">Doctor</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label id="loginLabel">Username</label>
+            <label>Username</label>
             <input type="text" name="loginInput" id="loginInput" required placeholder="Enter Username">
         </div>
 
@@ -61,7 +52,7 @@
 
         <button class="login-btn" type="submit" name="loginBtn">LOGIN</button>
 
-        <a href="http://localhost/clinic1/view/login/register.php" class="signup-btn">SIGN UP</a>
+        <p class="switch-text">Don't have an account? <a href="http://localhost/clinic1/view/login/register.php">Register Here</a></p>
 
     </form>
 
