@@ -1,0 +1,100 @@
+/* APPOINTMENT BODY FORM */
+.appointment-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 25px;
+}
+
+.appointment-body .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.appointment-body .form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #17324d;
+}
+
+.appointment-body .form-group input,
+.appointment-body .form-group select {
+    padding: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+.appointment-body .form-group input:focus,
+.appointment-body .form-group select:focus {
+    border-color: #02529c;
+}
+
+/* CONFIRM AND CANCEL BUTTONS */
+.save-btn {
+    background: #02529c;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.save-btn:hover {
+    background: #013d75;
+}
+
+.clear-btn {
+    background: #cbd5e1;
+    color: #17324d;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.clear-btn:hover {
+    background: #94a3b8;
+}
+
+/* APPOINTMENT FORM FIELDS */
+.appointment-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 25px;
+}
+
+.appointment-body .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.appointment-body .form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #17324d;
+}
+
+.appointment-body .form-group input,
+.appointment-body .form-group select {
+    padding: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+.appointment-body .form-group input:focus,
+.appointment-body .form-group select:focus {
+    border-color: #02529c;
+}

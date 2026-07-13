@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<patients>
+    <patient>
+        <id>1</id>
+        <first_name>John</first_name>
+        <last_name>Pratts</last_name>
+        <gender>Male</gender>
+        <birthdate>1990-07-22</birthdate>
+        <phone>09123423489</phone>
+        <email>johnpratts@email.com</email>
+        <address>Manila</address>
+        <emergency_contact>09998765432</emergency_contact>
+        <allergies>none</allergies>
+        <medical_history>none</medical_history>
+    </patient>
+</patients>
