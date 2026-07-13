@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 10, 2026 at 07:45 AM
+-- Generation Time: Jul 13, 2026 at 01:43 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,19 +44,19 @@ CREATE TABLE `appointments` (
 --
 
 INSERT INTO `appointments` (`id`, `patient_id`, `doctor_id`, `appointment_date`, `appointment_time`, `purpose`, `status`, `created_at`, `admin_checked`) VALUES
-(7, 20, 11, '2026-07-09', '3:30 PM', 'Check-up', 'pending', '2026-07-09 05:52:39', 0),
-(8, 19, 9, '2026-07-09', '1:00 PM', 'Check-up', 'pending', '2026-07-09 05:53:03', 0),
-(9, 18, 10, '2026-07-09', '9:00 AM', 'Check-up', 'pending', '2026-07-09 05:53:22', 0),
+(7, 20, 11, '2026-07-09', '3:30 PM', 'Check-up', '', '2026-07-09 05:52:39', 0),
+(8, 19, 9, '2026-07-09', '1:00 PM', 'Check-up', '', '2026-07-09 05:53:03', 0),
+(9, 18, 10, '2026-07-09', '9:00 AM', 'Check-up', '', '2026-07-09 05:53:22', 0),
 (10, 17, 11, '2026-07-09', '12:00 PM', 'Check-up', 'completed', '2026-07-09 05:53:49', 0),
-(11, 16, 9, '2026-07-09', '3:00 PM', 'Check-up', 'pending', '2026-07-09 05:54:40', 0),
-(12, 15, 10, '2026-07-09', '11:30 AM', 'Check-up', 'pending', '2026-07-09 05:55:09', 0),
-(13, 14, 7, '2026-07-12', '8:00 AM', 'Check-up', 'pending', '2026-07-09 05:57:25', 0),
+(11, 16, 9, '2026-07-09', '3:00 PM', 'Check-up', '', '2026-07-09 05:54:40', 0),
+(12, 15, 10, '2026-07-09', '11:30 AM', 'Check-up', '', '2026-07-09 05:55:09', 0),
+(13, 14, 7, '2026-07-12', '8:00 AM', 'Check-up', '', '2026-07-09 05:57:25', 0),
 (14, 13, 6, '2026-07-13', '1:00 PM', 'Check-up', 'pending', '2026-07-09 05:58:34', 0),
-(15, 12, 8, '2026-07-12', '11:00 AM', 'Check-up', 'pending', '2026-07-09 05:59:01', 0),
+(15, 12, 8, '2026-07-12', '11:00 AM', 'Check-up', '', '2026-07-09 05:59:01', 0),
 (16, 11, 7, '2026-07-22', '1:00 PM', 'Check-up', 'pending', '2026-07-09 06:00:56', 0),
 (17, 10, 8, '2026-07-21', '2:00 PM', 'Check-up', 'pending', '2026-07-09 06:01:08', 0),
 (18, 9, 6, '2026-07-27', '10:30 AM', 'Check-up', 'pending', '2026-07-09 06:02:05', 0),
-(19, 8, 11, '2026-07-09', '2:00 PM', 'Check-up', 'pending', '2026-07-09 06:07:21', 0),
+(19, 8, 11, '2026-07-09', '2:00 PM', 'Check-up', '', '2026-07-09 06:07:21', 0),
 (20, 6, 11, '2026-07-24', '2:00 PM', 'Check-up', 'pending', '2026-07-09 06:10:35', 0),
 (21, 5, 11, '2026-07-25', '12:00 PM', 'Check-up', 'pending', '2026-07-09 06:10:56', 0),
 (22, 4, 10, '2026-07-17', '11:00 AM', 'Check-up', 'pending', '2026-07-09 06:11:27', 0),
@@ -149,6 +149,28 @@ INSERT INTO `consultation_recommendations` (`id`, `consultation_id`, `recommenda
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `id` int(11) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `otp_code` varchar(10) NOT NULL,
+  `expires_at` datetime NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `password_resets`
+--
+
+INSERT INTO `password_resets` (`id`, `email`, `otp_code`, `expires_at`, `created_at`) VALUES
+(3, 'johannamaetomadong@gmail.com', '900091', '2026-07-13 09:36:44', '2026-07-13 01:31:44'),
+(7, 'arcenaljonalyn5@gmail.com', '226395', '2026-07-13 15:35:52', '2026-07-13 07:30:52');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `patients`
 --
 
@@ -201,7 +223,7 @@ INSERT INTO `patients` (`id`, `first_name`, `last_name`, `gender`, `birthdate`, 
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `role` enum('admin','doctor') NOT NULL,
+  `role` enum('admin','doctor','patient') NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
@@ -220,13 +242,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role`, `first_name`, `last_name`, `email`, `username`, `license_number`, `schedule_days`, `schedule_time_start`, `schedule_time_end`, `profile_photo`, `password`, `created_at`) VALUES
-(6, 'doctor', 'Johanna', 'Tomadong', 'johanna.tomadong@cvsu.edu.ph', '', 'JH123', 'Monday,Tuesday,Wednesday', '8:00 AM', '5:00 PM', '1780373730_Tomadong.jpg', '$2y$10$/HRRla.UAsKlmK13Bgw9W.ahfkJOz5LQICeEBI9gluSkrvGlA8qJq', '2026-06-02 04:15:30'),
+(6, 'doctor', 'Johanna', 'Tomadong', 'johannamaetomadong@gmail.com', '', 'JH123', 'Monday,Tuesday,Wednesday', '8:00 AM', '5:00 PM', '1780373730_Tomadong.jpg', '$2y$10$/HRRla.UAsKlmK13Bgw9W.ahfkJOz5LQICeEBI9gluSkrvGlA8qJq', '2026-06-02 04:15:30'),
 (7, 'doctor', 'Sarah', 'Taroy', 'sarahjanetaroy125@gmail.com', '', 'ST125', 'Monday,Tuesday,Wednesday,Sunday', '8:00 AM', '6:00 PM', '1780373849_Taroyy.jpg', '$2y$10$pBBAP2N3RPyHRIbPYXpmCOAvFTz9Ua3y84s99.aywk1lurCf2lXoy', '2026-06-02 04:17:29'),
-(8, 'doctor', 'Jody', 'Garduque', 'jodygarduque@gmail.com', '', 'JG816', 'Monday,Tuesday,Wednesday,Sunday', '10:00 AM', '3:00 PM', '1780374010_Garduque.jpg', '$2y$10$tsqLmLmD3KPZM8nhBQdK5ekn10hot1l4V8l1V8ibChBwEykcz1fo6', '2026-06-02 04:20:10'),
-(9, 'doctor', 'Khane', 'Bayani', 'khanebayani@gmail.com', '', 'KB303', 'Thursday,Friday,Saturday,Sunday', '1:00 PM', '4:00 PM', '1780374118_Bayani.jpg', '$2y$10$Qj/d/Zm2Rh/n9I.697.SCOakRvtKyfRQQ2c.elBZoZUmwsXJjuHEG', '2026-06-02 04:21:58'),
+(8, 'doctor', 'Jody', 'Garduque', 'jodymalditagarduque@gmail.com', '', 'JG816', 'Monday,Tuesday,Wednesday,Sunday', '10:00 AM', '3:00 PM', '1780374010_Garduque.jpg', '$2y$10$tsqLmLmD3KPZM8nhBQdK5ekn10hot1l4V8l1V8ibChBwEykcz1fo6', '2026-06-02 04:20:10'),
+(9, 'doctor', 'Khane', 'Bayani', 'khanebayani@gmail.com', '', 'KB33', 'Thursday,Friday,Saturday,Sunday', '1:00 PM', '4:00 PM', '1780374118_Bayani.jpg', '$2y$10$Qj/d/Zm2Rh/n9I.697.SCOakRvtKyfRQQ2c.elBZoZUmwsXJjuHEG', '2026-06-02 04:21:58'),
 (10, 'doctor', 'Reymar', 'Macas', 'reymarmacas@gmail.com', '', 'RM112', 'Thursday,Friday,Saturday', '9:00 AM', '12:00 PM', '1780374208_Macas.jpg', '$2y$10$4Cfyn0g1fyQ3KyVpAI9D8eAe3zxPV1px/yxscBjv.C9E9bd5ROaMW', '2026-06-02 04:23:28'),
-(11, 'doctor', 'Jonalyn', 'Arcenal', 'jonalynarcenal@gmail.com', '', 'JA127', 'Thursday,Friday,Saturday', '12:00 PM', '4:00 PM', '1780374299_Arcenal.jpg', '$2y$10$X0UllryTxsQGTeypGsOdsO2xqRdMl8OlxD7SQ2S9gha0b7Hx6248u', '2026-06-02 04:24:59'),
-(12, 'admin', 'Clinic', 'System', 'clinicsystem@gmail.com', 'admin', '', '', '', '', '1780374499_1780317865_Minimal Yellow Star Aesthetic _ Cute Graphic Design Inspiration.jpg', '$2y$10$3Eok67LqtfdZfK3whvQU5.zodJ9zyVT/9Ej2RYrWDsH932uKvseTG', '2026-06-02 04:28:19');
+(11, 'doctor', 'Jonalyn', 'Arcenal', 'arcenaljonalyn5@gmail.com', '', 'JA127', 'Thursday,Friday,Saturday', '12:00 PM', '4:00 PM', '1780374299_Arcenal.jpg', '$2y$10$DX4tESinbjCsMyJW3ToXUOUuvPUBWxoUXgvMf8sIKBEdO1BbnpAb2', '2026-06-02 04:24:59'),
+(12, 'admin', 'Clinic', 'System', 'clinic.system@gmail.com', 'admin', '', '', '', '', '1780374499_1780317865_Minimal Yellow Star Aesthetic _ Cute Graphic Design Inspiration.jpg', '$2y$10$3Eok67LqtfdZfK3whvQU5.zodJ9zyVT/9Ej2RYrWDsH932uKvseTG', '2026-06-02 04:28:19');
 
 --
 -- Indexes for dumped tables
@@ -262,6 +284,13 @@ ALTER TABLE `consultation_medicines`
 ALTER TABLE `consultation_recommendations`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_recommendations_consultation` (`consultation_id`);
+
+--
+-- Indexes for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_password_resets_email` (`email`);
 
 --
 -- Indexes for table `patients`
@@ -304,6 +333,12 @@ ALTER TABLE `consultation_recommendations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
+-- AUTO_INCREMENT for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
@@ -313,7 +348,7 @@ ALTER TABLE `patients`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables
