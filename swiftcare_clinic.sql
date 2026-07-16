@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 13, 2026 at 01:43 PM
+-- Generation Time: Jul 16, 2026 at 10:26 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,7 +51,7 @@ INSERT INTO `appointments` (`id`, `patient_id`, `doctor_id`, `appointment_date`,
 (11, 16, 9, '2026-07-09', '3:00 PM', 'Check-up', '', '2026-07-09 05:54:40', 0),
 (12, 15, 10, '2026-07-09', '11:30 AM', 'Check-up', '', '2026-07-09 05:55:09', 0),
 (13, 14, 7, '2026-07-12', '8:00 AM', 'Check-up', '', '2026-07-09 05:57:25', 0),
-(14, 13, 6, '2026-07-13', '1:00 PM', 'Check-up', 'pending', '2026-07-09 05:58:34', 0),
+(14, 13, 6, '2026-07-13', '1:00 PM', 'Check-up', '', '2026-07-09 05:58:34', 0),
 (15, 12, 8, '2026-07-12', '11:00 AM', 'Check-up', '', '2026-07-09 05:59:01', 0),
 (16, 11, 7, '2026-07-22', '1:00 PM', 'Check-up', 'pending', '2026-07-09 06:00:56', 0),
 (17, 10, 8, '2026-07-21', '2:00 PM', 'Check-up', 'pending', '2026-07-09 06:01:08', 0),
@@ -63,7 +63,8 @@ INSERT INTO `appointments` (`id`, `patient_id`, `doctor_id`, `appointment_date`,
 (23, 3, 11, '2026-07-09', '1:00 PM', 'Check-up', 'completed', '2026-07-09 06:13:37', 0),
 (24, 1, 11, '2026-07-09', '12:30 PM', 'Check-up', 'completed', '2026-07-09 06:15:22', 0),
 (25, 1, 11, '2026-07-23', '1:00 PM', 'Follow-up', 'pending', '2026-07-09 06:24:10', 0),
-(26, 3, 11, '2026-07-23', '3:00 PM', 'Follow-up', 'pending', '2026-07-09 06:26:08', 0);
+(26, 3, 11, '2026-07-23', '3:00 PM', 'Follow-up', 'pending', '2026-07-09 06:26:08', 0),
+(27, 20, 6, '2026-07-15', '12:30 PM', 'Check-up', 'completed', '2026-07-15 05:20:33', 0);
 
 -- --------------------------------------------------------
 
@@ -91,7 +92,8 @@ CREATE TABLE `consultations` (
 INSERT INTO `consultations` (`id`, `appointment_id`, `doctor_id`, `patient_id`, `findings`, `followup_needed`, `followup_date`, `status`, `created_at`, `is_done`) VALUES
 (4, 10, 11, 17, 'Common Cold', 'no', NULL, 'completed', '2026-07-09 06:21:02', 0),
 (5, 24, 11, 1, 'Hypertension', 'yes', '2026-07-23', 'pending', '2026-07-09 06:24:10', 0),
-(6, 23, 11, 3, 'Gastritis', 'yes', '2026-07-23', 'pending', '2026-07-09 06:26:08', 0);
+(6, 23, 11, 3, 'Gastritis', 'yes', '2026-07-23', 'pending', '2026-07-09 06:26:08', 0),
+(7, 27, 6, 20, '', 'no', NULL, 'completed', '2026-07-15 05:21:06', 0);
 
 -- --------------------------------------------------------
 
@@ -166,7 +168,7 @@ CREATE TABLE `password_resets` (
 
 INSERT INTO `password_resets` (`id`, `email`, `otp_code`, `expires_at`, `created_at`) VALUES
 (3, 'johannamaetomadong@gmail.com', '900091', '2026-07-13 09:36:44', '2026-07-13 01:31:44'),
-(7, 'arcenaljonalyn5@gmail.com', '226395', '2026-07-13 15:35:52', '2026-07-13 07:30:52');
+(9, 'arcenaljonalyn5@gmail.com', '421570', '2026-07-13 20:41:14', '2026-07-13 12:36:14');
 
 -- --------------------------------------------------------
 
@@ -248,7 +250,8 @@ INSERT INTO `users` (`id`, `role`, `first_name`, `last_name`, `email`, `username
 (9, 'doctor', 'Khane', 'Bayani', 'khanebayani@gmail.com', '', 'KB33', 'Thursday,Friday,Saturday,Sunday', '1:00 PM', '4:00 PM', '1780374118_Bayani.jpg', '$2y$10$Qj/d/Zm2Rh/n9I.697.SCOakRvtKyfRQQ2c.elBZoZUmwsXJjuHEG', '2026-06-02 04:21:58'),
 (10, 'doctor', 'Reymar', 'Macas', 'reymarmacas@gmail.com', '', 'RM112', 'Thursday,Friday,Saturday', '9:00 AM', '12:00 PM', '1780374208_Macas.jpg', '$2y$10$4Cfyn0g1fyQ3KyVpAI9D8eAe3zxPV1px/yxscBjv.C9E9bd5ROaMW', '2026-06-02 04:23:28'),
 (11, 'doctor', 'Jonalyn', 'Arcenal', 'arcenaljonalyn5@gmail.com', '', 'JA127', 'Thursday,Friday,Saturday', '12:00 PM', '4:00 PM', '1780374299_Arcenal.jpg', '$2y$10$DX4tESinbjCsMyJW3ToXUOUuvPUBWxoUXgvMf8sIKBEdO1BbnpAb2', '2026-06-02 04:24:59'),
-(12, 'admin', 'Clinic', 'System', 'clinic.system@gmail.com', 'admin', '', '', '', '', '1780374499_1780317865_Minimal Yellow Star Aesthetic _ Cute Graphic Design Inspiration.jpg', '$2y$10$3Eok67LqtfdZfK3whvQU5.zodJ9zyVT/9Ej2RYrWDsH932uKvseTG', '2026-06-02 04:28:19');
+(12, 'admin', 'Clinic', 'System', 'clinic.system@gmail.com', 'admin', '', '', '', '', '1780374499_1780317865_Minimal Yellow Star Aesthetic _ Cute Graphic Design Inspiration.jpg', '$2y$10$3Eok67LqtfdZfK3whvQU5.zodJ9zyVT/9Ej2RYrWDsH932uKvseTG', '2026-06-02 04:28:19'),
+(18, 'patient', 'Prima', 'Tober', 'prima@gmail.com', 'prima', '', '', '', '', '', '$2y$10$QSXTITAaTArokN86gdHF7.RW9yZImyferNC/PNQLoLvT8NH6pEC9G', '2026-07-16 01:45:57');
 
 --
 -- Indexes for dumped tables
@@ -312,13 +315,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `consultations`
 --
 ALTER TABLE `consultations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `consultation_medicines`
@@ -336,7 +339,7 @@ ALTER TABLE `consultation_recommendations`
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `patients`
@@ -348,7 +351,7 @@ ALTER TABLE `patients`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Constraints for dumped tables
