@@ -1,0 +1,145 @@
+/* ===== PATIENT DASH ========*/
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#fff;
+    color:#17324d;
+}
+
+/* ====== TOPBAR ======*/
+.topbar{
+    width:100%;
+    height:72px;
+    background:#fff;
+    border-bottom:1px solid #e9ecef;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 35px;
+}
+
+/* ====== LOGO ======== */
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+}
+.logo img{
+    width:42px;
+    height:42px;
+    object-fit:cover;
+}
+.logo span{
+    font-family:"Segoe UI", sans-serif;
+    font-size:19px;
+    font-weight:700;
+    color:#17324d;
+    letter-spacing:.2px;
+}
+
+/* ======== TAP NAVIGATION ======== */
+.top-nav{
+    display:flex;
+    align-items:center;
+    gap:38px;
+}
+.top-nav a{
+    text-decoration:none;
+    color:#5b6573;
+    font-size:14px;
+    font-weight:600;
+    transition:.25s ease;
+    padding:6px 0;
+}
+.top-nav a:hover{
+    color:#02529c;
+}
+.top-nav a.active{
+    color:#02529c;
+}
+
+/* ======= PROFILE ======= */
+.profile{
+    display:flex;
+    align-items:center;
+}
+.profile img{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #5fc7d5;
+    cursor:pointer;
+}
+
+/* ======= MAIN CONTENT ====== */
+.main-content{
+    width:100%;
+    min-height:calc(100vh - 72px);
+    background:#fff;
+    padding:40px;
+}
+.dashboard-home h1{
+    font-size:34px;
+    color:#17324d;
+    margin-bottom:10px;
+}
+.dashboard-home p{
+    color:#64748b;
+    font-size:15px;
+    line-height:1.7;
+    max-width:650px;
+}
+
+/* ======= RESPONSIVE ======= */
+@media(max-width:1100px){
+    .top-nav{
+        gap:22px;
+    }
+    .top-nav a{
+        font-size:13px;
+    }
+}
+
+@media(max-width:900px){
+    .topbar{
+        flex-direction:column;
+        height:auto;
+        padding:20px;
+        gap:18px;
+    }
+    .top-nav{
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:18px;
+    }
+}
+
+@media(max-width:600px){
+    .logo span{
+        font-size:22px;
+    }
+    .logo img{
+        width:36px;
+        height:36px;
+    }
+    .profile img{
+        width:38px;
+        height:38px;
+    }
+    .top-nav{
+        gap:14px;
+    }
+    .top-nav a{
+        font-size:12px;
+    }
+}

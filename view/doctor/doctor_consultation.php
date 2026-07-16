@@ -52,7 +52,7 @@ $age = $appointment['patient_birthdate'] ? date('Y') - date('Y', strtotime($appo
 
     <aside class="sidebar">
         <div class="sidebar-top">
-            <img src="http://localhost/clinic1/logo.jpg" class="sidebar-logo">
+            <img src="http://localhost/clinic1/img/logo.png" class="sidebar-logo">
             <div class="sidebar-clinic-name">
                 <h2>SwiftCare</h2>
             </div>
@@ -103,7 +103,7 @@ $age = $appointment['patient_birthdate'] ? date('Y') - date('Y', strtotime($appo
         </section>
 
         <?php if($is_followup && $previous_consultation): ?>
-        <section class="table-section" style="margin-bottom: 30px; background: #f0f9ff; border: 2px solid #0ea5e9;">
+        <section class="table-section" style="margin-bottom: 30px; background: #f8fafc; border: 1px solid #e2e8f0;">
             <div class="section-header">Previous Consultation (Read Only)</div>
             <div class="info-grid" style="padding: 25px;">
                 <div class="info-item" style="background: white;"><label>Findings</label><span><?php echo nl2br($previous_consultation['findings']); ?></span></div>

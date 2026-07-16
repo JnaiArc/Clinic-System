@@ -24,10 +24,7 @@ unset($_SESSION['error']);
     <meta charset="UTF-8">
     <title>Add Staff</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
-    <link rel="stylesheet" href="../css/admin_patients.css">
-    <link rel="stylesheet" href="../css/admin_add_view.css">
-    <link rel="stylesheet" href="../css/admin_appointment.css">
-    <link rel="stylesheet" href="../css/add_staff.css">
+    <link rel="stylesheet" href="../css/admin.css">
 
 </head>
 
@@ -38,7 +35,7 @@ unset($_SESSION['error']);
     <aside class="sidebar">
 
         <div class="sidebar-top">
-            <img src="http://localhost/clinic1/logo.jpg" class="sidebar-logo">
+            <img src="http://localhost/clinic1/img/logo.png" class="sidebar-logo">
             <div class="sidebar-clinic-name">
                 <h2>SwiftCare</h2>
             </div>

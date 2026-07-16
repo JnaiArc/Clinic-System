@@ -28,8 +28,7 @@ $today = date('Y-m-d');
     <meta charset="UTF-8">
     <title>Book Consultation</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
-    <link rel="stylesheet" href="../css/admin_add_view.css">
-    <link rel="stylesheet" href="../css/admin_appointment.css">
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>

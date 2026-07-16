@@ -25,7 +25,7 @@ $followups = $appointment->getFollowUpList();
     <meta charset="UTF-8">
     <title>Follow-Up Checkup</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
-    <link rel="stylesheet" href="../css/admin_tables.css">
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>
@@ -35,7 +35,7 @@ $followups = $appointment->getFollowUpList();
     <aside class="sidebar">
     
         <div class="sidebar-top">
-            <img src="http://localhost/clinic1/logo.jpg" class="sidebar-logo">
+            <img src="http://localhost/clinic1/img/logo.png" class="sidebar-logo">
             <div class="sidebar-clinic-name">
                 <h2>SwiftCare</h2>
             </div>

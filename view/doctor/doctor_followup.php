@@ -53,7 +53,7 @@ if($view_id > 0) {
 
     <aside class="sidebar">
         <div class="sidebar-top">
-            <img src="http://localhost/clinic1/logo.jpg" class="sidebar-logo">
+            <img src="http://localhost/clinic1/img/logo.png" class="sidebar-logo">
             <div class="sidebar-clinic-name">
                 <h2>SwiftCare</h2>
             </div>
@@ -93,7 +93,7 @@ if($view_id > 0) {
         </header>
 
         <?php if($view_id > 0 && $view_appointment): ?>
-        <section class="table-section" style="margin-bottom: 30px; background: #f0f9ff; border: 2px solid #0ea5e9;">
+        <section class="table-section" style="margin-bottom: 30px; background: #f8fafc; border: 1px solid #e2e8f0;">
             <div class="section-header">
                 Previous Consultation (Read Only)
                 <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" style="float: right; font-size: 14px; color: #17324d;">← Back</a>

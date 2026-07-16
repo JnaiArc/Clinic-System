@@ -41,7 +41,7 @@ $is_followup = ($appointment_data['purpose'] === 'Follow-up');
     <meta charset="UTF-8">
     <title>View Follow-Up Appointment</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
-    <link rel="stylesheet" href="../css/admin_info.css">
+    <link rel="stylesheet" href="../css/admin.css">
     <style>
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .edit-rx-btn { padding: 8px 16px; background-color: #3b82f6; color: white; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; }

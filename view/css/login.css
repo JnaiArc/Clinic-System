@@ -8,39 +8,57 @@
 body {
     background: #f4f7fb;
     display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.auth-content {
+    flex: 1;
+    display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    padding: 40px 20px;
 }
 
 .login-box {
     width: 380px;
     background: white;
-    border-radius: 18px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(23, 50, 77, 0.08);
     overflow: hidden;
 }
 
 .login-header {
-    background: #17324d;
-    color: white;
-    padding: 20px;
+    background: transparent;
+    color: #17324d;
+    padding: 32px 25px 6px;
     text-align: center;
 }
 
 .login-header h2 {
-    font-size: 22px;
-    letter-spacing: 1px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
 }
 
 form {
-    padding: 25px;
+    padding: 20px 25px 25px;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 13px;
     display: flex;
     flex-direction: column;
+}
+
+.name-row {
+    display: flex;
+    gap: 14px;
+}
+
+.name-row .form-group {
+    flex: 1;
+    min-width: 0;
 }
 
 label {
@@ -135,15 +153,18 @@ select {
 
 .switch-text {
     text-align: center;
-    margin-top: 16px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid #eef1f5;
     font-size: 14px;
-    color: #64748b;
+    color: #6b7280;
 }
 
 .switch-text a {
-    color: #02529c;
+    color: #0369a1;
     font-weight: 600;
     text-decoration: none;
+    margin-left: 4px;
 }
 
 .switch-text a:hover {

@@ -15,6 +15,7 @@ $success = isset($_GET['success']) ? $_GET['success'] : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
+    <link rel="stylesheet" href="../css/landing.css">
     <link rel="stylesheet" href="../css/login.css">
     <style>
         #newPw::-ms-reveal,
@@ -32,6 +33,35 @@ $success = isset($_GET['success']) ? $_GET['success'] : '';
     </style>
 </head>
 <body>
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="navbar-inner">
+        <a href="../../index.php" class="nav-brand">
+            <img src="../../logo.jpg" alt="SwiftCare Clinic logo">
+            <span>SwiftCare</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="../../index.php#home">Home</a>
+            <a href="../../index.php#services">Services</a>
+            <a href="../../index.php#about">About</a>
+            <a href="../../index.php#contact">Contact</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.php" class="btn-login">Login</a>
+            <a href="register.php" class="btn-register">Register</a>
+        </div>
+
+        <button class="nav-toggle" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</header>
+
+<div class="auth-content">
 <div class="login-box">
     <div class="login-header"><h2>FORGOT PASSWORD</h2></div>
 
@@ -83,6 +113,8 @@ $success = isset($_GET['success']) ? $_GET['success'] : '';
     <?php endif; ?>
 
 </div>
+</div>
+<script src="../js/landing.js"></script>
 <script src="../js/login.js"></script>
 <?php if ($step === 2): ?>
 <script>

@@ -1,0 +1,1034 @@
+/* =====================================================================
+   SWIFTCARE CLINIC — PATIENT SECTION (CONSOLIDATED STYLESHEET)
+   Combines: patient_home, patient_profile, patient_request consultation,
+   patient_request medical, patient_services, patient_view request status,
+   patient_view_appointment, servicess, all doctors
+   NOTE: Navbar/topbar styles stay in patient_dashboardd.css (untouched)
+===================================================================== */
+
+:root {
+    --primary-color: #2c3e50;
+    --primary-hover: #34495e;
+    --header-color: #17324d;
+    --bg-light: #f8f9fa;
+    --border-color: #e0e2e6;
+    --label-color: #1f2430;
+    --hint-color: #7a7f8a;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    margin: 0;
+    color: var(--label-color);
+    background: #ffffff;
+}
+
+/* Inner page headers that reuse the navbar's .topbar / .top-header wrapper
+   (does not touch the navbar itself, only the h1 placed inside these
+   secondary in-page headers, e.g. "Patient Profile", "Appointment Info",
+   "Welcome, Reymar!") — unified to the same blue + font across pages */
+.topbar h1,
+.top-header h1 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--header-color);
+    font-size: 28px;
+    margin: 0;
+}
+
+
+/* =====================================================================
+   PATIENT DASHBOARD (patient_home.css)
+===================================================================== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 25px;
+}
+
+.appointment-card {
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+    overflow: hidden;
+}
+
+/* base card-title (also used as h2.card-title on the consultation form card
+   further below) */
+.card-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--header-color);
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* dashboard's solid blue bar variant */
+.appointment-card .card-title {
+    background: var(--header-color);
+    color: #fff;
+    border-bottom: none;
+    padding: 20px 25px;
+}
+
+.appointment-card .card-title h2 {
+    font-size: 22px;
+    color: #fff;
+}
+
+.appointment-details {
+    padding: 25px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-row:last-child {
+    border: none;
+}
+
+.detail-row span {
+    color: #777;
+}
+
+.detail-row strong {
+    color: var(--header-color);
+    text-align: right;
+}
+
+.slot-card {
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+    text-align: center;
+    padding: 30px;
+    height: fit-content;
+}
+
+.slot-card h2 {
+    color: var(--header-color);
+    font-size: 22px;
+}
+
+.slot-number {
+    font-size: 65px;
+    font-weight: bold;
+    color: var(--header-color);
+    margin: 25px 0;
+}
+
+.slot-card p {
+    color: #777;
+}
+
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .top-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+
+/* =====================================================================
+   PATIENT PROFILE (patient_profile.css) — MAIN BUTTON/FORM DESIGN
+===================================================================== */
+.profile-wrap {
+    max-width: 980px;
+    margin: 20px auto;
+    padding: 0 20px 60px 20px;
+}
+
+.profile-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    padding: 32px 36px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.profile-card h2 {
+    margin: 0 0 4px 0;
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.profile-card .subtitle {
+    margin: 0 0 18px 0;
+    color: var(--hint-color);
+    font-style: italic;
+    font-size: 14px;
+}
+
+.required-note {
+    color: var(--hint-color);
+    font-size: 13px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 14px;
+    margin-bottom: 22px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 24px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+.field label {
+    font-weight: 600;
+    color: var(--label-color);
+    font-size: 14.5px;
+    margin-bottom: 6px;
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="date"],
+.field select,
+.field textarea {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #111;
+    background: #fff;
+    outline: none;
+    transition: border-color .15s ease;
+    font-family: inherit;
+}
+
+.field textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    border-color: var(--primary-color);
+}
+
+/* ---- Reference button design (used as the base for buttons site-wide) ---- */
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.btn-save {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 12px 34px;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+
+.btn-save:hover {
+    background: var(--primary-hover);
+}
+
+.btn-cancel {
+    background: transparent;
+    color: var(--hint-color);
+    border: 1px solid var(--border-color);
+    padding: 12px 34px;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.15s ease;
+}
+
+.btn-cancel:hover {
+    background: var(--bg-light);
+    color: #111;
+}
+
+.alert-success {
+    display: none;
+    background: #e7f6ec;
+    border: 1px solid #b7e4c7;
+    color: #1e6b3a;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .profile-card { padding: 24px 18px; }
+}
+
+
+/* =====================================================================
+   REQUEST CONSULTATION (patient_request consultation.css)
+===================================================================== */
+.form-container {
+    width: 95%;
+    max-width: 1400px;
+    margin: 30px auto;
+}
+
+.page-title {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--header-color);
+    margin-bottom: 25px;
+}
+
+.form-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    overflow: hidden;
+}
+
+.appointment-form {
+    padding: 30px;
+}
+
+.form-row {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #243b53;
+    margin-bottom: 10px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    height: 52px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0 15px;
+    font-size: 16px;
+    color: #374151;
+    background: #fff;
+    outline: none;
+    transition: .3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44,62,80,.15);
+}
+
+input[readonly] {
+    background: #fafafa;
+}
+
+/* Buttons — restyled to match the patient profile design (pill shape) */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 12px 34px;
+    border: none;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--hint-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-light);
+    color: #111;
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 34px;
+    }
+
+    .card-title {
+        font-size: 22px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+
+/* =====================================================================
+   REQUEST MEDICAL DOCUMENTS (patient_request medical.css)
+===================================================================== */
+.page-description {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.document-card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 600px;
+}
+
+.document-card h2 {
+    margin-bottom: 20px;
+    color: var(--header-color);
+}
+
+.document-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.document-option:hover {
+    background-color: #f1f8ff;
+    border-color: var(--primary-color);
+}
+
+.document-option input {
+    width: 18px;
+    height: 18px;
+}
+
+/* Request button — restyled to match the patient profile design (pill shape) */
+.request-btn {
+    width: 100%;
+    padding: 12px 34px;
+    margin-top: 20px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 24px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.request-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+
+/* =====================================================================
+   OUR SERVICES GRID (patient_services.css)
+===================================================================== */
+/* "Our Services" in-page header (wrapped as <header class="page-title">) */
+.page-title h1 {
+    color: var(--header-color);
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.services-container {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 35px;
+    margin-top: 45px;
+    padding: 20px 25px;
+}
+
+.service-card {
+    position: relative;
+    height: 420px;
+    border-radius: 22px;
+    overflow: hidden;
+    text-decoration: none;
+    background: white;
+    box-shadow: 0 12px 28px rgba(0,0,0,.12);
+    transition: .35s;
+}
+
+.service-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: .5s;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,120,255,.20);
+}
+
+.service-card:hover img {
+    transform: scale(1.08);
+}
+
+.service-card .service-title {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 18px;
+    font-size: 23px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(to top, rgba(0,0,0,.80), rgba(0,0,0,0));
+    transition: .3s;
+}
+
+.service-card:hover .service-title {
+    opacity: 0;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.88), rgba(0,0,0,.30));
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 25px;
+    opacity: 0;
+    transition: .35s;
+}
+
+.service-card:hover .overlay {
+    opacity: 1;
+}
+
+.overlay h3 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.overlay p {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Learn more button — restyled to match the patient profile design */
+.learn-more {
+    margin-top: 18px;
+    display: inline-block;
+    width: fit-content;
+    padding: 10px 20px;
+    background: var(--primary-color);
+    border-radius: 24px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    transition: .3s;
+}
+
+.learn-more:hover {
+    background: var(--primary-hover);
+}
+
+
+/* =====================================================================
+   SERVICE DETAIL PAGES (servicess.css)
+===================================================================== */
+.service-container {
+    width: 90%;
+    max-width: 1150px;
+    margin: 50px auto;
+    background: white;
+    padding: 35px;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(0,95,170,.10);
+    animation: fadeUp .8s ease;
+}
+
+.service-container .service-title h1 {
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--header-color);
+    border-left: 6px solid var(--primary-color);
+    padding-left: 15px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+.service-description {
+    background: #edf7ff;
+    border-left: 5px solid #1683e8;
+    padding: 18px 22px;
+    border-radius: 12px;
+    margin-bottom: 45px;
+}
+
+.service-description p {
+    margin: 0;
+    color: #5b6770;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.service-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.service-box {
+    position: relative;
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    transition: .4s ease;
+}
+
+.service-box:hover {
+    transform: translateY(-8px);
+}
+
+.service-box h2 {
+    font-size: 25px;
+    color: var(--header-color);
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.service-box h2::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    margin-top: 10px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #0077cc, #00c6ff);
+}
+
+.service-box ul {
+    padding: 0;
+    margin: 0;
+}
+
+.service-box li {
+    list-style: none;
+    background: #f0f8ff;
+    padding: 13px 18px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    border-left: 4px solid #1683e8;
+    color: #40505c;
+    font-size: 14px;
+    transition: .3s ease;
+}
+
+.service-box li:hover {
+    background: #dff2ff;
+    transform: translateX(8px);
+    color: #006bb6;
+}
+
+.service-box li::before {
+    content: "\2713";
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+.visit-text {
+    color: #5b6770;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .service-container {
+        padding: 25px;
+    }
+    .service-container .service-title h1 {
+        font-size: 30px;
+    }
+    .service-content {
+        grid-template-columns: 1fr;
+    }
+    .service-box h2 {
+        font-size: 22px;
+    }
+}
+
+
+/* =====================================================================
+   VIEW REQUEST STATUS + APPOINTMENT INFO
+   (patient_view request status.css + patient_view_appointment.css — shared)
+===================================================================== */
+.appointments-wrap {
+    max-width: 1040px;
+    margin: 20px auto;
+    padding: 0 20px 60px 20px;
+}
+
+.appointments-wrap h1 {
+    font-size: 28px;
+    color: var(--header-color);
+    margin: 0 0 4px;
+}
+
+.appointments-wrap .subtitle {
+    font-style: italic;
+    color: var(--hint-color);
+    margin: 0 0 20px;
+    font-size: 15px;
+}
+
+hr.top-rule {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin-bottom: 24px;
+}
+
+.info-banner {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.info-banner p {
+    margin: 0;
+    color: var(--label-color);
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.info-banner .en {
+    font-weight: normal;
+    font-style: italic;
+    color: var(--hint-color);
+    margin-top: 4px;
+}
+
+.tabs-container {
+    display: flex;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 20px;
+    gap: 8px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--hint-color);
+    cursor: pointer;
+    position: relative;
+    bottom: -2px;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.tab-content {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+/* Appointment Info page toggles between multiple tab panels — scoped so it
+   doesn't affect the single-panel tab-content on View Request Status */
+.main-content .tab-content {
+    display: none;
+}
+
+.main-content .tab-content.active {
+    display: block;
+}
+
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14.5px;
+}
+
+.appointments-table th {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 14px 18px;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+.appointments-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border-color);
+    color: #333;
+}
+
+.appointments-table tr:last-child td {
+    border-bottom: none;
+}
+
+.appointments-table tr:hover {
+    background-color: var(--bg-light);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.status-badge.pending {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.status-badge.completed {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+.btn-view {
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    padding: 6px 14px;
+    border-radius: 4px;
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.15s ease;
+    display: inline-block;
+}
+
+.btn-view:hover {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.empty-row td {
+    text-align: center;
+    color: var(--hint-color);
+    padding: 30px 16px;
+    font-style: italic;
+}
+
+
+/* =====================================================================
+   ALL DOCTORS (all doctors.css) — photos & specialty tabs sized down
+===================================================================== */
+.doctor-specialist {
+    padding: 30px 40px;
+    background: #fff;
+    min-height: calc(100vh - 90px);
+}
+
+.doctor-specialist h2 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 22px;
+}
+
+.doctor-container {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.specialty-list {
+    width: 210px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.specialty-btn {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    text-align: left;
+    background: #fff;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.specialty-btn:hover {
+    background: #eef2ff;
+    border-color: #b8c5ff;
+}
+
+.specialty-btn.active {
+    background: #dde2ff;
+    border-color: #bcc7ff;
+    color: #000;
+    font-weight: 500;
+}
+
+.doctor-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.doctor-card {
+    background: #fff;
+    border: 1px solid #cdd8ff;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: 0.3s ease;
+}
+
+.doctor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.10);
+}
+
+.doctor-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    background: #edf1ff;
+}
+
+.doctor-info {
+    padding: 14px 16px;
+}
+
+.status {
+    display: inline-block;
+    color: #22b14c;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.doctor-info h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 4px;
+}
+
+.doctor-info p {
+    font-size: 13px;
+    color: #555;
+}
+
+@media (max-width: 1200px) {
+    .doctor-grid {
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .doctor-container {
+        flex-direction: column;
+    }
+
+    .specialty-list {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .specialty-btn {
+        width: auto;
+        flex: 1 1 auto;
+    }
+
+    .doctor-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+}

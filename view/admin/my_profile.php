@@ -23,7 +23,7 @@ $user_info = $user->getUserById($_SESSION['user_id']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
-    <link rel="stylesheet" href="../css/admin_info.css">
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>
@@ -33,7 +33,7 @@ $user_info = $user->getUserById($_SESSION['user_id']);
     <aside class="sidebar">
 
         <div class="sidebar-top">
-            <img src="http://localhost/clinic1/logo.jpg" class="sidebar-logo">
+            <img src="http://localhost/clinic1/img/logo.png" class="sidebar-logo">
             <div class="sidebar-clinic-name">
                 <h2>SwiftCare</h2>
             </div>

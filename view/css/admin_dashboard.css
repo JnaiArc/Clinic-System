@@ -264,7 +264,7 @@ body{
 .stat-card{
     background:white;
     padding:25px;
-    border-radius:18px;
+    border-radius:12px;
 }
 
 .stat-card h3{
@@ -281,15 +281,18 @@ body{
 /* TABLE SECTION */
 .table-section{
     background:white;
-    border-radius:18px;
+    border-radius:12px;
     overflow:hidden;
+    border:1px solid #eef1f5;
 }
 
 .section-header{
-    background:#17324d;
-    color:white;
-    padding:18px;
-    font-size:20px;
+    background:#ffffff;
+    color:#17324d;
+    padding:16px 20px;
+    font-size:16px;
+    font-weight:700;
+    border-bottom:1px solid #eef1f5;
 }
 
 .appointment-table{

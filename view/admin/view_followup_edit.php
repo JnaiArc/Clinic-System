@@ -39,7 +39,7 @@ if ($appointment_data) {
     <meta charset="UTF-8">
     <title>Edit Follow-Up</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
-    <link rel="stylesheet" href="../css/admin_info.css">
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>

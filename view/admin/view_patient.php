@@ -30,7 +30,7 @@ $history = $patient->getPatientConsultationHistory($id);
     <meta charset="UTF-8">
     <title>View Patient</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
-    <link rel="stylesheet" href="../css/admin_add_view.css">
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>

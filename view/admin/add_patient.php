@@ -23,7 +23,7 @@ $user_info = $user->getUserById($_SESSION['user_id']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Patient</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
-    <link rel="stylesheet" href="../css/admin_add_view.css">
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 
 <body>

@@ -36,7 +36,7 @@ $followups_count = $appointment_model->getDoctorFollowUps($_SESSION['user_id'])-
     <aside class="sidebar">
 
         <div class="sidebar-top">
-            <img src="http://localhost/clinic1/logo.jpg" class="sidebar-logo">
+            <img src="http://localhost/clinic1/img/logo.png" class="sidebar-logo">
             <div class="sidebar-clinic-name">
                 <h2>SwiftCare</h2>
             </div>
