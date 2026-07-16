@@ -84,9 +84,11 @@ body{
 /* ======= MAIN CONTENT ====== */
 .main-content{
     width:100%;
+    max-width:1040px;
     min-height:calc(100vh - 72px);
     background:#fff;
-    padding:40px;
+    margin:20px auto 0;
+    padding:0 20px 60px 20px;
 }
 .dashboard-home h1{
     font-size:34px;

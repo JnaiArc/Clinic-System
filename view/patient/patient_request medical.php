@@ -48,47 +48,53 @@
 
     <main class="main-content">
 
-        <h1 class="page-title">Request Medical Documents</h1>
-        <p class="page-description">
-            Select the medical document you would like to request.
-        </p>
+        <header class="topbar">
+            <h1>Request Medical Documents</h1>
+        </header>
+
+        <div class="profile-wrap">
+
+            <p class="page-description">
+                Select the medical document you would like to request.
+            </p>
+
+            <div class="document-card">
+
+                <h2>Available Documents</h2>
+
+                <form action="process_document_request.php" method="POST">
+
+                    <label class="document-option">
+                        <input type="checkbox" name="documents[]" value="Medical Certificate">
+                        Medical Certificate
+                    </label>
 
 
-        <div class="document-card">
-
-            <h2>Available Documents</h2>
-
-            <form action="process_document_request.php" method="POST">
-
-                <label class="document-option">
-                    <input type="checkbox" name="documents[]" value="Medical Certificate">
-                    Medical Certificate
-                </label>
+                    <label class="document-option">
+                        <input type="checkbox" name="documents[]" value="Medical Records">
+                        Medical Records
+                    </label>
 
 
-                <label class="document-option">
-                    <input type="checkbox" name="documents[]" value="Medical Records">
-                    Medical Records
-                </label>
+                    <label class="document-option">
+                        <input type="checkbox" name="documents[]" value="Laboratory Results">
+                        Laboratory Results
+                    </label>
 
 
-                <label class="document-option">
-                    <input type="checkbox" name="documents[]" value="Laboratory Results">
-                    Laboratory Results
-                </label>
+                    <label class="document-option">
+                        <input type="checkbox" name="documents[]" value="Prescription History">
+                        Prescription History
+                    </label>
 
 
-                <label class="document-option">
-                    <input type="checkbox" name="documents[]" value="Prescription History">
-                    Prescription History
-                </label>
+                    <button class="request-btn" type="submit">
+                        Submit Request
+                    </button>
 
+                </form>
 
-                <button class="request-btn" type="submit">
-                    Submit Request
-                </button>
-
-            </form>
+            </div>
 
         </div>
 

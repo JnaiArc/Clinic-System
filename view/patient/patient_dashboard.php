@@ -47,15 +47,18 @@
 
     <main class="main-content">
 
-        <!-- TOP HEADER -->
-        <header class="top-header">
+        <!-- <header class="topbar">
+            <h1>Home</h1>
+        </header> -->
 
+        <!-- WELCOME BANNER -->
+        <section class="welcome-banner">
             <div class="welcome-text">
-                <h1>Welcome, Reymar!</h1>      
+                <h2>Welcome back, Charmane!</h2>
+                <p>Here's what's happening with your care today.</p>
             </div>
-
-        </header>
-
+            <a href="patient_request consultation.php" class="btn-book">Book a Consultation</a>
+        </section>
 
         <!-- DASHBOARD CONTENT -->
         <section class="dashboard-grid">

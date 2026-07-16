@@ -45,90 +45,82 @@
 
     </header>
 
-<div class="form-container">
+<main class="main-content">
 
-    <!-- Page Title -->
-    <h1 class="page-title">Schedule Appointment</h1>
+    <header class="topbar">
+        <h1>Schedule Appointment</h1>
+    </header>
 
-    <!-- Form Card -->
-    <div class="form-card">
+    <div class="profile-wrap">
 
-        <h2 class="card-title">Schedule Appointment</h2>
+        <form>
 
-        <form class="appointment-form">
+            <div class="profile-card">
+                <h2>Schedule Appointment</h2>
+                <p class="subtitle">Book a consultation with one of our doctors</p>
+                <p class="required-note"><span style="color:red">*</span> Required Fields</p>
 
-            <!-- Patient Name & Phone -->
-            <div class="form-row">
+                <div class="form-grid">
 
-                <div class="form-group">
-                    <label for="patient-name">Patient Name</label>
-                    <input type="text" id="patient-name" value="Charmane Searchwell">
+                    <!-- Patient Name -->
+                    <div class="field">
+                        <label for="patient-name">Patient Name <span style="color:red">*</span></label>
+                        <input type="text" id="patient-name" value="Charmane Searchwell">
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="field">
+                        <label for="phone-number">Phone Number <span style="color:red">*</span></label>
+                        <input type="tel" id="phone-number" value="09870542944">
+                    </div>
+
+                    <!-- Date -->
+                    <div class="field">
+                        <label for="date">Date <span style="color:red">*</span></label>
+                        <input type="date" id="date">
+                    </div>
+
+                    <!-- Doctor -->
+                    <div class="field">
+                        <label for="doctor">Doctor <span style="color:red">*</span></label>
+                        <select id="doctor">
+                            <option selected>Select a date first</option>
+                        </select>
+                    </div>
+
+                    <!-- Time -->
+                    <div class="field">
+                        <label for="time">Time <span style="color:red">*</span></label>
+                        <select id="time">
+                            <option selected>Select a doctor first</option>
+                        </select>
+                    </div>
+
+                    <!-- Purpose -->
+                    <div class="field">
+                        <label for="purpose">Purpose <span style="color:red">*</span></label>
+                        <select id="purpose">
+                            <option selected>Check-up</option>
+                            <option>Consultation</option>
+                            <option>Follow-up</option>
+                            <option>Vaccination</option>
+                        </select>
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label for="phone-number">Phone Number</label>
-                    <input type="tel" id="phone-number" value="09870542944">
+                <br>
+                <div class="button-group">
+                    <button type="submit" class="btn-save">Confirm Appointment</button>
+                    <button type="button" class="btn-cancel">Cancel</button>
                 </div>
-
-            </div>
-
-            <!-- Date & Doctor -->
-            <div class="form-row">
-
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date">
-                </div>
-
-                <div class="form-group">
-                    <label for="doctor">Doctor</label>
-                    <select id="doctor">
-                        <option selected>Select a date first</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <!-- Time & Purpose -->
-            <div class="form-row">
-
-                <div class="form-group">
-                    <label for="time">Time</label>
-                    <select id="time">
-                        <option selected>Select a doctor first</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="purpose">Purpose</label>
-                    <select id="purpose">
-                        <option selected>Check-up</option>
-                        <option>Consultation</option>
-                        <option>Follow-up</option>
-                        <option>Vaccination</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <!-- Buttons -->
-            <div class="form-actions">
-
-                <button type="submit" class="btn btn-primary">
-                    Confirm Appointment
-                </button>
-
-                <button type="button" class="btn btn-secondary">
-                    Cancel
-                </button>
-
             </div>
 
         </form>
 
     </div>
 
-</div>
+</main>
 
 </body>
 </html>

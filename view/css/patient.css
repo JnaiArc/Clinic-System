@@ -43,10 +43,62 @@ body {
 /* =====================================================================
    PATIENT DASHBOARD (patient_home.css)
 ===================================================================== */
+
+/* Welcome banner + Book a Consultation CTA */
+.welcome-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--header-color);
+    color: #fff;
+    border-radius: 18px;
+    padding: 30px 35px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+.welcome-text h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    color: #fff;
+}
+
+.welcome-text p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.btn-book {
+    background: #fff;
+    color: var(--header-color);
+    padding: 12px 28px;
+    border-radius: 24px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .15s ease;
+}
+
+.btn-book:hover {
+    background: #f1f5f9;
+}
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: 3fr 1fr;
     gap: 25px;
+}
+
+@media (max-width: 900px) {
+    .welcome-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 .appointment-card {
@@ -66,17 +118,18 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
-/* dashboard's solid blue bar variant */
+/* dashboard's heading — plain text + bottom line, matching other cards */
 .appointment-card .card-title {
-    background: var(--header-color);
-    color: #fff;
-    border-bottom: none;
+    background: none;
+    color: var(--header-color);
+    border-bottom: 1px solid var(--border-color);
     padding: 20px 25px;
 }
 
 .appointment-card .card-title h2 {
     font-size: 22px;
-    color: #fff;
+    color: var(--header-color);
+    margin: 0;
 }
 
 .appointment-details {
@@ -205,6 +258,7 @@ body {
 .field input[type="text"],
 .field input[type="email"],
 .field input[type="date"],
+.field input[type="tel"],
 .field select,
 .field textarea {
     border: 1px solid var(--border-color);
@@ -291,9 +345,10 @@ body {
    REQUEST CONSULTATION (patient_request consultation.css)
 ===================================================================== */
 .form-container {
-    width: 95%;
-    max-width: 1400px;
-    margin: 30px auto;
+    width: 100%;
+    max-width: 1040px;
+    margin: 20px auto 0;
+    padding: 0 20px 60px 20px;
 }
 
 .page-title {
@@ -305,13 +360,26 @@ body {
 
 .form-card {
     background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
     overflow: hidden;
 }
 
+/* Scoped override so the shared .card-title class matches profile-card h2
+   on this page only (dashboard's blue card-title is untouched) */
+.form-card .card-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin: 0 0 4px 0;
+    padding: 0;
+    border-bottom: none;
+    background: none;
+}
+
 .appointment-form {
-    padding: 30px;
+    padding: 32px 36px;
 }
 
 .form-row {
@@ -327,30 +395,29 @@ body {
 }
 
 .form-group label {
-    font-size: 18px;
+    font-size: 14.5px;
     font-weight: 600;
-    color: #243b53;
-    margin-bottom: 10px;
+    color: var(--label-color);
+    margin-bottom: 6px;
 }
 
 .form-group input,
 .form-group select {
     width: 100%;
-    height: 52px;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
-    padding: 0 15px;
-    font-size: 16px;
-    color: #374151;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #111;
     background: #fff;
     outline: none;
-    transition: .3s;
+    transition: border-color .15s ease;
+    font-family: inherit;
 }
 
 .form-group input:focus,
 .form-group select:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(44,62,80,.15);
 }
 
 input[readonly] {
@@ -428,15 +495,18 @@ input[readonly] {
 
 .document-card {
     background: white;
-    padding: 25px;
+    padding: 32px 36px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
     max-width: 600px;
 }
 
 .document-card h2 {
-    margin-bottom: 20px;
-    color: var(--header-color);
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 18px 0;
+    color: var(--primary-color);
 }
 
 .document-option {
@@ -494,7 +564,7 @@ input[readonly] {
 
 .services-container {
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(2,1fr);
     gap: 35px;
     margin-top: 45px;
     padding: 20px 25px;
@@ -907,7 +977,9 @@ hr.top-rule {
    ALL DOCTORS (all doctors.css) — photos & specialty tabs sized down
 ===================================================================== */
 .doctor-specialist {
-    padding: 30px 40px;
+    max-width: 1040px;
+    margin: 20px auto 0;
+    padding: 0 20px 60px 20px;
     background: #fff;
     min-height: calc(100vh - 90px);
 }
