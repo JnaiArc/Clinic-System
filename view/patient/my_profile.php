@@ -36,6 +36,7 @@ unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['passw
     <link rel="stylesheet" href="../css/patient.css">
     <link rel="stylesheet" href="../css/patient_dashboardd.css">
     <link rel="stylesheet" href="../css/myprofile.css">
+    <?php include_once '../chatbot_widget.php'; ?>
 </head>
 
 <body>

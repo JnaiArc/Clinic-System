@@ -11,6 +11,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="../css/patient.css">
     <link rel="stylesheet" href="../css/patient_dashboardd.css">
+    <?php include_once '../chatbot_widget.php'; ?>
 </head>
 
 <body>

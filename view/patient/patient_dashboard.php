@@ -37,6 +37,7 @@ $next_appointment = $patient_data ? $appointment->getNextAppointmentForPatient($
     <!-- CSS -->
     <link rel="stylesheet" href="../css/patient.css">
     <link rel="stylesheet" href="../css/patient_dashboardd.css">
+    <?php include_once '../chatbot_widget.php'; ?>
 </head>
 
 <body>
@@ -174,5 +175,11 @@ document.addEventListener('click', function(e){
     }
 });
 </script>
+
+<script>
+    // Pass the real patient name from PHP session to JS
+    const loggedInUser = "<?php echo htmlspecialchars($user_info['first_name']); ?>";
+</script>
+
 </body>
 </html>

@@ -113,7 +113,7 @@ $completed_appointments = $appointment_model->getDoctorCompletedAppointments($do
                                     <?php if($row['status'] == 'completed'): ?>
                                     <span style="color:#64748b;">Completed</span>
                                     <?php elseif($row['status'] == 'pending' || $row['status'] == 'confirmed'): ?>
-                                    <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn consult-btn">Consult</a>
+                                    <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">Consult</a>
                                     <?php else: ?>
                                     <span style="color:#64748b;"><?php echo ucfirst($row['status']); ?></span>
                                     <?php endif; ?>
@@ -144,7 +144,7 @@ $completed_appointments = $appointment_model->getDoctorCompletedAppointments($do
                                 <td><?php echo $row['purpose']; ?></td>
                                 <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
                                 <td>
-                                    <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn consult-btn">Consult</a>
+                                    <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">Consult</a>
                                 </td>
                             </tr>
                             <?php endwhile; ?>
@@ -172,7 +172,7 @@ $completed_appointments = $appointment_model->getDoctorCompletedAppointments($do
                                 <td><?php echo $row['purpose']; ?></td>
                                 <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
                                 <td>
-                                    <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn consult-btn">Consult</a>
+                                    <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">Consult</a>
                                 </td>
                             </tr>
                             <?php endwhile; ?>
@@ -203,7 +203,7 @@ $completed_appointments = $appointment_model->getDoctorCompletedAppointments($do
                                     <?php if($row['status'] == 'missed'): ?>
                                     <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
                                     <?php else: ?>
-                                    <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn consult-btn">Consult</a>
+                                    <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">Consult</a>
                                     <?php endif; ?>
                                 </td>
                             </tr>
