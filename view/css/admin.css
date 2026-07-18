@@ -1315,12 +1315,12 @@ input:disabled {
 .btn-save {
     background: var(--primary-color);
     color: white;
-    padding: 12px 34px;
+    padding: 12px 22px;
     border: none;
-    border-radius: 24px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 14px;
     text-decoration: none;
     display: inline-block;
     transition: background .15s ease;

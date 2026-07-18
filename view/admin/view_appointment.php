@@ -20,19 +20,6 @@ $user_info = $user->getUserById($_SESSION['user_id']);
 $appointment_id = (int)$_GET['id'];
 $appointment_data = $appointment->getAppointmentById($appointment_id);
 
-$consultation = null;
-$medicines = null;
-$recommendations = null;
-
-if ($appointment_data) {
-    $consultation = $appointment->getConsultationForAppointment($appointment_id, $appointment_data['patient_id']);
-    
-    if ($consultation) {
-        $medicines = $appointment->getMedicinesByConsultationId($consultation['id']);
-        $recommendations = $appointment->getRecommendationsByConsultationId($consultation['id']);
-    }
-}
-
 $doctors = $user->getAllDoctors();
 ?>
 
@@ -136,48 +123,6 @@ $doctors = $user->getAllDoctors();
                 <div class="info-item"><label>Type</label><span><?php echo $appointment_data['consultation_type'] ?: 'In Person'; ?></span></div>
                 <div class="info-item"><label>Status</label><span class="status <?php echo $appointment_data['status']; ?>"><?php echo ucfirst($appointment_data['status']); ?></span></div>
             </div>
-        </section>
-        <?php endif; ?>
-
-        <!-- read only consultation -->
-        <?php if($consultation): ?>
-        <section class="table-section rx-section">
-            <div class="section-header">Consultation Details</div>
-            <div class="info-grid info-grid-pad">
-                <div class="info-item" style="background: white;"><label>Findings</label><span><?php echo nl2br($consultation['findings']); ?></span></div>
-            </div>
-            
-            <?php if($medicines && $medicines->rowCount() > 0): ?>
-            <div class="info-grid-pad">
-                <label class="rx-label">Medicines</label>
-                <?php while($med = $medicines->fetch(PDO::FETCH_ASSOC)): 
-                    $is_done = isset($med['is_done']) ? $med['is_done'] : 0;
-                    $rx_class = $is_done ? 'rx-item-checked' : 'rx-item'; 
-                ?>
-                <div class="<?php echo $rx_class; ?>">
-                    <input type="checkbox" <?php echo $is_done ? 'checked' : ''; ?> disabled class="rx-checkbox">
-                    <span class="rx-flex"><?php echo $med['medicine_name']; ?> - <?php echo $med['dosage']; ?> x <?php echo $med['frequency']; ?> for <?php echo $med['duration']; ?></span>
-                    <?php if($is_done): ?><span class="rx-check">✓</span><?php endif; ?>
-                </div>
-                <?php endwhile; ?>
-            </div>
-            <?php endif; ?>
-            
-            <?php if($recommendations && $recommendations->rowCount() > 0): ?>
-            <div class="info-grid-pad">
-                <label class="rx-label">Recommendations</label>
-                <?php while($rec = $recommendations->fetch(PDO::FETCH_ASSOC)): 
-                    $is_done = isset($rec['is_done']) ? $rec['is_done'] : 0;
-                    $rx_class = $is_done ? 'rx-item-checked' : 'rx-item'; 
-                ?>
-                <div class="<?php echo $rx_class; ?>">
-                    <input type="checkbox" <?php echo $is_done ? 'checked' : ''; ?> disabled class="rx-checkbox">
-                    <span class="rx-flex"><?php echo $rec['recommendation']; ?></span>
-                    <?php if($is_done): ?><span class="rx-check">✓</span><?php endif; ?>
-                </div>
-                <?php endwhile; ?>
-            </div>
-            <?php endif; ?>
         </section>
         <?php endif; ?>
     </main>

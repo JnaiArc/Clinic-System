@@ -100,7 +100,6 @@ if ($edit_id > 0) {
         <section class="table-section" style="margin-bottom: 30px;">
             <div class="section-header">
                 Appointment Information
-                <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="back-link">&larr; Back to Follow-Up List</a>
             </div>
             <div class="info-grid" style="padding: 25px;">
                 <div class="info-item"><label>Patient Name</label><span><?php echo $edit_appointment['patient_name']; ?></span></div>
@@ -114,20 +113,20 @@ if ($edit_id > 0) {
         <form method="POST" action="http://localhost/clinic1/controller/FollowUpController.php">
             <input type="hidden" name="appointment_id" value="<?php echo $edit_id; ?>">
 
-            <section class="table-section rx-section">
+            <section class="table-section" style="margin-bottom: 30px; background: #f8fafc; border: 1px solid #e2e8f0;">
                 <div class="section-header">Prescription (Check when done)</div>
 
                 <?php if($edit_medicines && $edit_medicines->rowCount() > 0): ?>
                 <div style="padding: 0 25px 25px;">
-                    <label class="rx-label">Medicines</label>
+                    <label style="display:block; margin-bottom:10px; font-weight:600; color:#17324d;">Medicines</label>
                     <?php while($med = $edit_medicines->fetch(PDO::FETCH_ASSOC)):
                         $is_done = isset($med['is_done']) ? $med['is_done'] : 0;
-                        $item_class = $is_done ? 'rx-item-edit is-checked' : 'rx-item-edit';
+                        $bg=$is_done?'#f0fdf4':'white'; $bd=$is_done?'1px solid #86efac':'none'; $tc=$is_done?'#15803d':'inherit'; $tw=$is_done?'600':'normal';
                     ?>
-                    <div class="<?php echo $item_class; ?>">
-                        <input type="checkbox" name="medicines_done[]" value="<?php echo $med['id']; ?>" <?php echo $is_done ? 'checked' : ''; ?>>
-                        <span><?php echo $med['medicine_name']; ?> - <?php echo $med['dosage']; ?> x <?php echo $med['frequency']; ?> for <?php echo $med['duration']; ?></span>
-                        <?php if($is_done): ?><span class="rx-check">&#10003;</span><?php endif; ?>
+                    <div style="margin-bottom:8px; padding:10px 15px; background:<?php echo $bg;?>; border:<?php echo $bd;?>; border-radius:6px; display:flex; align-items:center; gap:12px;">
+                        <input type="checkbox" name="medicines_done[]" value="<?php echo $med['id']; ?>" <?php echo $is_done ? 'checked' : ''; ?> style="width:18px; height:18px; accent-color:#16a34a;">
+                        <span style="flex:1; color:<?php echo $tc;?>; font-weight:<?php echo $tw;?>;"><?php echo $med['medicine_name']; ?> - <?php echo $med['dosage']; ?> x <?php echo $med['frequency']; ?> for <?php echo $med['duration']; ?></span>
+                        <?php if($is_done): ?><span style="color:#16a34a;font-weight:bold;">✓</span><?php endif; ?>
                     </div>
                     <?php endwhile; ?>
                 </div>
@@ -135,15 +134,15 @@ if ($edit_id > 0) {
 
                 <?php if($edit_recommendations && $edit_recommendations->rowCount() > 0): ?>
                 <div style="padding: 0 25px 25px;">
-                    <label class="rx-label">Recommendations</label>
+                    <label style="display:block; margin-bottom:10px; font-weight:600; color:#17324d;">Recommendations</label>
                     <?php while($rec = $edit_recommendations->fetch(PDO::FETCH_ASSOC)):
                         $is_done = isset($rec['is_done']) ? $rec['is_done'] : 0;
-                        $item_class = $is_done ? 'rx-item-edit is-checked' : 'rx-item-edit';
+                        $bg=$is_done?'#f0fdf4':'white'; $bd=$is_done?'1px solid #86efac':'none'; $tc=$is_done?'#15803d':'inherit'; $tw=$is_done?'600':'normal';
                     ?>
-                    <div class="<?php echo $item_class; ?>">
-                        <input type="checkbox" name="recommendations_done[]" value="<?php echo $rec['id']; ?>" <?php echo $is_done ? 'checked' : ''; ?>>
-                        <span><?php echo $rec['recommendation']; ?></span>
-                        <?php if($is_done): ?><span class="rx-check">&#10003;</span><?php endif; ?>
+                    <div style="margin-bottom:8px; padding:10px 15px; background:<?php echo $bg;?>; border:<?php echo $bd;?>; border-radius:6px; display:flex; align-items:center; gap:12px;">
+                        <input type="checkbox" name="recommendations_done[]" value="<?php echo $rec['id']; ?>" <?php echo $is_done ? 'checked' : ''; ?> style="width:18px; height:18px; accent-color:#16a34a;">
+                        <span style="flex:1; color:<?php echo $tc;?>; font-weight:<?php echo $tw;?>;"><?php echo $rec['recommendation']; ?></span>
+                        <?php if($is_done): ?><span style="color:#16a34a;font-weight:bold;">✓</span><?php endif; ?>
                     </div>
                     <?php endwhile; ?>
                 </div>
@@ -164,10 +163,6 @@ if ($edit_id > 0) {
             <p style="padding: 25px; color: #64748b;">No previous consultation found for this patient.</p>
         </section>
         <?php endif; ?>
-
-        <div style="padding: 0 0 25px;">
-            <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $edit_id; ?>" class="start-followup-btn">Start Follow-Up Consultation</a>
-        </div>
 
         <?php else: ?>
         <section class="table-section">
