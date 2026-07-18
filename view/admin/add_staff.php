@@ -25,6 +25,7 @@ unset($_SESSION['error']);
     <title>Add Staff</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/add_staff.css">
 
 </head>
 
@@ -77,133 +78,129 @@ unset($_SESSION['error']);
             </div>
         </header>
 
-        <section class="table-section">
+        <section class="table-section staff-page">
 
             <div class="section-header">Create Admin / Doctor Account</div>
 
-            <div class="login-box" style="margin: 20px auto;">
+            <form action="http://localhost/clinic1/controller/StaffController.php" method="POST" enctype="multipart/form-data" class="staff-form staff-form-v2">
 
                 <?php if($error): ?>
                 <div class="error-box"><?php echo nl2br(htmlspecialchars($error)); ?></div>
                 <?php endif; ?>
 
-                <form action="http://localhost/clinic1/controller/StaffController.php" method="POST" enctype="multipart/form-data">
+                <!-- role -->
+                <div class="form-group full">
+                    <label>Role <span class="req">*</span></label>
+                    <select name="role" id="role" required onchange="showFields()">
+                        <option value="" disabled selected>Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="doctor">Doctor</option>
+                    </select>
+                </div>
 
-                    <!-- role -->
+                <!-- name -->
+                <div class="form-group">
+                    <label>First Name <span class="req">*</span></label>
+                    <input type="text" name="first_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name <span class="req">*</span></label>
+                    <input type="text" name="last_name" required>
+                </div>
+
+                <!-- email -->
+                <div class="form-group full">
+                    <label>Email <span class="req">*</span></label>
+                    <input type="email" name="email" required placeholder="example@email.com">
+                </div>
+
+                <!-- admin role-->
+                <div id="adminFields" class="full" style="display: none;">
                     <div class="form-group">
-                        <label>Role <span class="req">*</span></label>
-                        <select name="role" id="role" required onchange="showFields()">
-                            <option value="" disabled selected>Select Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="doctor">Doctor</option>
+                        <label>Username <span class="req">*</span></label>
+                        <input type="text" name="username" id="usernameInput">
+                    </div>
+                </div>
+
+                <!-- doctor role -->
+                <div id="doctorFields" class="full" style="display: none;">
+
+                    <div class="form-group full">
+                        <label>License Number <span class="req">*</span></label>
+                        <input type="text" name="license_number" id="licenseInput">
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Schedule Days <span class="req">*</span></label>
+                        <small style="color: #666; font-size: 11px;">Select available days</small>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="schedule_days[]" value="Monday"> Monday</label>
+                            <label><input type="checkbox" name="schedule_days[]" value="Tuesday"> Tuesday</label>
+                            <label><input type="checkbox" name="schedule_days[]" value="Wednesday"> Wednesday</label>
+                            <label><input type="checkbox" name="schedule_days[]" value="Thursday"> Thursday</label>
+                            <label><input type="checkbox" name="schedule_days[]" value="Friday"> Friday</label>
+                            <label><input type="checkbox" name="schedule_days[]" value="Saturday"> Saturday</label>
+                            <label><input type="checkbox" name="schedule_days[]" value="Sunday"> Sunday</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Start Time <span class="req">*</span></label>
+                        <select name="schedule_time_start" id="timeStart">
+                            <option value="">Select Start Time</option>
+                            <option value="8:00 AM">8:00 AM</option>
+                            <option value="9:00 AM">9:00 AM</option>
+                            <option value="10:00 AM">10:00 AM</option>
+                            <option value="11:00 AM">11:00 AM</option>
+                            <option value="12:00 PM">12:00 PM</option>
+                            <option value="1:00 PM">1:00 PM</option>
+                            <option value="2:00 PM">2:00 PM</option>
                         </select>
                     </div>
 
-                    <!-- name -->
                     <div class="form-group">
-                        <label>First Name <span class="req">*</span></label>
-                        <input type="text" name="first_name" required>
+                        <label>End Time <span class="req">*</span></label>
+                        <select name="schedule_time_end" id="timeEnd">
+                            <option value="">Select End Time</option>
+                            <option value="12:00 PM">12:00 PM</option>
+                            <option value="1:00 PM">1:00 PM</option>
+                            <option value="2:00 PM">2:00 PM</option>
+                            <option value="3:00 PM">3:00 PM</option>
+                            <option value="4:00 PM">4:00 PM</option>
+                            <option value="5:00 PM">5:00 PM</option>
+                            <option value="6:00 PM">6:00 PM</option>
+                        </select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Last Name <span class="req">*</span></label>
-                        <input type="text" name="last_name" required>
+                </div>
+
+                <!-- pass -->
+                <div class="form-group">
+                    <label>Password <span class="req">*</span></label>
+                    <div class="pw-wrap">
+                        <input type="password" name="password" id="regPw" required>
+                        <button type="button" class="eye-btn" onclick="togglePw('regPw',this)" title="Show/Hide">&#128065;</button>
                     </div>
+                    <span class="pw-hint">Must be 6 or more characters</span>
+                </div>
 
-                    <!-- email -->
-                    <div class="form-group">
-                        <label>Email <span class="req">*</span></label>
-                        <input type="email" name="email" required placeholder="example@email.com">
+                <div class="form-group">
+                    <label>Confirm Password <span class="req">*</span></label>
+                    <div class="pw-wrap">
+                        <input type="password" name="confirm_password" id="regPw2" required>
+                        <button type="button" class="eye-btn" onclick="togglePw('regPw2',this)" title="Show/Hide">&#128065;</button>
                     </div>
+                </div>
 
-                    <!-- admin role-->
-                    <div id="adminFields" style="display: none;">
-                        <div class="form-group">
-                            <label>Username <span class="req">*</span></label>
-                            <input type="text" name="username" id="usernameInput">
-                        </div>
-                    </div>
+                <div class="form-group full">
+                    <label>Profile Photo (Optional)</label>
+                    <input type="file" name="profile_photo" accept="image/*" style="padding:10px; background:#f1f5f9; border:1px dashed #cbd5e1; border-radius:10px;">
+                </div>
 
-                    <!-- doctor role -->
-                    <div id="doctorFields" style="display: none;">
+                <button class="add-new-btn" type="submit" name="addStaffBtn">CREATE STAFF ACCOUNT</button>
 
-                        <div class="form-group">
-                            <label>License Number <span class="req">*</span></label>
-                            <input type="text" name="license_number" id="licenseInput">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Schedule Days <span class="req">*</span></label>
-                            <small style="color: #666; font-size: 11px;">Select available days</small>
-                            <div class="checkbox-group">
-                                <label><input type="checkbox" name="schedule_days[]" value="Monday"> Monday</label>
-                                <label><input type="checkbox" name="schedule_days[]" value="Tuesday"> Tuesday</label>
-                                <label><input type="checkbox" name="schedule_days[]" value="Wednesday"> Wednesday</label>
-                                <label><input type="checkbox" name="schedule_days[]" value="Thursday"> Thursday</label>
-                                <label><input type="checkbox" name="schedule_days[]" value="Friday"> Friday</label>
-                                <label><input type="checkbox" name="schedule_days[]" value="Saturday"> Saturday</label>
-                                <label><input type="checkbox" name="schedule_days[]" value="Sunday"> Sunday</label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Start Time <span class="req">*</span></label>
-                            <select name="schedule_time_start" id="timeStart">
-                                <option value="">Select Start Time</option>
-                                <option value="8:00 AM">8:00 AM</option>
-                                <option value="9:00 AM">9:00 AM</option>
-                                <option value="10:00 AM">10:00 AM</option>
-                                <option value="11:00 AM">11:00 AM</option>
-                                <option value="12:00 PM">12:00 PM</option>
-                                <option value="1:00 PM">1:00 PM</option>
-                                <option value="2:00 PM">2:00 PM</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>End Time <span class="req">*</span></label>
-                            <select name="schedule_time_end" id="timeEnd">
-                                <option value="">Select End Time</option>
-                                <option value="12:00 PM">12:00 PM</option>
-                                <option value="1:00 PM">1:00 PM</option>
-                                <option value="2:00 PM">2:00 PM</option>
-                                <option value="3:00 PM">3:00 PM</option>
-                                <option value="4:00 PM">4:00 PM</option>
-                                <option value="5:00 PM">5:00 PM</option>
-                                <option value="6:00 PM">6:00 PM</option>
-                            </select>
-                        </div>
-
-                    </div>
-
-                    <!-- pass -->
-                    <div class="form-group">
-                        <label>Password <span class="req">*</span></label>
-                        <div class="pw-wrap">
-                            <input type="password" name="password" id="regPw" required>
-                            <button type="button" class="eye-btn" onclick="togglePw('regPw',this)" title="Show/Hide">&#128065;</button>
-                        </div>
-                        <span class="pw-hint">Must be 6 or more characters</span>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Confirm Password <span class="req">*</span></label>
-                        <div class="pw-wrap">
-                            <input type="password" name="confirm_password" id="regPw2" required>
-                            <button type="button" class="eye-btn" onclick="togglePw('regPw2',this)" title="Show/Hide">&#128065;</button>
-                        </div>
-                    </div>
-
-                    <div class="profile-photo">
-                        <label>Profile Photo (Optional)</label>
-                        <input type="file" name="profile_photo" accept="image/*">
-                    </div>
-
-                    <button class="login-btn" type="submit" name="addStaffBtn">CREATE STAFF ACCOUNT</button>
-
-                </form>
-
-            </div>
+            </form>
 
         </section>
 

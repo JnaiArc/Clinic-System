@@ -1,3 +1,29 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'patient') {
+    header("Location: http://localhost/clinic1/view/login/login.php");
+    exit();
+}
+
+require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
+require_once 'C:\xampp\htdocs\clinic1\model\User.php';
+require_once 'C:\xampp\htdocs\clinic1\model\Patient.php';
+require_once 'C:\xampp\htdocs\clinic1\model\Appointment.php';
+
+$database = new Database();
+$conn = $database->connect();
+$user = new User($conn);
+$patient = new Patient($conn);
+$appointment = new Appointment($conn);
+
+$user_info = $user->getUserById($_SESSION['user_id']);
+$patient_data = $patient->getPatientByUserId($_SESSION['user_id']);
+$profile_complete = $patient->isProfileComplete($patient_data);
+
+$next_appointment = $patient_data ? $appointment->getNextAppointmentForPatient($patient_data['id']) : null;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,9 +55,7 @@
         <!-- Navigation -->
         <nav class="top-nav">
             <a href="patient_dashboard.php"class="active">Home</a>
-            <a href="patient_profile.php">Patient Profile</a>
             <a href="patient_request consultation.php">Request Consultation</a>
-            <a href="patient_view request status.php">View Request Status</a>
             <a href="patient_view_appointment.php">Appointment</a>
             <a href="patient_request medical.php">Request Medical Documents</a>
             <a href="patient_services.php">Services</a>
@@ -39,22 +63,25 @@
         </nav>
 
         <!-- Profile -->
-        <div class="profile">
-            <img src="../../img/Taroy.jpg" alt="Patient Profile">
+        <div class="profile-menu">
+            <button type="button" class="profile-menu-toggle" onclick="togglePatientMenu(this)">
+                <img src="../../img/Bayani.png" class="profile-avatar" alt="Profile">
+                <span class="dropdown-arrow">&#9662;</span>
+            </button>
+            <div class="profile-dropdown">
+                <a href="my_profile.php" class="profile-dropdown-item">My Profile</a>
+                <a href="http://localhost/clinic1/controller/logoutController.php" class="profile-dropdown-item signout" onclick="return confirm('Logout?')">Sign Out</a>
+            </div>
         </div>
 
     </header>
 
     <main class="main-content">
 
-        <!-- <header class="topbar">
-            <h1>Home</h1>
-        </header> -->
-
         <!-- WELCOME BANNER -->
         <section class="welcome-banner">
             <div class="welcome-text">
-                <h2>Welcome back, Charmane!</h2>
+                <h2>Welcome back, <?php echo htmlspecialchars($user_info['first_name']); ?>!</h2>
                 <p>Here's what's happening with your care today.</p>
             </div>
             <a href="patient_request consultation.php" class="btn-book">Book a Consultation</a>
@@ -70,58 +97,82 @@
                     <h2>Your Next Appointment</h2>
                 </div>
 
+                <?php if ($next_appointment): ?>
                 <div class="appointment-details">
 
                     <div class="detail-row">
                         <span>Appointment Status</span>
-                        <strong>Pending</strong>
+                        <strong><?php echo ucfirst($next_appointment['status']); ?></strong>
                     </div>
 
                     <div class="detail-row">
                         <span>Consultation Date</span>
-                        <strong>July 22, 2026</strong>
+                        <strong><?php echo date('F j, Y', strtotime($next_appointment['appointment_date'])); ?></strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Doctor</span>
+                        <strong>Dr. <?php echo htmlspecialchars($next_appointment['doctor_name']); ?></strong>
                     </div>
 
                     <div class="detail-row">
                         <span>Main Complaint</span>
-                        <strong>Fever</strong>
+                        <strong><?php echo htmlspecialchars($next_appointment['purpose']); ?></strong>
                     </div>
 
                     <div class="detail-row">
-                        <span>Clinic</span>
-                        <strong>Online Clinic</strong>
+                        <span>Type</span>
+                        <strong><?php echo htmlspecialchars($next_appointment['consultation_type'] ?: 'In Person'); ?></strong>
                     </div>
 
                     <div class="detail-row">
                         <span>Consultation Time Slot</span>
-                        <strong>1:00 PM - 1:30 PM</strong>
-                    </div>
-
-                    <div class="detail-row">
-                        <span>Remarks</span>
-                        <strong>Waiting for doctor's approval</strong>
+                        <strong><?php echo htmlspecialchars($next_appointment['appointment_time']); ?></strong>
                     </div>
 
                 </div>
+                <?php else: ?>
+                <div class="appointment-details">
+                    <div class="detail-row">
+                        <span>Status</span>
+                        <strong>N/A</strong>
+                    </div>
+                    <p style="color:#64748b; margin-top:10px;">You have no upcoming appointments. Book a consultation to get started.</p>
+                </div>
+                <?php endif; ?>
 
             </div>
 
-            <!-- AVAILABLE SLOTS -->
+            <!-- PATIENT PROFILE -->
             <div class="slot-card">
 
-                <h2>Available</h2>
-                <h2>Slots Today</h2>
+                <p class="pp-eyebrow">Patient Profile</p>
 
-                <div class="slot-number">
-                    8
-                </div>
-
-                <p>Available Slots</p>
+                <?php if ($profile_complete): ?>
+                    <h2 class="pp-name"><?php echo htmlspecialchars($patient_data['first_name'].' '.$patient_data['last_name']); ?></h2>
+                    <a href="patient_profile.php" class="btn-book" style="margin-top:16px; display:inline-block;">View / Edit Profile</a>
+                <?php else: ?>
+                    <h2 class="pp-name"><?php echo htmlspecialchars($user_info['first_name'].' '.$user_info['last_name']); ?></h2>
+                    <p style="color:#dc2626; margin-top:10px;"><span style="color:red">*</span> Please complete your patient profile first before booking a consultation.</p>
+                    <a href="patient_profile.php" class="btn-book" style="margin-top:10px; display:inline-block;">Complete Profile</a>
+                <?php endif; ?>
 
             </div>
         </section>
     </main>
-</div>
 
+<script>
+function togglePatientMenu(btn){
+    var menu = btn.closest('.profile-menu');
+    var isOpen = menu.classList.contains('open');
+    document.querySelectorAll('.profile-menu.open').forEach(function(m){ m.classList.remove('open'); });
+    if(!isOpen){ menu.classList.add('open'); }
+}
+document.addEventListener('click', function(e){
+    if(!e.target.closest('.profile-menu')){
+        document.querySelectorAll('.profile-menu.open').forEach(function(m){ m.classList.remove('open'); });
+    }
+});
+</script>
 </body>
 </html>

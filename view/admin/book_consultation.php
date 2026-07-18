@@ -81,8 +81,8 @@ $today = date('Y-m-d');
                 </div>
 
                 <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="text" name="phone" id="phoneInput" value="<?php echo $selected_patient ? $selected_patient['phone'] : ''; ?>" maxlength="11" minlength="11" required pattern="[0-9]{11}" title="Must be exactly 11 digits" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                    <label>Complaint</label>
+                    <input type="text" name="complaint" placeholder="e.g. Fever, Headache" required>
                 </div>
 
                 <div class="form-group">
@@ -108,6 +108,17 @@ $today = date('Y-m-d');
                     <label>Purpose</label>
                     <select name="purpose" required>
                         <option value="Check-up" selected>Check-up</option>
+                        <option value="Consultation">Consultation</option>
+                        <option value="Follow-up">Follow-up</option>
+                        <option value="Vaccination">Vaccination</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Consultation Type</label>
+                    <select name="consultation_type" required>
+                        <option value="In Person" selected>In Person</option>
+                        <option value="Online">Online</option>
                     </select>
                 </div>
 

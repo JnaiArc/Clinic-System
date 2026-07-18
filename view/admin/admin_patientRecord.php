@@ -125,7 +125,7 @@ if (!empty($search)) {
                             <td><?php echo $row['phone']; ?></td>
                             <td>
                                 <a href="http://localhost/clinic1/view/admin/view_patient.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
-                                <a href="http://localhost/clinic1/view/admin/book_consultation.php?patient_id=<?php echo $row['id']; ?>" class="action-btn book-btn">Book</a>
+                                <a href="http://localhost/clinic1/view/admin/book_consultation.php?patient_id=<?php echo $row['id']; ?>" class="add-new-btn">Book</a>
                             </td>
                         </tr>
                         <?php endwhile; ?>

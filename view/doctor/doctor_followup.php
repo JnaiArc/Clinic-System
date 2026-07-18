@@ -96,7 +96,6 @@ if($view_id > 0) {
         <section class="table-section" style="margin-bottom: 30px; background: #f8fafc; border: 1px solid #e2e8f0;">
             <div class="section-header">
                 Previous Consultation (Read Only)
-                <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" style="float: right; font-size: 14px; color: #17324d;">← Back</a>
             </div>
             <div class="info-grid" style="padding: 25px;">
                 <div class="info-item"><label>Patient Name</label><span><?php echo $view_appointment['patient_name']; ?></span></div>

@@ -29,9 +29,7 @@
         <!-- Navigation -->
          <nav class="top-nav">
             <a href="patient_dashboard.php">Home</a>
-            <a href="patient_profile.php">Patient Profile</a>
             <a href="patient_request consultation.php">Request Consultation</a>
-            <a href="patient_view request status.php">View Request Status</a>
             <a href="patient_view_appointment.php">Appointment</a>
             <a href="patient_request medical.php"class="active">Request Medical Documents</a>
             <a href="patient_services.php">Services</a>
@@ -39,8 +37,15 @@
         </nav>
 
         <!-- Profile -->
-        <div class="profile">
-            <img src="../../img/Taroy.jpg" alt="Patient Profile">
+        <div class="profile-menu">
+            <button type="button" class="profile-menu-toggle" onclick="togglePatientMenu(this)">
+                <img src="../../img/Bayani.png" class="profile-avatar" alt="Profile">
+                <span class="dropdown-arrow">&#9662;</span>
+            </button>
+            <div class="profile-dropdown">
+                <a href="my_profile.php" class="profile-dropdown-item">My Profile</a>
+                <a href="http://localhost/clinic1/controller/logoutController.php" class="profile-dropdown-item signout" onclick="return confirm('Logout?')">Sign Out</a>
+            </div>
         </div>
 
     </header>
@@ -102,5 +107,18 @@
 
 </div>
 
+<script>
+function togglePatientMenu(btn){
+    var menu = btn.closest('.profile-menu');
+    var isOpen = menu.classList.contains('open');
+    document.querySelectorAll('.profile-menu.open').forEach(function(m){ m.classList.remove('open'); });
+    if(!isOpen){ menu.classList.add('open'); }
+}
+document.addEventListener('click', function(e){
+    if(!e.target.closest('.profile-menu')){
+        document.querySelectorAll('.profile-menu.open').forEach(function(m){ m.classList.remove('open'); });
+    }
+});
+</script>
 </body>
 </html>

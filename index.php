@@ -13,7 +13,7 @@
 <header class="navbar">
     <div class="navbar-inner">
         <a href="index.php" class="nav-brand">
-            <img src="logo.jpg" alt="SwiftCare Clinic logo">
+            <img src="img/logo.png" alt="SwiftCare Clinic logo">
             <span>SwiftCare</span>
         </a>
 
@@ -136,7 +136,7 @@
 <section class="about" id="about">
     <div class="about-inner">
         <div class="about-visual">
-            <img src="logo.jpg" alt="SwiftCare Clinic">
+            <img src="img/logo.png" alt="SwiftCare Clinic">
         </div>
         <div class="about-text">
             <span class="eyebrow">About SwiftCare</span>
@@ -229,7 +229,7 @@
         <div class="footer-inner">
             <div>
                 <div class="footer-brand">
-                    <img src="logo.jpg" alt="SwiftCare Clinic logo">
+                    <img src="img/logo.png" alt="SwiftCare Clinic logo">
                     <span>SwiftCare Clinic</span>
                 </div>
                 <p>A modern clinic appointment system built to make healthcare simple for patients, doctors, and staff.</p>
@@ -248,7 +248,6 @@
                 <ul>
                     <li><a href="view/login/login.php">Login</a></li>
                     <li><a href="view/login/register.php">Register</a></li>
-                    <li><a href="view/login/forgotPassword.php">Forgot Password</a></li>
                 </ul>
             </div>
         </div>

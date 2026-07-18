@@ -88,7 +88,7 @@ unset($_SESSION['error']);
             <div class="section-header" style="display:flex; align-items:center; justify-content:space-between;">
                 <span><?php echo $edit_mode ? 'Edit User' : ($add_mode ? 'Create Admin / Doctor Account' : 'Staff List'); ?></span>
                 <?php if (!$edit_mode && !$add_mode): ?>
-                <a href="http://localhost/clinic1/view/admin/admin_staff.php?add=1" class="save-btn" style="text-decoration:none;">Add Staff</a>
+                <a href="http://localhost/clinic1/view/admin/admin_staff.php?add=1" class="add-new-btn">+ Add Staff</a>
                 <?php endif; ?>
             </div>
 
@@ -214,7 +214,7 @@ unset($_SESSION['error']);
                             <input type="file" name="profile_photo" accept="image/*">
                         </div>
 
-                        <button class="login-btn span-2" type="submit" name="addStaffBtn">CREATE STAFF ACCOUNT</button>
+                        <button class="add-new-btn" type="submit" name="addStaffBtn">CREATE STAFF ACCOUNT</button>
 
                     </div>
 

@@ -39,25 +39,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            header("Location: http://localhost/clinic1/view/admin/add_staff.php");
+            header("Location: http://localhost/clinic1/view/admin/admin_staff.php?add=1");
             exit();
         }
 
         if ($user->usernameExists($username)){
             $_SESSION['error'] = "Username already exists.\nPlease choose another username.";
-            header("Location: http://localhost/clinic1/view/admin/add_staff.php");
+            header("Location: http://localhost/clinic1/view/admin/admin_staff.php?add=1");
             exit();
         }
 
         if ($user->emailExists($email)){
             $_SESSION['error'] = "Email is already registered.";
-            header("Location: http://localhost/clinic1/view/admin/add_staff.php");
+            header("Location: http://localhost/clinic1/view/admin/admin_staff.php?add=1");
             exit();
         }
 
         if ($role === 'doctor' && $user->licenseExists($license_number)){
             $_SESSION['error'] = "License number already exists.";
-            header("Location: http://localhost/clinic1/view/admin/add_staff.php");
+            header("Location: http://localhost/clinic1/view/admin/admin_staff.php?add=1");
             exit();
         }
 
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             exit();
         } else {
             $_SESSION['error'] = "Staff creation failed. Please try again.";
-            header("Location: http://localhost/clinic1/view/admin/add_staff.php");
+            header("Location: http://localhost/clinic1/view/admin/admin_staff.php?add=1");
             exit();
         }
     }

@@ -1,26 +1,55 @@
 <?php
+session_start();
 require_once 'c:/xampp/htdocs/clinic1/config/Database.php';
 require_once 'c:/xampp/htdocs/clinic1/model/Appointment.php';
+require_once 'c:/xampp/htdocs/clinic1/model/Patient.php';
 
 $database = new Database();
 $conn = $database->connect();
 $appointment = new Appointment($conn);
+$patientModel = new Patient($conn);
+
+$is_patient_user = isset($_SESSION['user_id']) && $_SESSION['role'] === 'patient';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     
     // BOOK APPOINTMENT
     if (isset($_POST['bookAppointment'])){
-        $patient_id = $_POST['patient_id'];
         $doctor_id = $_POST['doctor_id'];
         $appointment_date = $_POST['appointment_date'];
         $appointment_time = $_POST['appointment_time'];
         $purpose = !empty($_POST['purpose']) ? $_POST['purpose'] : 'Check-up';
+        $complaint = !empty($_POST['complaint']) ? trim($_POST['complaint']) : '';
+        $consultation_type = !empty($_POST['consultation_type']) ? $_POST['consultation_type'] : 'In Person';
+
+        if ($is_patient_user){
+            // Patient portal booking: never trust a posted patient_id, always resolve to the
+            // patient record linked to the logged-in account so patients can't book for others.
+            $own_patient = $patientModel->getPatientByUserId($_SESSION['user_id']);
+            if (!$own_patient || !$patientModel->isProfileComplete($own_patient)){
+                header("Location: http://localhost/clinic1/view/patient/patient_profile.php");
+                exit();
+            }
+            // Prevent double-booking: a patient can only have one pending/confirmed appointment at a time.
+            if ($appointment->hasActiveAppointment($own_patient['id'])){
+                header("Location: http://localhost/clinic1/view/patient/patient_request consultation.php");
+                exit();
+            }
+            $patient_id = $own_patient['id'];
+        } else {
+            // Admin/front-desk booking (admin_patientRecord.php -> book_consultation.php)
+            $patient_id = $_POST['patient_id'];
+        }
         
         try {
-            $result = $appointment->addAppointment($patient_id, $doctor_id, $appointment_date, $appointment_time, $purpose);
+            $result = $appointment->addAppointment($patient_id, $doctor_id, $appointment_date, $appointment_time, $purpose, $consultation_type, $complaint);
             
             if ($result){
-                header("Location: http://localhost/clinic1/view/admin/admin_appointments.php");
+                if ($is_patient_user){
+                    header("Location: http://localhost/clinic1/view/patient/patient_view_appointment.php");
+                } else {
+                    header("Location: http://localhost/clinic1/view/admin/admin_appointments.php");
+                }
                 exit();
             } else {
                 echo "Failed to book appointment - result was false";
@@ -37,11 +66,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $appointment_date = $_POST['appointment_date'];
         $appointment_time = $_POST['appointment_time'];
         $purpose = $_POST['purpose'] ?? 'Check-up';
+        $complaint = trim($_POST['complaint'] ?? '');
 
-        if ($appointment->updateAppointmentSimple($id, $doctor_id, $appointment_date, $appointment_time, $purpose)){
+        if ($appointment->updateAppointmentSimple($id, $doctor_id, $appointment_date, $appointment_time, $purpose, $complaint)){
             header("Location: http://localhost/clinic1/view/admin/admin_appointments.php");
             exit();
         }
+    }
+
+    // CANCEL APPOINTMENT (patient portal)
+    if (isset($_POST['cancelAppointment'])){
+        if (!$is_patient_user){
+            header("Location: http://localhost/clinic1/view/login/login.php");
+            exit();
+        }
+        $own_patient = $patientModel->getPatientByUserId($_SESSION['user_id']);
+        $id = $_POST['appointment_id'];
+        if ($own_patient){
+            $appointment->cancelAppointment($id, $own_patient['id']);
+        }
+        header("Location: http://localhost/clinic1/view/patient/patient_view_appointment.php");
+        exit();
     }
     
     // DELETE APPOINTMENT

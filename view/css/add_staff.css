@@ -1,0 +1,110 @@
+/* =========================================================
+   ADD STAFF FORM (view/admin/add_staff.php)
+   Dedicated stylesheet, loaded last, scoped under .staff-page
+   so it always wins and never bleeds into other admin pages.
+   ========================================================= */
+
+.staff-page .staff-form-v2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 22px 28px !important;
+    max-width: 720px !important;
+    width: 100% !important;
+    margin: 30px auto !important;
+    padding: 40px 45px !important;
+    box-sizing: border-box !important;
+}
+
+.staff-page .staff-form-v2 .form-group.full,
+.staff-page .staff-form-v2 #adminFields,
+.staff-page .staff-form-v2 #doctorFields,
+.staff-page .staff-form-v2 .error-box {
+    grid-column: 1 / -1 !important;
+}
+
+.staff-page .staff-form-v2 .form-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+
+.staff-page .staff-form-v2 label {
+    font-weight: 600 !important;
+    font-size: 13.5px !important;
+    color: #17324d !important;
+}
+
+.staff-page .staff-form-v2 input[type="text"],
+.staff-page .staff-form-v2 input[type="email"],
+.staff-page .staff-form-v2 input[type="password"],
+.staff-page .staff-form-v2 select {
+    width: 100% !important;
+    padding: 13px 14px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+}
+
+.staff-page .staff-form-v2 input:focus,
+.staff-page .staff-form-v2 select:focus {
+    border-color: #02529c !important;
+}
+
+.staff-page .staff-form-v2 .pw-wrap {
+    display: flex !important;
+    align-items: center !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+.staff-page .staff-form-v2 .pw-wrap input {
+    border: none !important;
+    flex: 1 !important;
+}
+
+.staff-page .staff-form-v2 .pw-wrap .eye-btn {
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0 14px !important;
+}
+
+.staff-page .staff-form-v2 .checkbox-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px 18px !important;
+    margin-top: 8px !important;
+    padding: 14px 16px !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+}
+
+.staff-page .staff-form-v2 .checkbox-group label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-weight: 500 !important;
+    font-size: 13.5px !important;
+    color: #334155 !important;
+}
+
+.staff-page .staff-form-v2 .add-new-btn {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    text-align: center !important;
+    padding: 15px 20px !important;
+    font-size: 15px !important;
+    margin-top: 10px !important;
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 700px) {
+    .staff-page .staff-form-v2 {
+        grid-template-columns: 1fr !important;
+        padding: 28px 22px !important;
+    }
+}

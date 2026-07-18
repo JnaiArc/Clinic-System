@@ -14,6 +14,12 @@ $conn = $database->connect();
 $user = new User($conn);
 
 $user_info = $user->getUserById($_SESSION['user_id']);
+
+$profile_error   = $_SESSION['profile_error']   ?? "";
+$profile_success = $_SESSION['profile_success'] ?? "";
+$password_error   = $_SESSION['password_error']   ?? "";
+$password_success = $_SESSION['password_success'] ?? "";
+unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['password_error'], $_SESSION['password_success']);
 ?>
 
 <!DOCTYPE html>
@@ -24,6 +30,7 @@ $user_info = $user->getUserById($_SESSION['user_id']);
     <title>My Profile</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/myprofile.css">
 </head>
 
 <body>
@@ -77,54 +84,82 @@ $user_info = $user->getUserById($_SESSION['user_id']);
             </div>
         </header>
 
-        <section class="table-section">
+        <div class="mp-wrap">
 
-            <div class="section-header">
-                Account Information
+            <!-- ACCOUNT INFORMATION -->
+            <div class="mp-card">
+                <div class="mp-card-header">
+                    <h2>Account Information</h2>
+                    <p>Update your name, username, and email address.</p>
+                </div>
+                <div class="mp-card-body">
+
+                    <?php if ($profile_success): ?><div class="mp-alert mp-alert-success"><?php echo htmlspecialchars($profile_success); ?></div><?php endif; ?>
+                    <?php if ($profile_error): ?><div class="mp-alert mp-alert-error"><?php echo htmlspecialchars($profile_error); ?></div><?php endif; ?>
+
+                    <form method="POST" action="http://localhost/clinic1/controller/UserController.php">
+                        <div class="mp-grid">
+                            <div class="mp-field">
+                                <label>First Name</label>
+                                <input type="text" name="first_name" value="<?php echo htmlspecialchars($user_info['first_name']); ?>" required>
+                            </div>
+                            <div class="mp-field">
+                                <label>Last Name</label>
+                                <input type="text" name="last_name" value="<?php echo htmlspecialchars($user_info['last_name']); ?>" required>
+                            </div>
+                            <div class="mp-field">
+                                <label>Username</label>
+                                <input type="text" name="username" value="<?php echo htmlspecialchars($user_info['username']); ?>" required>
+                            </div>
+                            <div class="mp-field">
+                                <label>Email</label>
+                                <input type="email" name="email" value="<?php echo htmlspecialchars($user_info['email']); ?>" required>
+                            </div>
+                        </div>
+                        <div class="mp-actions">
+                            <button type="submit" name="updateMyProfile" class="mp-btn-save">Save Changes</button>
+                        </div>
+                    </form>
+
+                </div>
             </div>
 
-            <div class="info-grid info-grid-pad">
-
-                <div class="info-item" style="grid-column: 1 / -1; text-align:center;">
-                    <?php if(!empty($user_info['profile_photo'])): ?>
-                    <img src="../../uploads/<?php echo $user_info['profile_photo']; ?>" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
-                    <?php else: ?>
-                    <div style="width:100px;height:100px;border-radius:50%;background:#e2e8f0;margin:0 auto;"></div>
-                    <?php endif; ?>
+            <!-- CHANGE PASSWORD -->
+            <div class="mp-card">
+                <div class="mp-card-header">
+                    <h2>Change Password</h2>
+                    <p>Enter your current password to set a new one.</p>
                 </div>
+                <div class="mp-card-body">
 
-                <div class="info-item">
-                    <label>First Name</label>
-                    <span><?php echo htmlspecialchars($user_info['first_name']); ?></span>
+                    <?php if ($password_success): ?><div class="mp-alert mp-alert-success"><?php echo htmlspecialchars($password_success); ?></div><?php endif; ?>
+                    <?php if ($password_error): ?><div class="mp-alert mp-alert-error"><?php echo htmlspecialchars($password_error); ?></div><?php endif; ?>
+
+                    <form method="POST" action="http://localhost/clinic1/controller/UserController.php">
+                        <div class="mp-grid">
+                            <div class="mp-field mp-full">
+                                <label>Current Password</label>
+                                <input type="password" name="current_password" required>
+                            </div>
+                            <div class="mp-field">
+                                <label>New Password</label>
+                                <input type="password" name="new_password" required minlength="6">
+                                <span class="mp-hint">Must be 6 or more characters</span>
+                            </div>
+                            <div class="mp-field">
+                                <label>Confirm New Password</label>
+                                <input type="password" name="confirm_password" required minlength="6">
+                            </div>
+                        </div>
+                        <div class="mp-actions">
+                            <button type="submit" name="changeMyPassword" class="mp-btn-save">Update Password</button>
+                        </div>
+                    </form>
+
                 </div>
-
-                <div class="info-item">
-                    <label>Last Name</label>
-                    <span><?php echo htmlspecialchars($user_info['last_name']); ?></span>
-                </div>
-
-                <div class="info-item">
-                    <label>Username</label>
-                    <span><?php echo htmlspecialchars($user_info['username']); ?></span>
-                </div>
-
-                <div class="info-item">
-                    <label>Email</label>
-                    <span><?php echo htmlspecialchars($user_info['email']); ?></span>
-                </div>
-
-                <div class="info-item">
-                    <label>Role</label>
-                    <span><?php echo ucfirst($user_info['role']); ?></span>
-                </div>
-
             </div>
 
-            <div class="btn-row">
-                <p style="color:#64748b; font-size:13px;">Editing profile photo, name, and password will be available soon.</p>
-            </div>
-
-        </section>
+        </div>
 
     </main>
 

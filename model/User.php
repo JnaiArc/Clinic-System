@@ -103,22 +103,24 @@ class User {
     }
 
     
-    // CHECK IF USERNAME EXISTS
-    function usernameExists($username){
+    // CHECK IF USERNAME EXISTS (optionally excluding a specific user id, e.g. the user's own record when self-editing)
+    function usernameExists($username, $exclude_id = null){
         if(empty($username)) return false;
-        $query = "SELECT id FROM users WHERE username = :username";
+        $query = "SELECT id FROM users WHERE username = :username" . ($exclude_id ? " AND id != :exclude_id" : "");
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":username", $username);
+        if ($exclude_id) $stmt->bindParam(":exclude_id", $exclude_id);
         $stmt->execute();
         return $stmt->rowCount() > 0;
     }
 
-    // CHECK IF EMAIL EXISTS
-    function emailExists($email){
+    // CHECK IF EMAIL EXISTS (optionally excluding a specific user id)
+    function emailExists($email, $exclude_id = null){
         if(empty($email)) return false;
-        $query = "SELECT id FROM users WHERE email = :email";
+        $query = "SELECT id FROM users WHERE email = :email" . ($exclude_id ? " AND id != :exclude_id" : "");
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":email", $email);
+        if ($exclude_id) $stmt->bindParam(":exclude_id", $exclude_id);
         $stmt->execute();
         return $stmt->rowCount() > 0;
     }
@@ -166,6 +168,30 @@ class User {
         return $stmt->execute();
     }
 
+
+    // === MY PROFILE (self-service, used by admin/doctor/patient My Profile pages)
+
+    // UPDATE OWN NAME/USERNAME/EMAIL (does not touch role-specific fields)
+    function updateOwnProfile($id, $first_name, $last_name, $email, $username){
+        $query = "UPDATE users SET first_name = :first_name, last_name = :last_name, email = :email, username = :username WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":first_name", $first_name);
+        $stmt->bindParam(":last_name", $last_name);
+        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":username", $username);
+        return $stmt->execute();
+    }
+
+    // UPDATE OWN PASSWORD (current password already verified by the caller)
+    function updatePasswordById($id, $newPassword){
+        $hashed_password = password_hash($newPassword, PASSWORD_DEFAULT);
+        $query = "UPDATE users SET password = :password WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":password", $hashed_password);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
+    }
 
     // === DOCTORS 
 

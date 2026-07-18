@@ -90,6 +90,10 @@ $doctors = $user->getAllDoctors();
                 <div class="info-grid info-grid-pad">
                     <div class="info-item"><label>Patient</label><span><?php echo $appointment_data['patient_name']; ?></span></div>
                     <div class="info-item">
+                        <label>Complaint</label>
+                        <input type="text" name="complaint" value="<?php echo htmlspecialchars($appointment_data['complaint'] ?? ''); ?>" placeholder="e.g. Fever, Headache">
+                    </div>
+                    <div class="info-item">
                         <label>Date</label>
                         <input type="date" name="appointment_date" id="editDate"
                                value="<?php echo $appointment_data['appointment_date']; ?>"
@@ -109,6 +113,7 @@ $doctors = $user->getAllDoctors();
                         </select>
                     </div>
                     <div class="info-item"><label>Purpose</label><span><?php echo $appointment_data['purpose']; ?></span></div>
+                    <div class="info-item"><label>Type</label><span><?php echo $appointment_data['consultation_type'] ?: 'In Person'; ?></span></div>
                     <div class="info-item"><label>Status</label><span class="status <?php echo $appointment_data['status']; ?>"><?php echo ucfirst($appointment_data['status']); ?></span></div>
                 </div>
             </section>
@@ -126,7 +131,9 @@ $doctors = $user->getAllDoctors();
                 <div class="info-item"><label>Doctor</label><span>Dr. <?php echo $appointment_data['doctor_name']; ?></span></div>
                 <div class="info-item"><label>Date</label><span><?php echo $appointment_data['appointment_date']; ?></span></div>
                 <div class="info-item"><label>Time</label><span><?php echo $appointment_data['appointment_time']; ?></span></div>
+                <div class="info-item"><label>Complaint</label><span><?php echo $appointment_data['complaint'] ? htmlspecialchars($appointment_data['complaint']) : '—'; ?></span></div>
                 <div class="info-item"><label>Purpose</label><span><?php echo $appointment_data['purpose']; ?></span></div>
+                <div class="info-item"><label>Type</label><span><?php echo $appointment_data['consultation_type'] ?: 'In Person'; ?></span></div>
                 <div class="info-item"><label>Status</label><span class="status <?php echo $appointment_data['status']; ?>"><?php echo ucfirst($appointment_data['status']); ?></span></div>
             </div>
         </section>

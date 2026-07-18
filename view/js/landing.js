@@ -1,3 +1,4 @@
+// hamburger menu toggle when the screen is small
 document.addEventListener('DOMContentLoaded', function () {
     var toggle = document.querySelector('.nav-toggle');
     var links = document.querySelector('.nav-links');

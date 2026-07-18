@@ -181,6 +181,22 @@ body {
     color: #777;
 }
 
+.slot-card .pp-eyebrow {
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 0 0 6px;
+}
+
+.slot-card .pp-name {
+    color: var(--header-color);
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+}
+
 @media (max-width: 900px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
@@ -944,6 +960,155 @@ hr.top-rule {
 .status-badge.completed {
     background-color: #d1fae5;
     color: #059669;
+}
+
+.status-badge.confirmed {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-badge.cancelled {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-badge.missed {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+
+/* appointment detail view (patient side) */
+.appointment-detail-card {
+    padding: 0 !important;
+    overflow: hidden;
+}
+.appointment-detail-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: linear-gradient(135deg, #17324d, #02529c);
+    color: #fff;
+    padding: 28px 32px;
+}
+.appointment-detail-eyebrow {
+    margin: 0 0 4px;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: rgba(255,255,255,0.75);
+}
+.appointment-detail-head h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #fff;
+}
+.appointment-detail-status {
+    font-size: 13px;
+    padding: 6px 14px;
+    white-space: nowrap;
+}
+.appointment-detail-card .patient-info-grid {
+    border: none;
+    border-radius: 0;
+    margin: 0;
+}
+.appointment-detail-card .button-group {
+    padding: 0 32px 28px;
+}
+
+.btn-cancel-appointment {
+    background: #fff;
+    color: #c0392b;
+    border: 1px solid #f3b4b4;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+.btn-cancel-appointment:hover {
+    background: #fde8e8;
+}
+
+/* saved profile / appointment detail view */
+.patient-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.patient-info-grid .info-card {
+    padding: 14px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.patient-info-grid .info-card:nth-child(odd) {
+    border-right: 1px solid #e2e8f0;
+}
+.patient-info-grid .info-card label,
+.patient-info-grid .info-card-full label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.patient-info-grid .info-card span,
+.patient-info-grid .info-card-full span {
+    font-size: 14px;
+    color: #1e293b;
+    font-weight: 500;
+}
+.patient-info-grid .info-card-full {
+    grid-column: span 2;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+/* "Your Information" saved view — cleaner label: value rows */
+.pinfo-list {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.pinfo-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 22px;
+    border-bottom: 1px solid var(--border-color);
+}
+.pinfo-row:last-child {
+    border-bottom: none;
+}
+.pinfo-row:nth-child(even) {
+    background: var(--bg-light);
+}
+.pinfo-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+.pinfo-label::after {
+    content: ":";
+}
+.pinfo-value {
+    color: var(--header-color);
+    font-weight: 600;
+    font-size: 15px;
+    text-align: right;
 }
 
 .btn-view {

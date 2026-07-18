@@ -12,9 +12,11 @@ class Patient {
     // === CRUD OPERATIONS
 
     // CREATE/ADD PATIENT
-    function addPatient($first_name, $last_name, $gender, $birthdate, $phone, $email, $address, $emergency_contact, $allergies, $medical_history){
-        $query = "INSERT INTO patients (first_name, last_name, gender, birthdate, phone, email, address, emergency_contact, allergies, medical_history) 
-                  VALUES (:first_name, :last_name, :gender, :birthdate, :phone, :email, :address, :emergency_contact, :allergies, :medical_history)";
+    // $user_id links this record to a patient account (users table) created via self-registration.
+    // Left null/omitted for records added manually by admin/front-desk staff.
+    function addPatient($first_name, $last_name, $gender, $birthdate, $phone, $email, $address, $emergency_contact, $allergies, $medical_history, $user_id = null){
+        $query = "INSERT INTO patients (first_name, last_name, gender, birthdate, phone, email, address, emergency_contact, allergies, medical_history, user_id) 
+                  VALUES (:first_name, :last_name, :gender, :birthdate, :phone, :email, :address, :emergency_contact, :allergies, :medical_history, :user_id)";
         
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":first_name", $first_name);
@@ -27,8 +29,28 @@ class Patient {
         $stmt->bindParam(":emergency_contact", $emergency_contact);
         $stmt->bindParam(":allergies", $allergies);
         $stmt->bindParam(":medical_history", $medical_history);
+        $stmt->bindParam(":user_id", $user_id);
 
         return $stmt->execute();
+    }
+
+    // READ/GET PATIENT RECORD LINKED TO A PATIENT USER ACCOUNT
+    function getPatientByUserId($user_id){
+        $query = "SELECT * FROM patients WHERE user_id = :user_id LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // CHECK IF A PATIENT PROFILE HAS ALL REQUIRED FIELDS FILLED
+    function isProfileComplete($patient_data){
+        if (!$patient_data) return false;
+        $required = ['first_name', 'last_name', 'gender', 'birthdate', 'phone', 'email', 'address'];
+        foreach ($required as $field){
+            if (empty($patient_data[$field])) return false;
+        }
+        return true;
     }
 
     // READ/GET ALL PATIENTS

@@ -12,9 +12,11 @@ class Appointment {
     // === CRUD OPERATIONS
 
     // CREATE/ADD APPOINTMENT
-    function addAppointment($patient_id, $doctor_id, $appointment_date, $appointment_time, $purpose){
-        $query = "INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, purpose, status) 
-                  VALUES (:patient_id, :doctor_id, :appointment_date, :appointment_time, :purpose, 'pending')";
+    // $consultation_type: 'Online' or 'In Person' (defaults to 'In Person' for admin/front-desk bookings)
+    // $complaint: free-text symptom the patient is booking for (e.g. "Fever", "Headache")
+    function addAppointment($patient_id, $doctor_id, $appointment_date, $appointment_time, $purpose, $consultation_type = 'In Person', $complaint = ''){
+        $query = "INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, purpose, complaint, consultation_type, status) 
+                  VALUES (:patient_id, :doctor_id, :appointment_date, :appointment_time, :purpose, :complaint, :consultation_type, 'pending')";
         
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":patient_id", $patient_id);
@@ -22,8 +24,92 @@ class Appointment {
         $stmt->bindParam(":appointment_date", $appointment_date);
         $stmt->bindParam(":appointment_time", $appointment_time);
         $stmt->bindParam(":purpose", $purpose);
+        $stmt->bindParam(":complaint", $complaint);
+        $stmt->bindParam(":consultation_type", $consultation_type);
 
         return $stmt->execute();
+    }
+
+    // CHECK IF A PATIENT ALREADY HAS AN UPCOMING (PENDING/CONFIRMED) APPOINTMENT (prevents double-booking)
+    function hasActiveAppointment($patient_id){
+        $query = "SELECT COUNT(*) as total FROM appointments WHERE patient_id = :patient_id AND status IN ('pending','confirmed')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":patient_id", $patient_id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'] > 0;
+    }
+
+    // === PATIENT PORTAL SPECIFIC
+
+    // READ/GET THE SOONEST UPCOMING (NOT CANCELLED/COMPLETED) APPOINTMENT FOR THE HOME PAGE CARD
+    function getNextAppointmentForPatient($patient_id){
+        $query = "SELECT a.*, 
+                  CONCAT(d.first_name, ' ', d.last_name) as doctor_name
+                  FROM appointments a
+                  LEFT JOIN users d ON a.doctor_id = d.id
+                  WHERE a.patient_id = :patient_id AND a.status IN ('pending','confirmed') AND DATE(a.appointment_date) >= CURDATE()
+                  ORDER BY a.appointment_date ASC, a.appointment_time ASC
+                  LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":patient_id", $patient_id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // READ/GET PATIENT'S CURRENT (UPCOMING, NOT CANCELLED/COMPLETED) APPOINTMENTS
+    function getPatientCurrentAppointments($patient_id){
+        $query = "SELECT a.*, 
+                  CONCAT(d.first_name, ' ', d.last_name) as doctor_name
+                  FROM appointments a
+                  LEFT JOIN users d ON a.doctor_id = d.id
+                  WHERE a.patient_id = :patient_id AND a.status IN ('pending','confirmed')
+                  ORDER BY a.appointment_date ASC, a.appointment_time ASC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":patient_id", $patient_id);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    // READ/GET PATIENT'S PAST (COMPLETED OR MISSED) APPOINTMENTS
+    function getPatientPastAppointments($patient_id){
+        $query = "SELECT a.*, 
+                  CONCAT(d.first_name, ' ', d.last_name) as doctor_name
+                  FROM appointments a
+                  LEFT JOIN users d ON a.doctor_id = d.id
+                  WHERE a.patient_id = :patient_id AND a.status IN ('completed','missed')
+                  ORDER BY a.appointment_date DESC, a.appointment_time DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":patient_id", $patient_id);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    // READ/GET PATIENT'S CANCELLED APPOINTMENTS
+    function getPatientCancelledAppointments($patient_id){
+        $query = "SELECT a.*, 
+                  CONCAT(d.first_name, ' ', d.last_name) as doctor_name
+                  FROM appointments a
+                  LEFT JOIN users d ON a.doctor_id = d.id
+                  WHERE a.patient_id = :patient_id AND a.status = 'cancelled'
+                  ORDER BY a.appointment_date DESC, a.appointment_time DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":patient_id", $patient_id);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    // READ/GET A SINGLE APPOINTMENT, SCOPED TO A PATIENT (ownership check for patient portal "View")
+    function getPatientAppointmentById($id, $patient_id){
+        $query = "SELECT a.*, 
+                  CONCAT(d.first_name, ' ', d.last_name) as doctor_name
+                  FROM appointments a
+                  LEFT JOIN users d ON a.doctor_id = d.id
+                  WHERE a.id = :id AND a.patient_id = :patient_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":patient_id", $patient_id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     // READ/GET TODAY'S APPOINTMENTS
@@ -161,8 +247,8 @@ class Appointment {
     }
 
     // UPDATE APPOINTMENT
-    function updateAppointmentSimple($id, $doctor_id, $appointment_date, $appointment_time, $purpose){
-        $query = "UPDATE appointments SET doctor_id = :doctor_id, appointment_date = :appointment_date, appointment_time = :appointment_time, purpose = :purpose WHERE id = :id";
+    function updateAppointmentSimple($id, $doctor_id, $appointment_date, $appointment_time, $purpose, $complaint = ''){
+        $query = "UPDATE appointments SET doctor_id = :doctor_id, appointment_date = :appointment_date, appointment_time = :appointment_time, purpose = :purpose, complaint = :complaint WHERE id = :id";
         
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
@@ -170,7 +256,17 @@ class Appointment {
         $stmt->bindParam(":appointment_date", $appointment_date);
         $stmt->bindParam(":appointment_time", $appointment_time);
         $stmt->bindParam(":purpose", $purpose);
+        $stmt->bindParam(":complaint", $complaint);
 
+        return $stmt->execute();
+    }
+
+    // CANCEL APPOINTMENT (patient-portal action, scoped to the owning patient so patients can't cancel others' bookings)
+    function cancelAppointment($id, $patient_id){
+        $query = "UPDATE appointments SET status = 'cancelled' WHERE id = :id AND patient_id = :patient_id AND status IN ('pending','confirmed')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":patient_id", $patient_id);
         return $stmt->execute();
     }
 

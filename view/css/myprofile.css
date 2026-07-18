@@ -1,0 +1,142 @@
+/* =========================================================
+   MY PROFILE (shared design used by admin, doctor, patient)
+   Scoped with an "mp-" prefix so it never collides with the
+   existing admin.css / doctor.css / patient.css class names.
+   ========================================================= */
+
+.mp-wrap {
+    max-width: 760px;
+    margin: 25px auto;
+    padding: 0 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.mp-card {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+    border: 1px solid #eef1f5;
+    overflow: hidden;
+}
+
+.mp-card-header {
+    padding: 20px 28px;
+    border-bottom: 1px solid #eef1f5;
+}
+
+.mp-card-header h2 {
+    font-size: 17px;
+    color: #17324d;
+    margin: 0 0 4px;
+}
+
+.mp-card-header p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+}
+
+.mp-card-body {
+    padding: 24px 28px 28px;
+}
+
+.mp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.mp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mp-field.mp-full {
+    grid-column: span 2;
+}
+
+.mp-field label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.mp-field input {
+    padding: 12px 14px;
+    border: 1px solid #dbe2ea;
+    border-radius: 9px;
+    font-size: 14px;
+    outline: none;
+    background: #f9fafb;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.mp-field input:focus {
+    border-color: #02529c;
+    background: #ffffff;
+}
+
+.mp-field input:read-only {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.mp-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.mp-btn-save {
+    background: #02529c;
+    color: white;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.mp-btn-save:hover {
+    background: #013d75;
+}
+
+.mp-alert {
+    padding: 12px 16px;
+    border-radius: 9px;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.mp-alert-success {
+    background: #e7f6ec;
+    border: 1px solid #b7e4c7;
+    color: #1e6b3a;
+}
+
+.mp-alert-error {
+    background: #fde8e8;
+    border: 1px solid #f3b4b4;
+    color: #b91c1c;
+}
+
+.mp-hint {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+@media (max-width: 640px) {
+    .mp-grid {
+        grid-template-columns: 1fr;
+    }
+    .mp-field.mp-full {
+        grid-column: span 1;
+    }
+}

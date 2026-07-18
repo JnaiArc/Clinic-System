@@ -27,7 +27,7 @@ unset($_SESSION['error']);
 <header class="navbar">
     <div class="navbar-inner">
         <a href="../../index.php" class="nav-brand">
-            <img src="../../logo.jpg" alt="SwiftCare Clinic logo">
+            <img src="../../img/logo.png" alt="SwiftCare Clinic logo">
             <span>SwiftCare</span>
         </a>
 
