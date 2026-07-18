@@ -132,6 +132,34 @@
     margin-top: 2px;
 }
 
+/* Show/Hide password toggle (used only on the New Password field) */
+.mp-pw-wrap {
+    position: relative;
+}
+
+.mp-pw-wrap input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 40px;
+}
+
+.mp-eye-btn {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 16px;
+    padding: 0;
+    line-height: 1;
+}
+
+.mp-eye-btn:focus {
+    outline: none;
+}
+
 @media (max-width: 640px) {
     .mp-grid {
         grid-template-columns: 1fr;

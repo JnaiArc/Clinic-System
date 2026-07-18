@@ -89,7 +89,7 @@ $view_appointment = ($view_id && $patient_data) ? $appointment->getPatientAppoin
         <!-- Profile -->
         <div class="profile-menu">
             <button type="button" class="profile-menu-toggle" onclick="togglePatientMenu(this)">
-                <img src="../../img/Bayani.png" class="profile-avatar" alt="Profile">
+                <img src="../../img/user.png" class="profile-avatar" alt="Profile">
                 <span class="dropdown-arrow">&#9662;</span>
             </button>
             <div class="profile-dropdown">

@@ -42,7 +42,6 @@ $doctors_result = $user->getAllDoctors();
             <a href="http://localhost/clinic1/view/admin/admin_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/admin/admin_patientRecord.php" class="menu-item">Patient Records</a>
             <a href="http://localhost/clinic1/view/admin/admin_appointments.php" class="menu-item">Appointments</a>
-            <a href="http://localhost/clinic1/view/admin/admin_followup.php" class="menu-item">Follow-Up Checkup</a>
             <a href="http://localhost/clinic1/view/admin/admin_doctors.php" class="menu-item active">Doctors</a>
             <a href="http://localhost/clinic1/view/admin/admin_staff.php" class="menu-item">Staff</a>
         </nav>

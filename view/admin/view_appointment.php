@@ -82,7 +82,7 @@ $doctors = $user->getAllDoctors();
         </header>
 
         <!-- Edit Form -->
-        <?php if($appointment_data['status'] != 'completed'): ?>
+        <?php if(!in_array($appointment_data['status'], ['completed', 'cancelled'])): ?>
         <form method="POST" action="http://localhost/clinic1/controller/AppointmentController.php">
             <input type="hidden" name="appointment_id" value="<?php echo $appointment_id; ?>">
             <section class="table-section section-gap">
@@ -119,7 +119,7 @@ $doctors = $user->getAllDoctors();
             </section>
             <div class="btn-row">
                 <button type="submit" name="updateAppointment" class="btn-save">Save Changes</button>
-                <a href="http://localhost/clinic1/controller/AppointmentController.php?delete=<?php echo $appointment_id; ?>" class="btn-delete" onclick="return confirm('Delete this appointment?')">Delete</a>
+                <a href="http://localhost/clinic1/controller/AppointmentController.php?adminCancel=<?php echo $appointment_id; ?>" class="btn-cancel-appointment" onclick="return confirm('Cancel this appointment?')">Cancel Appointment</a>
             </div>
         </form>
         <?php else: ?>

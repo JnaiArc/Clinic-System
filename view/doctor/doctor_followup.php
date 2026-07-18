@@ -21,19 +21,22 @@ $doctor_id = $_SESSION['user_id'];
 $doctor_info = $user_model->getUserById($doctor_id);
 $followups = $appointment_model->getDoctorFollowUps($doctor_id);
 
-$view_id = $_GET['view'] ?? 0;
-$view_appointment = null;
-$view_consultation = null;
-$view_medicines = null;
-$view_recommendations = null;
+$edit_id = $_GET['edit'] ?? 0;
+$edit_appointment = null;
+$edit_consultation = null;
+$edit_medicines = null;
+$edit_recommendations = null;
 
-if($view_id > 0) {
-    $view_appointment = $appointment_model->getAppointmentById($view_id);
-    if($view_appointment) {
-        $view_consultation = $appointment_model->getPreviousConsultation($view_appointment['patient_id'], $doctor_id, $view_appointment['appointment_date']);
-        if($view_consultation) {
-            $view_medicines = $appointment_model->getMedicinesByConsultationId($view_consultation['id']);
-            $view_recommendations = $appointment_model->getRecommendationsByConsultationId($view_consultation['id']);
+if ($edit_id > 0) {
+    $edit_appointment = $appointment_model->getAppointmentById($edit_id);
+    if ($edit_appointment && (int)$edit_appointment['doctor_id'] !== (int)$doctor_id) {
+        $edit_appointment = null;
+    }
+    if ($edit_appointment) {
+        $edit_consultation = $appointment_model->getConsultationForAppointment($edit_id, $edit_appointment['patient_id']);
+        if ($edit_consultation) {
+            $edit_medicines = $appointment_model->getMedicinesByConsultationId($edit_consultation['id']);
+            $edit_recommendations = $appointment_model->getRecommendationsByConsultationId($edit_consultation['id']);
         }
     }
 }
@@ -43,7 +46,7 @@ if($view_id > 0) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Follow-Up</title>
+    <title>Follow-Up Checkup</title>
     <link rel="stylesheet" href="../css/doctor.css">
 </head>
 
@@ -62,7 +65,7 @@ if($view_id > 0) {
         <nav class="sidebar-menu">
             <a href="http://localhost/clinic1/view/doctor/doctor_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_appointments.php" class="menu-item">My Appointments</a>
-            <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item active">Follow-Up</a>
+            <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item active">Follow-Up Checkup</a>
         </nav>
     </aside>
 
@@ -71,7 +74,7 @@ if($view_id > 0) {
         <header class="topbar">
             <div class="topbar-left">
                 <div class="clinic-text">
-                    <h1>Follow-Up Appointments</h1>
+                    <h1>Follow-Up Checkup</h1>
                 </div>
             </div>
             <div class="user-menu">
@@ -92,57 +95,80 @@ if($view_id > 0) {
             </div>
         </header>
 
-        <?php if($view_id > 0 && $view_appointment): ?>
-        <section class="table-section" style="margin-bottom: 30px; background: #f8fafc; border: 1px solid #e2e8f0;">
+        <?php if($edit_id > 0 && $edit_appointment): ?>
+
+        <section class="table-section" style="margin-bottom: 30px;">
             <div class="section-header">
-                Previous Consultation (Read Only)
+                Appointment Information
+                <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="back-link">&larr; Back to Follow-Up List</a>
             </div>
             <div class="info-grid" style="padding: 25px;">
-                <div class="info-item"><label>Patient Name</label><span><?php echo $view_appointment['patient_name']; ?></span></div>
-                <div class="info-item"><label>Follow-Up Date</label><span><?php echo $view_appointment['appointment_date']; ?></span></div>
-                <div class="info-item"><label>Time</label><span><?php echo $view_appointment['appointment_time']; ?></span></div>
+                <div class="info-item"><label>Patient Name</label><span><?php echo $edit_appointment['patient_name']; ?></span></div>
+                <div class="info-item"><label>Follow-Up Date</label><span><?php echo $edit_appointment['appointment_date']; ?></span></div>
+                <div class="info-item"><label>Time</label><span><?php echo $edit_appointment['appointment_time']; ?></span></div>
+                <div class="info-item"><label>Status</label><span class="status <?php echo $edit_appointment['status']; ?>"><?php echo ucfirst($edit_appointment['status']); ?></span></div>
             </div>
-            <?php if($view_consultation): ?>
-            <div style="padding: 0 25px 25px;">
-                <div class="info-item" style="background: white;"><label>Findings</label><span><?php echo nl2br($view_consultation['findings']); ?></span></div>
-            </div>
-            <?php if($view_medicines && $view_medicines->rowCount() > 0): ?>
-            <div style="padding: 0 25px 25px;">
-                <label style="display:block; margin-bottom:10px; font-weight:600; color:#17324d;">Previous Medicines</label>
-                <?php while($med = $view_medicines->fetch(PDO::FETCH_ASSOC)): 
-                    $is_done = isset($med['is_done']) ? $med['is_done'] : 0;
-                    $bg=$is_done?'#f0fdf4':'white'; $bd=$is_done?'1px solid #86efac':'none'; $tc=$is_done?'#15803d':'inherit'; $tw=$is_done?'600':'normal'; 
-                ?>
-                <div style="margin-bottom:8px; padding:10px 15px; background:<?php echo $bg;?>; border:<?php echo $bd;?>; border-radius:6px; display:flex; align-items:center; gap:12px;">
-                    <input type="checkbox" <?php echo $is_done?'checked':''; ?> disabled style="width:18px; height:18px; accent-color:#16a34a;">
-                    <span style="flex:1; color:<?php echo $tc;?>; font-weight:<?php echo $tw;?>;"><?php echo $med['medicine_name'].' - '.$med['dosage'].' x '.$med['frequency'].' for '.$med['duration']; ?></span>
-                    <?php if($is_done): ?><span style="color:#16a34a;font-weight:bold;">✓</span><?php endif; ?>
-                </div>
-                <?php endwhile; ?>
-            </div>
-            <?php endif; ?>
-            <?php if($view_recommendations && $view_recommendations->rowCount() > 0): ?>
-            <div style="padding: 0 25px 25px;">
-                <label style="display:block; margin-bottom:10px; font-weight:600; color:#17324d;">Previous Recommendations</label>
-                <?php while($rec = $view_recommendations->fetch(PDO::FETCH_ASSOC)): 
-                    $is_done = isset($rec['is_done']) ? $rec['is_done'] : 0;
-                    $bg=$is_done?'#f0fdf4':'white'; $bd=$is_done?'1px solid #86efac':'none'; $tc=$is_done?'#15803d':'inherit'; $tw=$is_done?'600':'normal'; 
-                ?>
-                <div style="margin-bottom:8px; padding:10px 15px; background:<?php echo $bg;?>; border:<?php echo $bd;?>; border-radius:6px; display:flex; align-items:center; gap:12px;">
-                    <input type="checkbox" <?php echo $is_done?'checked':''; ?> disabled style="width:18px; height:18px; accent-color:#16a34a;">
-                    <span style="flex:1; color:<?php echo $tc;?>; font-weight:<?php echo $tw;?>;"><?php echo $rec['recommendation']; ?></span>
-                    <?php if($is_done): ?><span style="color:#16a34a;font-weight:bold;">✓</span><?php endif; ?>
-                </div>
-                <?php endwhile; ?>
-            </div>
-            <?php endif; ?>
-            <?php else: ?>
-            <p style="padding: 25px; color: #64748b;">No previous consultation found.</p>
-            <?php endif; ?>
         </section>
-        <div style="padding: 0 25px 25px;">
-            <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $view_id; ?>" style="display:inline-block; padding:14px 28px; background:#17324d; color:white; text-decoration:none; border-radius:8px; font-weight:600;">Start Follow-Up Consultation</a>
+
+        <?php if($edit_consultation): ?>
+        <form method="POST" action="http://localhost/clinic1/controller/FollowUpController.php">
+            <input type="hidden" name="appointment_id" value="<?php echo $edit_id; ?>">
+
+            <section class="table-section rx-section">
+                <div class="section-header">Prescription (Check when done)</div>
+
+                <?php if($edit_medicines && $edit_medicines->rowCount() > 0): ?>
+                <div style="padding: 0 25px 25px;">
+                    <label class="rx-label">Medicines</label>
+                    <?php while($med = $edit_medicines->fetch(PDO::FETCH_ASSOC)):
+                        $is_done = isset($med['is_done']) ? $med['is_done'] : 0;
+                        $item_class = $is_done ? 'rx-item-edit is-checked' : 'rx-item-edit';
+                    ?>
+                    <div class="<?php echo $item_class; ?>">
+                        <input type="checkbox" name="medicines_done[]" value="<?php echo $med['id']; ?>" <?php echo $is_done ? 'checked' : ''; ?>>
+                        <span><?php echo $med['medicine_name']; ?> - <?php echo $med['dosage']; ?> x <?php echo $med['frequency']; ?> for <?php echo $med['duration']; ?></span>
+                        <?php if($is_done): ?><span class="rx-check">&#10003;</span><?php endif; ?>
+                    </div>
+                    <?php endwhile; ?>
+                </div>
+                <?php endif; ?>
+
+                <?php if($edit_recommendations && $edit_recommendations->rowCount() > 0): ?>
+                <div style="padding: 0 25px 25px;">
+                    <label class="rx-label">Recommendations</label>
+                    <?php while($rec = $edit_recommendations->fetch(PDO::FETCH_ASSOC)):
+                        $is_done = isset($rec['is_done']) ? $rec['is_done'] : 0;
+                        $item_class = $is_done ? 'rx-item-edit is-checked' : 'rx-item-edit';
+                    ?>
+                    <div class="<?php echo $item_class; ?>">
+                        <input type="checkbox" name="recommendations_done[]" value="<?php echo $rec['id']; ?>" <?php echo $is_done ? 'checked' : ''; ?>>
+                        <span><?php echo $rec['recommendation']; ?></span>
+                        <?php if($is_done): ?><span class="rx-check">&#10003;</span><?php endif; ?>
+                    </div>
+                    <?php endwhile; ?>
+                </div>
+                <?php endif; ?>
+
+                <?php if((!$edit_medicines || $edit_medicines->rowCount() == 0) && (!$edit_recommendations || $edit_recommendations->rowCount() == 0)): ?>
+                <p style="padding: 0 25px 25px; color: #64748b;">No prescription items on record for this patient yet.</p>
+                <?php endif; ?>
+            </section>
+
+            <div class="btn-row" style="padding: 0 0 25px;">
+                <button type="submit" name="savePrescription" class="save-btn">Save</button>
+            </div>
+        </form>
+        <?php else: ?>
+        <section class="table-section">
+            <div class="section-header">Prescription</div>
+            <p style="padding: 25px; color: #64748b;">No previous consultation found for this patient.</p>
+        </section>
+        <?php endif; ?>
+
+        <div style="padding: 0 0 25px;">
+            <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $edit_id; ?>" class="start-followup-btn">Start Follow-Up Consultation</a>
         </div>
+
         <?php else: ?>
         <section class="table-section">
             <div class="section-header">Follow-Up List</div>
@@ -157,7 +183,7 @@ if($view_id > 0) {
                             <td><?php echo $row['appointment_time']; ?></td>
                             <td><?php echo $row['purpose']; ?></td>
                             <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
-                            <td><a href="http://localhost/clinic1/view/doctor/doctor_followup.php?view=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a></td>
+                            <td><a href="http://localhost/clinic1/view/doctor/doctor_followup.php?edit=<?php echo $row['id']; ?>" class="action-btn view-btn">Edit</a></td>
                         </tr>
                         <?php endwhile; ?>
                     <?php else: ?>

@@ -49,7 +49,6 @@ $completed_appointments = $appointment->getCompletedAppointments();
             <a href="http://localhost/clinic1/view/admin/admin_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/admin/admin_patientRecord.php" class="menu-item">Patient Records</a>
             <a href="http://localhost/clinic1/view/admin/admin_appointments.php" class="menu-item active">Appointments</a>
-            <a href="http://localhost/clinic1/view/admin/admin_followup.php" class="menu-item">Follow-Up Checkup</a>
             <a href="http://localhost/clinic1/view/admin/admin_doctors.php" class="menu-item">Doctors</a>
             <a href="http://localhost/clinic1/view/admin/admin_staff.php" class="menu-item">Staff</a>
         </nav>
@@ -117,8 +116,6 @@ $completed_appointments = $appointment->getCompletedAppointments();
                                 <td>
                                     <?php if($row['status'] == 'completed'): ?>
                                         <span style="color:#64748b;">Completed</span>
-                                    <?php elseif($row['purpose'] == 'Follow-up'): ?>
-                                        <a href="http://localhost/clinic1/view/admin/view_appointment_followup.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
                                     <?php else: ?>
                                         <a href="http://localhost/clinic1/view/admin/view_appointment.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
                                     <?php endif; ?>
@@ -150,11 +147,7 @@ $completed_appointments = $appointment->getCompletedAppointments();
                                 <td><?php echo $row['purpose']; ?></td>
                                 <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
                                 <td>
-                                    <?php if($row['purpose'] == 'Follow-up'): ?>
-                                        <a href="http://localhost/clinic1/view/admin/view_appointment_followup.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
-                                    <?php else: ?>
-                                        <a href="http://localhost/clinic1/view/admin/view_appointment.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
-                                    <?php endif; ?>
+                                    <a href="http://localhost/clinic1/view/admin/view_appointment.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
                                 </td>
                             </tr>
                             <?php endwhile; ?>
@@ -181,7 +174,7 @@ $completed_appointments = $appointment->getCompletedAppointments();
                                 <td><?php echo $row['appointment_date']; ?></td>
                                 <td><?php echo $row['appointment_time']; ?></td>
                                 <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
-                                <td><a href="http://localhost/clinic1/view/admin/view_appointment_followup.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a></td>
+                                <td><a href="http://localhost/clinic1/view/admin/view_appointment.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a></td>
                             </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
@@ -209,13 +202,7 @@ $completed_appointments = $appointment->getCompletedAppointments();
                                 <td><?php echo $row['purpose']; ?></td>
                                 <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
                                 <td>
-                                    <?php if($row['status'] == 'missed'): ?>
-                                        <a href="http://localhost/clinic1/view/admin/view_appointment_followup.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
-                                    <?php elseif($row['purpose'] == 'Follow-up'): ?>
-                                        <a href="http://localhost/clinic1/view/admin/view_appointment_followup.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
-                                    <?php else: ?>
-                                        <a href="http://localhost/clinic1/view/admin/view_appointment.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
-                                    <?php endif; ?>
+                                    <a href="http://localhost/clinic1/view/admin/view_appointment.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
                                 </td>
                             </tr>
                             <?php endwhile; ?>

@@ -66,6 +66,14 @@ class User {
         return $stmt;
     }
 
+    // GET ALL STAFF (admin/doctor accounts only — excludes patient accounts)
+    function getAllStaff(){
+        $query = "SELECT * FROM users WHERE role IN ('admin', 'doctor') ORDER BY role, first_name ASC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
     // GET USER BY ID
     function getUserById($id){
         $query = "SELECT * FROM users WHERE id = :id";

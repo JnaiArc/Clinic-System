@@ -18,7 +18,7 @@ $user_model = new User($conn);
 
 $doctor_info = $user_model->getUserById($_SESSION['user_id']);
 $today_appointments = $appointment_model->getDoctorTodayAppointments($_SESSION['user_id']);
-$followups_count = $appointment_model->getDoctorFollowUps($_SESSION['user_id'])->rowCount();
+$all_appointments_count = $appointment_model->getDoctorAllTodayAndFuture($_SESSION['user_id'])->rowCount();
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +45,7 @@ $followups_count = $appointment_model->getDoctorFollowUps($_SESSION['user_id'])-
         <nav class="sidebar-menu">
             <a href="http://localhost/clinic1/view/doctor/doctor_dashboard.php" class="menu-item active">Dashboard</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_appointments.php" class="menu-item">My Appointments</a>
-            <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item">Follow-Up</a>
+            <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item">Follow-Up Checkup</a>
         </nav>
 
     </aside>
@@ -84,8 +84,8 @@ $followups_count = $appointment_model->getDoctorFollowUps($_SESSION['user_id'])-
             </div>
 
             <div class="stat-card">
-                <h3>Follow-Ups</h3>
-                <p><?php echo $followups_count; ?></p>
+                <h3>All Appointments</h3>
+                <p><?php echo $all_appointments_count; ?></p>
             </div>
 
         </section>

@@ -8,6 +8,12 @@ $database = new Database();
 $conn = $database->connect();
 $appointment = new Appointment($conn);
 
+// This checklist is a doctor-only action (moved over from the old admin follow-up page).
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'doctor') {
+    header("Location: http://localhost/clinic1/view/login/login.php");
+    exit();
+}
+
 // SAVE PERSCRIPTION: CHECKBOX
 if (isset($_POST['savePrescription'])) {
     $appointment_id = (int)($_POST['appointment_id'] ?? 0);
@@ -15,7 +21,8 @@ if (isset($_POST['savePrescription'])) {
     if ($appointment_id > 0) {
         $appointment_data = $appointment->getAppointmentById($appointment_id);
         
-        if ($appointment_data) {
+        // Only the doctor assigned to this appointment may update its checklist.
+        if ($appointment_data && (int)$appointment_data['doctor_id'] === (int)$_SESSION['user_id']) {
             $consultation = $appointment->getConsultationForAppointment($appointment_id, $appointment_data['patient_id']);
             
             if ($consultation) {
@@ -70,10 +77,10 @@ if (isset($_POST['savePrescription'])) {
         }
     }
     
-    header("Location: http://localhost/clinic1/view/admin/admin_followup.php");
+    header("Location: http://localhost/clinic1/view/doctor/doctor_followup.php?edit=" . $appointment_id);
     exit();
 }
 
-header("Location: http://localhost/clinic1/view/admin/admin_followup.php");
+header("Location: http://localhost/clinic1/view/doctor/doctor_followup.php");
 exit();
 ?>

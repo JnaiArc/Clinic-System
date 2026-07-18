@@ -47,7 +47,7 @@ $completed_appointments = $appointment_model->getDoctorCompletedAppointments($do
         <nav class="sidebar-menu">
             <a href="http://localhost/clinic1/view/doctor/doctor_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_appointments.php" class="menu-item active">My Appointments</a>
-            <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item">Follow-Up</a>
+            <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item">Follow-Up Checkup</a>
         </nav>
     </aside>
 

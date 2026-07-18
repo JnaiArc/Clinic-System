@@ -65,7 +65,7 @@ $next_appointment = $patient_data ? $appointment->getNextAppointmentForPatient($
         <!-- Profile -->
         <div class="profile-menu">
             <button type="button" class="profile-menu-toggle" onclick="togglePatientMenu(this)">
-                <img src="../../img/Bayani.png" class="profile-avatar" alt="Profile">
+                <img src="../../img/user.png" class="profile-avatar" alt="Profile">
                 <span class="dropdown-arrow">&#9662;</span>
             </button>
             <div class="profile-dropdown">
@@ -150,7 +150,7 @@ $next_appointment = $patient_data ? $appointment->getNextAppointmentForPatient($
 
                 <?php if ($profile_complete): ?>
                     <h2 class="pp-name"><?php echo htmlspecialchars($patient_data['first_name'].' '.$patient_data['last_name']); ?></h2>
-                    <a href="patient_profile.php" class="btn-book" style="margin-top:16px; display:inline-block;">View / Edit Profile</a>
+                    <a href="patient_profile.php" class="btn-book" style="margin-top:16px; display:inline-block;">View Profile</a>
                 <?php else: ?>
                     <h2 class="pp-name"><?php echo htmlspecialchars($user_info['first_name'].' '.$user_info['last_name']); ?></h2>
                     <p style="color:#dc2626; margin-top:10px;"><span style="color:red">*</span> Please complete your patient profile first before booking a consultation.</p>

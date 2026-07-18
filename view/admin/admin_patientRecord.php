@@ -52,7 +52,6 @@ if (!empty($search)) {
             <a href="http://localhost/clinic1/view/admin/admin_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/admin/admin_patientRecord.php" class="menu-item active">Patient Records</a>
             <a href="http://localhost/clinic1/view/admin/admin_appointments.php" class="menu-item">Appointments</a>
-            <a href="http://localhost/clinic1/view/admin/admin_followup.php" class="menu-item">Follow-Up Checkup</a>
             <a href="http://localhost/clinic1/view/admin/admin_doctors.php" class="menu-item">Doctors</a>
             <a href="http://localhost/clinic1/view/admin/admin_staff.php" class="menu-item">Staff</a>
         </nav>
@@ -125,7 +124,7 @@ if (!empty($search)) {
                             <td><?php echo $row['phone']; ?></td>
                             <td>
                                 <a href="http://localhost/clinic1/view/admin/view_patient.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
-                                <a href="http://localhost/clinic1/view/admin/book_consultation.php?patient_id=<?php echo $row['id']; ?>" class="add-new-btn">Book</a>
+                                <a href="http://localhost/clinic1/view/admin/book_consultation.php?patient_id=<?php echo $row['id']; ?>" class="action-btn book-btn">Book</a>
                             </td>
                         </tr>
                         <?php endwhile; ?>

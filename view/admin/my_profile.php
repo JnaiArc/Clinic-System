@@ -50,7 +50,6 @@ unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['passw
             <a href="http://localhost/clinic1/view/admin/admin_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/admin/admin_patientRecord.php" class="menu-item">Patient Records</a>
             <a href="http://localhost/clinic1/view/admin/admin_appointments.php" class="menu-item">Appointments</a>
-            <a href="http://localhost/clinic1/view/admin/admin_followup.php" class="menu-item">Follow-Up Checkup</a>
             <a href="http://localhost/clinic1/view/admin/admin_doctors.php" class="menu-item">Doctors</a>
             <a href="http://localhost/clinic1/view/admin/admin_staff.php" class="menu-item">Staff</a>
         </nav>
@@ -143,7 +142,10 @@ unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['passw
                             </div>
                             <div class="mp-field">
                                 <label>New Password</label>
-                                <input type="password" name="new_password" required minlength="6">
+                                <div class="mp-pw-wrap">
+                                    <input type="password" name="new_password" id="mpNewPw" required minlength="6">
+                                    <button type="button" class="mp-eye-btn" onclick="mpTogglePw('mpNewPw', this)" title="Show/Hide">&#128065;</button>
+                                </div>
                                 <span class="mp-hint">Must be 6 or more characters</span>
                             </div>
                             <div class="mp-field">
@@ -166,6 +168,16 @@ unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['passw
 </div>
 
 <script>
+function mpTogglePw(id, btn){
+    var inp = document.getElementById(id);
+    if (inp.type === 'password'){
+        inp.type = 'text';
+        btn.style.color = '#2c3e50';
+    } else {
+        inp.type = 'password';
+        btn.style.color = '#64748b';
+    }
+}
 function toggleUserMenu(btn){
     var menu = btn.closest('.user-menu');
     var isOpen = menu.classList.contains('open');

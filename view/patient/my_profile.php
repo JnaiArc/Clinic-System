@@ -64,7 +64,7 @@ unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['passw
         <!-- Profile dropdown (icon only) -->
         <div class="profile-menu">
             <button type="button" class="profile-menu-toggle" onclick="togglePatientMenu(this)">
-                <img src="../../img/Bayani.png" class="profile-avatar" alt="Profile">
+                <img src="../../img/user.png" class="profile-avatar" alt="Profile">
                 <span class="dropdown-arrow">&#9662;</span>
             </button>
             <div class="profile-dropdown">
@@ -140,7 +140,10 @@ unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['passw
                             </div>
                             <div class="mp-field">
                                 <label>New Password</label>
-                                <input type="password" name="new_password" required minlength="6">
+                                <div class="mp-pw-wrap">
+                                    <input type="password" name="new_password" id="mpNewPw" required minlength="6">
+                                    <button type="button" class="mp-eye-btn" onclick="mpTogglePw('mpNewPw', this)" title="Show/Hide">&#128065;</button>
+                                </div>
                                 <span class="mp-hint">Must be 6 or more characters</span>
                             </div>
                             <div class="mp-field">
@@ -161,6 +164,16 @@ unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['passw
     </main>
 
 <script>
+function mpTogglePw(id, btn){
+    var inp = document.getElementById(id);
+    if (inp.type === 'password'){
+        inp.type = 'text';
+        btn.style.color = '#2c3e50';
+    } else {
+        inp.type = 'password';
+        btn.style.color = '#64748b';
+    }
+}
 function togglePatientMenu(btn){
     var menu = btn.closest('.profile-menu');
     var isOpen = menu.classList.contains('open');

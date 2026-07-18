@@ -194,7 +194,7 @@ body {
     color: var(--header-color);
     font-size: 26px;
     font-weight: 700;
-    margin: 0;
+    margin-top: 20px;
 }
 
 @media (max-width: 900px) {
@@ -316,6 +316,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: background .15s ease;
+    text-decoration: none;
 }
 
 .btn-save:hover {
@@ -324,7 +325,7 @@ body {
 
 .btn-cancel {
     background: transparent;
-    color: var(--hint-color);
+    color: #111;
     border: 1px solid var(--border-color);
     padding: 12px 34px;
     border-radius: 24px;
@@ -979,9 +980,10 @@ hr.top-rule {
 
 /* appointment detail view (patient side) */
 .appointment-detail-card {
-    padding: 0 !important;
+    padding: 0;
     overflow: hidden;
 }
+
 .appointment-detail-head {
     display: flex;
     align-items: center;

@@ -1,8 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #2c3e50;
+    --primary-hover: #34495e;
+    --header-color: #17324d;
+    --bg-light: #f8f9fa;
+    --border-color: #e0e2e6;
+    --label-color: #1f2430;
+    --hint-color: #7a7f8a;
+}
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:"Segoe UI", sans-serif;
+    font-family:'Poppins', sans-serif;
 }
 
 body{
@@ -16,10 +28,10 @@ body{
 
 /* SIDEBAR */
 .sidebar{
-    width:260px;
+    width:215px;
     background:#17324d;
     color:white;
-    padding:25px 20px;
+    padding:22px 16px;
 }
 
 .sidebar-top{
@@ -27,13 +39,13 @@ body{
     align-items:center;
     gap:12px;
     text-align:left;
-    padding-bottom:20px;
+    padding-bottom:18px;
     border-bottom:1px solid rgba(255,255,255,0.12);
 }
 
 .sidebar-logo{
-    width:42px;
-    height:42px;
+    width:38px;
+    height:38px;
     object-fit:cover;
     border-radius:50%;
     background:white;
@@ -42,7 +54,7 @@ body{
 }
 
 .sidebar-clinic-name h2{
-    font-size:19px;
+    font-size:16px;
     font-weight:700;
     letter-spacing:0.3px;
 }
@@ -57,40 +69,40 @@ body{
 }
 
 .profile-name h2{
-    font-size:18px;
+    font-size:15px;
 }
 
 .sidebar-menu{
-    margin-top:40px;
+    margin-top:30px;
     display:flex;
     flex-direction:column;
-    gap:12px;
+    gap:6px;
 }
 
 .menu-item{
     text-decoration:none;
     color:white;
-    padding:14px;
-    border-radius:10px;
-    transition:0.3s;
+    padding:11px 12px;
+    border-radius:8px;
+    transition:0.25s;
     display:block;
     border:none;
     background:none;
     width:100%;
     text-align:left;
     cursor:pointer;
-    font-size:18px;
+    font-size:14px;
     font-weight:600;
 }
 
 .menu-item:hover{
-    background:#244d75;
+    background:var(--primary-hover);
 }
 
 .active{
     background:white;
-    color:#17324d;
-    font-weight:bold;
+    color:var(--header-color);
+    font-weight:600;
 }
 
 .logout-btn{
@@ -104,14 +116,14 @@ body{
 /* MAIN */
 .main-content{
     flex:1;
-    padding:30px;
+    padding:28px 30px;
 }
 
 .topbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:30px;
+    margin-bottom:26px;
 }
 
 .topbar-end{
@@ -164,8 +176,8 @@ body{
     gap:10px;
     background:white;
     border:none;
-    padding:8px 14px 8px 8px;
-    border-radius:14px;
+    padding:6px 14px 6px 6px;
+    border-radius:30px;
     cursor:pointer;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     font-family:inherit;
@@ -314,20 +326,36 @@ body{
 
 /* STATUS */
 .status{
-    padding:6px 14px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:bold;
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:12px;
+    font-size:12.5px;
+    font-weight:600;
 }
 
 .confirmed{
-    background:#dcfce7;
-    color:#15803d;
+    background:#dbeafe;
+    color:#1d4ed8;
 }
 
 .pending{
     background:#fef3c7;
-    color:#b45309;
+    color:#d97706;
+}
+
+.completed{
+    background:#d1fae5;
+    color:#059669;
+}
+
+.cancelled{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+.missed{
+    background:#f3f4f6;
+    color:#6b7280;
 }
 
 /* PATIENT FORM */
@@ -352,11 +380,18 @@ body{
 .patient-form .form-group input,
 .patient-form .form-group select,
 .patient-form .form-group textarea {
-    padding: 14px;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
     font-size: 14px;
     outline: none;
+    transition: border-color .15s ease;
+}
+
+.patient-form .form-group input:focus,
+.patient-form .form-group select:focus,
+.patient-form .form-group textarea:focus {
+    border-color: var(--primary-color);
 }
 
 .patient-form .form-group textarea {
@@ -372,24 +407,36 @@ body{
 }
 
 .patient-form .save-btn {
-    background: #02529c;
+    background: var(--primary-color);
     color: white;
     border: none;
-    padding: 14px 24px;
-    border-radius: 10px;
+    padding: 12px 34px;
+    border-radius: 24px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 15px;
+    transition: background .15s ease;
+}
+
+.patient-form .save-btn:hover {
+    background: var(--primary-hover);
 }
 
 .patient-form .clear-btn {
-    background: #cbd5e1;
-    color: #17324d;
-    border: none;
-    padding: 14px 24px;
-    border-radius: 10px;
+    background: transparent;
+    color: #111;
+    border: 1px solid var(--border-color);
+    padding: 12px 34px;
+    border-radius: 24px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 15px;
     text-decoration: none;
+    transition: all .15s ease;
+}
+
+.patient-form .clear-btn:hover {
+    background: var(--bg-light);
 }
 
 /* SIMPLE SIDEBAR */
@@ -426,5 +473,5 @@ body{
 }
 
 .back-btn-top:hover .icon {
-    background: #02529c;
+    background: var(--primary-hover);
 }

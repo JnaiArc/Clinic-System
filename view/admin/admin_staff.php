@@ -14,7 +14,7 @@ $user = new User($conn);
 
 $user_info = $user->getUserById($_SESSION['user_id']);
 
-$users_result = $user->getAllUsers();
+$users_result = $user->getAllStaff();
 
 $edit_mode = isset($_GET['edit']) && $_GET['edit'] == 1;
 $edit_id = $_GET['edit_id'] ?? 0;
@@ -51,7 +51,6 @@ unset($_SESSION['error']);
             <a href="http://localhost/clinic1/view/admin/admin_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/admin/admin_patientRecord.php" class="menu-item">Patient Records</a>
             <a href="http://localhost/clinic1/view/admin/admin_appointments.php" class="menu-item">Appointments</a>
-            <a href="http://localhost/clinic1/view/admin/admin_followup.php" class="menu-item">Follow-Up Checkup</a>
             <a href="http://localhost/clinic1/view/admin/admin_doctors.php" class="menu-item">Doctors</a>
             <a href="http://localhost/clinic1/view/admin/admin_staff.php" class="menu-item active">Staff</a>
         </nav>

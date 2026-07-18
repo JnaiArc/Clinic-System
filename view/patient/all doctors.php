@@ -41,7 +41,7 @@
         <!-- Profile -->
         <div class="profile-menu">
             <button type="button" class="profile-menu-toggle" onclick="togglePatientMenu(this)">
-                <img src="../../img/Bayani.png" class="profile-avatar" alt="Profile">
+                <img src="../../img/user.png" class="profile-avatar" alt="Profile">
                 <span class="dropdown-arrow">&#9662;</span>
             </button>
             <div class="profile-dropdown">
@@ -136,7 +136,7 @@
                  <!--General Medicine 2-->
                 <div class="doctor-card" data-specialty="general">
 
-                    <img src="../../img/Bayani.png" alt="Doctor">
+                    <img src="../../img/bayani.png" alt="Doctor">
 
                     <div class="doctor-info">
 

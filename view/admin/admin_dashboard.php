@@ -20,7 +20,7 @@ $appointment = new Appointment($conn);
 $user_info = $user->getUserById($_SESSION['user_id']);
 $total_patients = $patient->countTotal();
 $today_appointments = $appointment->countToday();
-$followups_count = $appointment->countFollowUps();
+$all_appointments_count = $appointment->getAllTodayAndFuture()->rowCount();
 $doctors_count = $user->countDoctors();
 $recent_appointments = $appointment->getTodayAppointments();
 ?>
@@ -51,7 +51,6 @@ $recent_appointments = $appointment->getTodayAppointments();
             <a href="http://localhost/clinic1/view/admin/admin_dashboard.php" class="menu-item active">Dashboard</a>
             <a href="http://localhost/clinic1/view/admin/admin_patientRecord.php" class="menu-item">Patient Records</a>
             <a href="http://localhost/clinic1/view/admin/admin_appointments.php" class="menu-item">Appointments</a>
-            <a href="http://localhost/clinic1/view/admin/admin_followup.php" class="menu-item">Follow-Up Checkup</a>
             <a href="http://localhost/clinic1/view/admin/admin_doctors.php" class="menu-item">Doctors</a>
             <a href="http://localhost/clinic1/view/admin/admin_staff.php" class="menu-item">Staff</a>
         </nav>
@@ -95,8 +94,8 @@ $recent_appointments = $appointment->getTodayAppointments();
             </div>
 
             <div class="stat-card">
-                <h3>Follow Ups</h3>
-                <p><?php echo $followups_count; ?></p>
+                <h3>All Appointments</h3>
+                <p><?php echo $all_appointments_count; ?></p>
             </div>
 
             <div class="stat-card">

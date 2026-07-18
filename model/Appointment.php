@@ -177,7 +177,7 @@ class Appointment {
         return $stmt;
     }
 
-    // READ/GET ALL
+    // READ/GET ALL (appointments still pending — excludes missed, cancelled, completed)
     function getAllTodayAndFuture(){
         $query = "SELECT a.*, 
                   CONCAT(p.first_name, ' ', p.last_name) as patient_name,
@@ -185,7 +185,7 @@ class Appointment {
                   FROM appointments a
                   LEFT JOIN patients p ON a.patient_id = p.id
                   LEFT JOIN users d ON a.doctor_id = d.id
-                  WHERE a.status IN ('pending', 'missed')
+                  WHERE a.status = 'pending'
                   ORDER BY a.appointment_date ASC, a.appointment_time ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -270,6 +270,14 @@ class Appointment {
         return $stmt->execute();
     }
 
+    // CANCEL APPOINTMENT (admin/front-desk action)
+    function cancelAppointmentAdmin($id){
+        $query = "UPDATE appointments SET status = 'cancelled' WHERE id = :id AND status IN ('pending','confirmed','missed')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
+    }
+
     // UPDATE MARK PAST PENDING AS MISSED
     function markMissedAppointments(){
         $query = "UPDATE appointments SET status = 'missed' 
@@ -323,13 +331,13 @@ class Appointment {
         return $stmt;
     }
 
-    // READ/GET DOCTOR ALL
+    // READ/GET DOCTOR ALL (appointments still pending — excludes missed, cancelled, completed)
     function getDoctorAllTodayAndFuture($doctor_id){
         $query = "SELECT a.*, 
                 CONCAT(p.first_name, ' ', p.last_name) as patient_name
                 FROM appointments a
                 LEFT JOIN patients p ON a.patient_id = p.id
-                WHERE a.doctor_id = :doctor_id AND a.status IN ('pending', 'missed')
+                WHERE a.doctor_id = :doctor_id AND a.status = 'pending'
                 ORDER BY a.appointment_date ASC, a.appointment_time ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":doctor_id", $doctor_id);

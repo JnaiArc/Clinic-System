@@ -105,4 +105,16 @@ if (isset($_GET['delete'])){
     header("Location: http://localhost/clinic1/view/admin/admin_appointments.php");
     exit();
 }
+
+// CANCEL APPOINTMENT (admin portal, via link)
+if (isset($_GET['adminCancel'])){
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin'){
+        header("Location: http://localhost/clinic1/view/login/login.php");
+        exit();
+    }
+    $id = (int)$_GET['adminCancel'];
+    $appointment->cancelAppointmentAdmin($id);
+    header("Location: http://localhost/clinic1/view/admin/admin_appointments.php");
+    exit();
+}
 ?>
