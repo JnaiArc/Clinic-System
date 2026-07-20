@@ -66,6 +66,7 @@ if ($edit_id > 0) {
             <a href="http://localhost/clinic1/view/doctor/doctor_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_appointments.php" class="menu-item">My Appointments</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item active">Follow-Up Checkup</a>
+            <a href="http://localhost/clinic1/view/doctor/doctor_patients.php" class="menu-item">My Patients</a>
         </nav>
     </aside>
 

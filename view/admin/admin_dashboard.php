@@ -8,12 +8,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
 require_once 'C:\xampp\htdocs\clinic1\model\User.php';
+require_once 'C:\xampp\htdocs\clinic1\model\Doctor.php';
 require_once 'C:\xampp\htdocs\clinic1\model\Patient.php';
 require_once 'C:\xampp\htdocs\clinic1\model\Appointment.php';
 
 $database = new Database();
 $conn = $database->connect();
 $user = new User($conn);
+$doctorModel = new Doctor($conn);
 $patient = new Patient($conn);
 $appointment = new Appointment($conn);
 
@@ -21,7 +23,7 @@ $user_info = $user->getUserById($_SESSION['user_id']);
 $total_patients = $patient->countTotal();
 $today_appointments = $appointment->countToday();
 $all_appointments_count = $appointment->getAllTodayAndFuture()->rowCount();
-$doctors_count = $user->countDoctors();
+$doctors_count = $doctorModel->countDoctors();
 $recent_appointments = $appointment->getTodayAppointments();
 ?>
 

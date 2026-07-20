@@ -35,7 +35,7 @@ if ($is_followup) {
     }
 }
 
-$age = $appointment['patient_birthdate'] ? date('Y') - date('Y', strtotime($appointment['patient_birthdate'])) : 0;
+$age = $appointment['patient_birthdate'] ? (new DateTime($appointment['patient_birthdate']))->diff(new DateTime())->y : 0;
 ?>
 
 <!DOCTYPE html>
@@ -62,6 +62,7 @@ $age = $appointment['patient_birthdate'] ? date('Y') - date('Y', strtotime($appo
             <a href="http://localhost/clinic1/view/doctor/doctor_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_appointments.php" class="menu-item active">My Appointments</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item">Follow-Up Checkup</a>
+            <a href="http://localhost/clinic1/view/doctor/doctor_patients.php" class="menu-item">My Patients</a>
         </nav>
     </aside>
 

@@ -39,6 +39,69 @@ class Appointment {
         return $stmt->fetch(PDO::FETCH_ASSOC)['total'] > 0;
     }
 
+    // === AVAILABILITY / SLOT HELPERS (specialization -> doctor -> calendar -> time booking flow)
+
+    // Build the list of bookable time-slot labels (e.g. "1:00 PM", "1:30 PM", ... ) for a
+    // doctor's schedule window, in 30-minute increments, INCLUSIVE of the end time.
+    // e.g. 1:00 PM - 5:00 PM => 9 slots (1:00,1:30,2:00,2:30,3:00,3:30,4:00,4:30,5:00)
+    public static function generateSlots($start_time, $end_time){
+        $slots = [];
+        if (empty($start_time) || empty($end_time)) return $slots;
+
+        $startTs = strtotime($start_time);
+        $endTs = strtotime($end_time);
+        if ($startTs === false || $endTs === false || $endTs < $startTs) return $slots;
+
+        for ($t = $startTs; $t <= $endTs; $t += 1800) {
+            $slots[] = date('g:i A', $t);
+        }
+        return $slots;
+    }
+
+    // GET LIST OF ALREADY-BOOKED TIME LABELS FOR A DOCTOR ON A SPECIFIC DATE
+    function getBookedTimesForDoctorDate($doctor_id, $date){
+        $query = "SELECT appointment_time FROM appointments 
+                  WHERE doctor_id = :doctor_id AND appointment_date = :date AND status IN ('pending','confirmed')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":doctor_id", $doctor_id);
+        $stmt->bindParam(":date", $date);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    // GET BOOKED APPOINTMENT COUNTS PER DATE FOR A DOCTOR, WITHIN A DATE RANGE (used to render the calendar)
+    // Returns an associative array: ['2026-07-21' => 3, '2026-07-22' => 1, ...]
+    function getBookedCountsForDoctorRange($doctor_id, $start_date, $end_date){
+        $query = "SELECT appointment_date, COUNT(*) as total FROM appointments 
+                  WHERE doctor_id = :doctor_id AND appointment_date BETWEEN :start_date AND :end_date 
+                  AND status IN ('pending','confirmed')
+                  GROUP BY appointment_date";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":doctor_id", $doctor_id);
+        $stmt->bindParam(":start_date", $start_date);
+        $stmt->bindParam(":end_date", $end_date);
+        $stmt->execute();
+
+        $counts = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $counts[$row['appointment_date']] = (int)$row['total'];
+        }
+        return $counts;
+    }
+
+    // CHECK IF A SPECIFIC DOCTOR/DATE/TIME SLOT IS ALREADY TAKEN (server-side guard against race conditions/double-booking)
+    function isSlotTaken($doctor_id, $date, $time){
+        $query = "SELECT COUNT(*) as total FROM appointments 
+                  WHERE doctor_id = :doctor_id AND appointment_date = :date AND appointment_time = :time 
+                  AND status IN ('pending','confirmed')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":doctor_id", $doctor_id);
+        $stmt->bindParam(":date", $date);
+        $stmt->bindParam(":time", $time);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'] > 0;
+    }
+
     // === PATIENT PORTAL SPECIFIC
 
     // READ/GET THE SOONEST UPCOMING (NOT CANCELLED/COMPLETED) APPOINTMENT FOR THE HOME PAGE CARD

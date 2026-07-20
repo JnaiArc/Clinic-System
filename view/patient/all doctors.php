@@ -1,3 +1,34 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'patient') {
+    header("Location: http://localhost/clinic1/view/login/login.php");
+    exit();
+}
+
+require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
+require_once 'C:\xampp\htdocs\clinic1\model\User.php';
+require_once 'C:\xampp\htdocs\clinic1\model\Doctor.php';
+
+$database = new Database();
+$conn = $database->connect();
+$userModel = new User($conn);
+$doctorModel = new Doctor($conn);
+
+// Doctors are now pulled from `users` joined with `doctors`, so a newly-added doctor
+// (via Admin > Staff > Add Staff) automatically shows up here with their photo,
+// name, and specialization — no manual edits to this page needed.
+$doctors_result = $doctorModel->getAllDoctors();
+$doctors = $doctors_result->fetchAll(PDO::FETCH_ASSOC);
+$specializations = $doctorModel->getAllSpecializations();
+
+// Turn a specialization label into a safe data-filter/class token, e.g. "Obstetrics & Gynecology" -> "obstetrics-gynecology"
+function specialtySlug($label) {
+    $slug = strtolower(trim($label));
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+    return trim($slug, '-');
+}
+?>
    
    <!DOCTYPE html>
 <html lang="en">
@@ -67,147 +98,40 @@
                     All
                 </button>
 
-                <button class="specialty-btn" data-filter="pediatrics">
-                    Pediatrics
+                <?php foreach ($specializations as $spec): ?>
+                <button class="specialty-btn" data-filter="<?php echo specialtySlug($spec); ?>">
+                    <?php echo htmlspecialchars($spec); ?>
                 </button>
-
-                <button class="specialty-btn" data-filter="general">
-                    Genaral Medicine
-                </button>
-
-                <button class="specialty-btn" data-filter="internal">
-                    Internal Medicine 
-                </button>
-
-                <button class="specialty-btn" data-filter="Obgyne">
-                    Obstetrics & Gynecology
-                </button>
+                <?php endforeach; ?>
 
             </div>
 
             <!-- RIGHT SIDE -->
             <div class="doctor-grid">
 
-                <!-- Pediatrician 1 -->
-                <div class="doctor-card" data-specialty="pediatrics">
+                <?php if (empty($doctors)): ?>
+                <p style="color:#708098;">No doctors are registered yet.</p>
+                <?php endif; ?>
 
-                    <img src="../../img/Taroy2.png" alt="Doctor">
+                <?php foreach ($doctors as $doc): ?>
+                <?php
+                    $photo = !empty($doc['profile_photo']) ? '../../uploads/'.$doc['profile_photo'] : '../../img/user.png';
+                    $specLabel = !empty($doc['specialization']) ? $doc['specialization'] : 'General';
+                ?>
+                <div class="doctor-card" data-specialty="<?php echo specialtySlug($specLabel); ?>">
+
+                    <img src="<?php echo htmlspecialchars($photo); ?>" alt="Dr. <?php echo htmlspecialchars($doc['first_name'].' '.$doc['last_name']); ?>" style="object-fit:cover;">
 
                     <div class="doctor-info">
 
-                        <h3>Dr. Taroy, Sarah Jane</h3>
+                        <h3>Dr. <?php echo htmlspecialchars($doc['last_name'].', '.$doc['first_name']); ?></h3>
 
-                        <p>Pediatrician</p>
+                        <p><?php echo htmlspecialchars($specLabel); ?></p>
 
                     </div>
 
                 </div>
-
-                <!-- Pediatrician 2 -->
-                <div class="doctor-card" data-specialty="pediatrics">
-
-                    <img src="../../img/Tomadong.png" alt="Doctor">
-
-                    <div class="doctor-info">
-
-                        <h3>Dr. Tomadong, Johanna</h3>
-
-                        <p>Pediatrician</p>
-
-                    </div>
-
-                </div>
-
-
-                <!--General Medicine 1-->
-                <div class="doctor-card" data-specialty="general">
-
-                    <img src="../../img/Macas.png" alt="Doctor">
-
-                    <div class="doctor-info">
-
-                        <h3>Dr. Macas, Reymar</h3>
-
-                        <p>General Medicine</p>
-
-                    </div>
-
-                </div>
-
-                 <!--General Medicine 2-->
-                <div class="doctor-card" data-specialty="general">
-
-                    <img src="../../img/bayani.png" alt="Doctor">
-
-                    <div class="doctor-info">
-
-                        <h3>Dr. Bayani, Khane</h3>
-
-                        <p>General Medicine</p>
-
-                    </div>
-
-                </div>
-
-                <!-- Internal Medicine 1 -->
-                <div class="doctor-card" data-specialty="internal">
-
-                    <img src="../../img/Arcenall.png" alt="Doctor">
-
-                    <div class="doctor-info">
-
-                        <h3>Dr. Arcenal, Jonalyn</h3>
-
-                        <p>Internal Medicine</p>
-
-                    </div>
-
-                </div>
-
-                 <!-- Internal Medicine 2-->
-                <div class="doctor-card" data-specialty="internal">
-
-                    <img src="../../img/Pagsolingan.png" alt="Doctor">
-
-                    <div class="doctor-info">
-
-                        <h3>Dr. Pagsolingan, Serj</h3>
-
-                        <p>Internal Medicine</p>
-
-                    </div>
-
-                </div>
-
-                <!-- Obgyne 1-->
-                <div class="doctor-card" data-specialty="Obgyne">
-
-                    <img src="../../img/Garduque.png" alt="Doctor">
-
-                    <div class="doctor-info">
-
-                        <h3>Dr. Garduque, Jody</h3>
-
-                        <p>Obstetrics & Gynecology</p>
-
-                    </div>
-
-                </div>
-
-                 <!-- Obgyne 2-->
-                <div class="doctor-card" data-specialty="Obgyne">
-
-                    <img src="../../img/Taroy2.png" alt="Doctor">
-
-                    <div class="doctor-info">
-
-                        <h3>Dr. Taroy, Sarah Jane</h3>
-
-                        <p>Obstetrics & Gynecology</p>
-
-                    </div>
-
-                </div>
+                <?php endforeach; ?>
 
             </div>
 

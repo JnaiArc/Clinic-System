@@ -134,6 +134,52 @@ class Patient {
         return $stmt;
     }
 
+    // READ/GET CONSULTATION HISTORY FOR PATIENT, SCOPED TO ONE DOCTOR ONLY (completed only)
+    // Used by the doctor "My Patients" view — a doctor can only see the history of
+    // consultations they themselves performed, even if the same patient has also
+    // been consulted by other doctors.
+    function getPatientConsultationHistoryByDoctor($patient_id, $doctor_id){
+        $query = "SELECT c.*, 
+                  CONCAT(d.first_name, ' ', d.last_name) as doctor_name,
+                  a.appointment_date, a.appointment_time, a.purpose
+                  FROM consultations c
+                  LEFT JOIN users d ON c.doctor_id = d.id
+                  LEFT JOIN appointments a ON c.appointment_id = a.id
+                  WHERE c.patient_id = :patient_id AND c.doctor_id = :doctor_id AND a.status = 'completed'
+                  ORDER BY c.created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":patient_id", $patient_id);
+        $stmt->bindParam(":doctor_id", $doctor_id);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    // READ/GET ALL PATIENTS A SPECIFIC DOCTOR HAS CONSULTED WITH (distinct, based on the
+    // consultations table — i.e. an actual consultation record exists, not just a booked
+    // appointment). Powers the doctor "My Patients" tab.
+    function getPatientsByDoctor($doctor_id){
+        $query = "SELECT DISTINCT p.*
+                  FROM consultations c
+                  INNER JOIN patients p ON c.patient_id = p.id
+                  WHERE c.doctor_id = :doctor_id
+                  ORDER BY p.last_name ASC, p.first_name ASC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":doctor_id", $doctor_id);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    // CHECK WHETHER A DOCTOR HAS EVER CONSULTED WITH A GIVEN PATIENT
+    // (guards direct URL access to doctor_view_patient.php for a patient that isn't theirs)
+    function doctorHasConsultedPatient($doctor_id, $patient_id){
+        $query = "SELECT id FROM consultations WHERE doctor_id = :doctor_id AND patient_id = :patient_id LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":doctor_id", $doctor_id);
+        $stmt->bindParam(":patient_id", $patient_id);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
+
     // READ/GET MEDICINES FOR CONSULTATION
     function getConsultationMedicines($consultation_id){
         $query = "SELECT * FROM consultation_medicines WHERE consultation_id = :cid";

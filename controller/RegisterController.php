@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             exit();
         }
 
-        if ($user->registerUser('patient', $first_name, $last_name, $email, $username, "", array(), "", "", array(), $password)){
+        if ($user->registerUser('patient', $first_name, $last_name, $email, $username, array(), $password)){
             $_SESSION['success'] = "Registered successfully! Please login.";
             header("Location: http://localhost/clinic1/view/login/login.php");
             exit();

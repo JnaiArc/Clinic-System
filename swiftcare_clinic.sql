@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 18, 2026 at 10:50 AM
+-- Generation Time: Jul 20, 2026 at 01:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -56,12 +56,12 @@ INSERT INTO `appointments` (`id`, `patient_id`, `doctor_id`, `appointment_date`,
 (14, 13, 6, '2026-07-13', '1:00 PM', 'Check-up', NULL, 'In Person', '', '2026-07-09 05:58:34', 0),
 (15, 12, 8, '2026-07-12', '11:00 AM', 'Check-up', NULL, 'In Person', '', '2026-07-09 05:59:01', 0),
 (16, 11, 7, '2026-07-22', '1:00 PM', 'Check-up', NULL, 'In Person', 'pending', '2026-07-09 06:00:56', 0),
-(17, 10, 8, '2026-07-21', '2:00 PM', 'Check-up', NULL, 'In Person', 'pending', '2026-07-09 06:01:08', 0),
+(17, 10, 6, '2026-07-20', '2:00 PM', 'Check-up', 'Headache', 'In Person', 'pending', '2026-07-09 06:01:08', 0),
 (18, 9, 6, '2026-07-27', '10:30 AM', 'Check-up', NULL, 'In Person', 'pending', '2026-07-09 06:02:05', 0),
 (19, 8, 11, '2026-07-09', '2:00 PM', 'Check-up', NULL, 'In Person', '', '2026-07-09 06:07:21', 0),
 (20, 6, 11, '2026-07-24', '2:00 PM', 'Check-up', NULL, 'In Person', 'pending', '2026-07-09 06:10:35', 0),
 (21, 5, 11, '2026-07-25', '12:00 PM', 'Check-up', NULL, 'In Person', 'pending', '2026-07-09 06:10:56', 0),
-(22, 4, 11, '2026-07-18', '12:30 PM', 'Check-up', NULL, 'In Person', 'pending', '2026-07-09 06:11:27', 0),
+(22, 4, 11, '2026-07-18', '12:30 PM', 'Check-up', NULL, 'In Person', 'cancelled', '2026-07-09 06:11:27', 0),
 (23, 3, 11, '2026-07-09', '1:00 PM', 'Check-up', NULL, 'In Person', 'completed', '2026-07-09 06:13:37', 0),
 (24, 1, 11, '2026-07-09', '12:30 PM', 'Check-up', NULL, 'In Person', 'completed', '2026-07-09 06:15:22', 0),
 (25, 1, 11, '2026-07-23', '1:00 PM', 'Follow-up', NULL, 'In Person', 'pending', '2026-07-09 06:24:10', 0),
@@ -69,9 +69,13 @@ INSERT INTO `appointments` (`id`, `patient_id`, `doctor_id`, `appointment_date`,
 (27, 20, 6, '2026-07-15', '12:30 PM', 'Check-up', NULL, 'In Person', 'completed', '2026-07-15 05:20:33', 0),
 (28, 20, 9, '2026-07-17', '1:00 PM', 'Check-up', NULL, 'In Person', 'missed', '2026-07-17 10:53:22', 0),
 (29, 21, 11, '2026-07-18', '2:00 PM', 'Consultation', NULL, 'Online', 'completed', '2026-07-18 06:12:24', 0),
-(30, 5, 11, '2026-07-18', '3:30 PM', 'Check-up', NULL, 'Online', 'pending', '2026-07-18 06:20:51', 0),
+(30, 5, 11, '2026-07-18', '3:30 PM', 'Check-up', NULL, 'Online', 'cancelled', '2026-07-18 06:20:51', 0),
 (31, 21, 11, '2026-07-23', '1:00 PM', 'Follow-up', NULL, 'In Person', 'completed', '2026-07-18 06:47:45', 0),
-(32, 21, 11, '2026-07-18', '12:00 PM', 'Consultation', 'Headache', 'Online', 'cancelled', '2026-07-18 08:31:15', 0);
+(32, 21, 11, '2026-07-18', '12:00 PM', 'Consultation', 'Headache', 'Online', 'cancelled', '2026-07-18 08:31:15', 0),
+(33, 21, 7, '2026-07-19', '1:00 PM', 'Consultation', 'Headache', 'Online', 'missed', '2026-07-18 11:22:41', 0),
+(34, 21, 9, '2026-07-23', '1:00 PM', 'Check-up', 'Headache', 'In Person', 'cancelled', '2026-07-20 08:34:06', 0),
+(35, 22, 11, '2026-07-23', '4:00 PM', 'Check-up', 'Headache', 'In Person', 'pending', '2026-07-20 08:36:24', 0),
+(36, 21, 21, '2026-07-20', '8:00 AM', 'Check-up', 'Headache', 'Online', 'pending', '2026-07-20 10:35:07', 0);
 
 -- --------------------------------------------------------
 
@@ -127,7 +131,7 @@ CREATE TABLE `consultation_medicines` (
 INSERT INTO `consultation_medicines` (`id`, `consultation_id`, `medicine_name`, `dosage`, `frequency`, `duration`, `is_done`) VALUES
 (4, 4, 'Paracetamol', '500mg', '3x a day', '3 days', 0),
 (5, 4, 'Cetirizine', '10mg', '1x a day', '5 days', 0),
-(6, 5, 'Amlodipine', '5mg', '1x a day', '30 days', 0),
+(6, 5, 'Amlodipine', '5mg', '1x a day', '30 days', 1),
 (7, 6, 'Omeprazole', '20mg', '1x a day', '14 days', 0);
 
 -- --------------------------------------------------------
@@ -151,11 +155,40 @@ INSERT INTO `consultation_recommendations` (`id`, `consultation_id`, `recommenda
 (4, 4, 'Drink 8-10 glasses of water daily', 0),
 (5, 4, 'Sleep atleast 8 hrs', 0),
 (6, 4, 'eat fruits rich in Vitamin C', 0),
-(7, 5, 'Low-salt diet', 0),
-(8, 5, 'BP monitoring', 0),
-(9, 5, 'ECG and lipid profile', 0),
+(7, 5, 'Low-salt diet', 1),
+(8, 5, 'BP monitoring', 1),
+(9, 5, 'ECG and lipid profile', 1),
 (10, 6, 'Avoid Spicy Foods', 0),
 (11, 6, 'Avoid coffee and alcohol', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `doctors`
+--
+
+CREATE TABLE `doctors` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `specialization` varchar(100) DEFAULT NULL,
+  `license_number` varchar(50) DEFAULT NULL,
+  `schedule_days` varchar(200) DEFAULT NULL,
+  `schedule_time_start` varchar(20) DEFAULT NULL,
+  `schedule_time_end` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `doctors`
+--
+
+INSERT INTO `doctors` (`id`, `user_id`, `specialization`, `license_number`, `schedule_days`, `schedule_time_start`, `schedule_time_end`) VALUES
+(1, 6, 'Pediatrics', 'JH123', 'Monday,Tuesday,Wednesday', '8:00 AM', '5:00 PM'),
+(2, 7, 'Obstetrics & Gynecology', 'ST125', 'Monday,Tuesday,Wednesday,Sunday', '8:00 AM', '6:00 PM'),
+(3, 8, 'Obstetrics & Gynecology', 'JG816', 'Monday,Tuesday,Wednesday,Sunday', '10:00 AM', '3:00 PM'),
+(4, 9, 'General Medicine', 'KB33', 'Thursday,Friday,Saturday,Sunday', '', '4:00 PM'),
+(5, 10, 'General Medicine', 'RM112', 'Thursday,Friday,Saturday', '9:00 AM', '12:00 PM'),
+(6, 11, 'Internal Medicine', 'JA127', 'Thursday,Friday,Saturday', '', '4:00 PM'),
+(7, 21, 'Internal Medicine', 'SP123', 'Monday,Tuesday,Thursday,Friday', '7:00 AM', '8:00 PM');
 
 -- --------------------------------------------------------
 
@@ -176,8 +209,7 @@ CREATE TABLE `password_resets` (
 --
 
 INSERT INTO `password_resets` (`id`, `email`, `otp_code`, `expires_at`, `created_at`) VALUES
-(3, 'johannamaetomadong@gmail.com', '900091', '2026-07-13 09:36:44', '2026-07-13 01:31:44'),
-(9, 'arcenaljonalyn5@gmail.com', '421570', '2026-07-13 20:41:14', '2026-07-13 12:36:14');
+(3, 'johannamaetomadong@gmail.com', '900091', '2026-07-13 09:36:44', '2026-07-13 01:31:44');
 
 -- --------------------------------------------------------
 
@@ -226,7 +258,8 @@ INSERT INTO `patients` (`id`, `user_id`, `first_name`, `last_name`, `gender`, `b
 (18, NULL, 'Syman', 'Stone', 'Male', '1933-02-11', '09610324880', 'sstoneh@webeden.co.uk', 'Carmona', '09698390875', 'sulfa drugs', 'asthma', '2026-06-07 16:00:00'),
 (19, NULL, 'Ignace', 'Gligori', 'Male', '1986-09-27', '09246296023', 'igligorii@redcross.org', 'Cavity City', '09710591006', 'aspirin', 'heart disease', '2026-06-24 16:00:00'),
 (20, NULL, 'Charmane', 'Searchwell', 'Female', '1985-10-07', '09870542944', 'csearchwellj@slashdot.org', 'Trece Martires', '09497287632', 'penicillin', 'none', '2026-07-13 16:00:00'),
-(21, 18, 'Prima', 'Toben', 'Female', '2005-11-12', '09921234567', 'prima@gmail.com', 'Dasma', '09123456781', 'Chocolate', 'Asthma', '2026-07-18 06:10:51');
+(21, 18, 'Prima', 'Toben', 'Female', '2005-11-12', '09921234567', 'prima@gmail.com', 'Dasma', '09123456781', 'Chocolate', 'Asthma', '2026-07-18 06:10:51'),
+(22, 19, 'Jessica', 'De Guzman', 'Female', '2000-06-06', '09368289999', 'jess@gmail.com', 'Imus', '', '', '', '2026-07-18 11:09:16');
 
 -- --------------------------------------------------------
 
@@ -241,10 +274,6 @@ CREATE TABLE `users` (
   `last_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `username` varchar(100) DEFAULT NULL,
-  `license_number` varchar(50) DEFAULT NULL,
-  `schedule_days` varchar(200) DEFAULT NULL,
-  `schedule_time_start` varchar(20) DEFAULT NULL,
-  `schedule_time_end` varchar(20) DEFAULT NULL,
   `profile_photo` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -254,15 +283,17 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `role`, `first_name`, `last_name`, `email`, `username`, `license_number`, `schedule_days`, `schedule_time_start`, `schedule_time_end`, `profile_photo`, `password`, `created_at`) VALUES
-(6, 'doctor', 'Johanna', 'Tomadong', 'johannamaetomadong@gmail.com', '', 'JH123', 'Monday,Tuesday,Wednesday', '8:00 AM', '5:00 PM', '1780373730_Tomadong.jpg', '$2y$10$/HRRla.UAsKlmK13Bgw9W.ahfkJOz5LQICeEBI9gluSkrvGlA8qJq', '2026-06-02 04:15:30'),
-(7, 'doctor', 'Sarah', 'Taroy', 'sarahjanetaroy125@gmail.com', '', 'ST125', 'Monday,Tuesday,Wednesday,Sunday', '8:00 AM', '6:00 PM', '1780373849_Taroyy.jpg', '$2y$10$pBBAP2N3RPyHRIbPYXpmCOAvFTz9Ua3y84s99.aywk1lurCf2lXoy', '2026-06-02 04:17:29'),
-(8, 'doctor', 'Jody', 'Garduque', 'jodymalditagarduque@gmail.com', '', 'JG816', 'Monday,Tuesday,Wednesday,Sunday', '10:00 AM', '3:00 PM', '1780374010_Garduque.jpg', '$2y$10$tsqLmLmD3KPZM8nhBQdK5ekn10hot1l4V8l1V8ibChBwEykcz1fo6', '2026-06-02 04:20:10'),
-(9, 'doctor', 'Khane', 'Bayani', 'khanebayani@gmail.com', '', 'KB33', 'Thursday,Friday,Saturday,Sunday', '1:00 PM', '4:00 PM', '1780374118_Bayani.jpg', '$2y$10$Qj/d/Zm2Rh/n9I.697.SCOakRvtKyfRQQ2c.elBZoZUmwsXJjuHEG', '2026-06-02 04:21:58'),
-(10, 'doctor', 'Reymar', 'Macas', 'reymarmacas@gmail.com', '', 'RM112', 'Thursday,Friday,Saturday', '9:00 AM', '12:00 PM', '1780374208_Macas.jpg', '$2y$10$4Cfyn0g1fyQ3KyVpAI9D8eAe3zxPV1px/yxscBjv.C9E9bd5ROaMW', '2026-06-02 04:23:28'),
-(11, 'doctor', 'Jonalyn', 'Arcenal', 'arcenaljonalyn5@gmail.com', '', 'JA127', 'Thursday,Friday,Saturday', '12:00 PM', '4:00 PM', '1780374299_Arcenal.jpg', '$2y$10$DX4tESinbjCsMyJW3ToXUOUuvPUBWxoUXgvMf8sIKBEdO1BbnpAb2', '2026-06-02 04:24:59'),
-(12, 'admin', 'Clinic', 'System', 'clinic.system@gmail.com', 'admin', '', '', '', '', '1780374499_1780317865_Minimal Yellow Star Aesthetic _ Cute Graphic Design Inspiration.jpg', '$2y$10$3Eok67LqtfdZfK3whvQU5.zodJ9zyVT/9Ej2RYrWDsH932uKvseTG', '2026-06-02 04:28:19'),
-(18, 'patient', 'Prima', 'Tober', 'prima@gmail.com', 'prima', '', '', '', '', '', '$2y$10$QSXTITAaTArokN86gdHF7.RW9yZImyferNC/PNQLoLvT8NH6pEC9G', '2026-07-16 01:45:57');
+INSERT INTO `users` (`id`, `role`, `first_name`, `last_name`, `email`, `username`, `profile_photo`, `password`, `created_at`) VALUES
+(6, 'doctor', 'Johanna', 'Tomadong', 'johannamaetomadong@gmail.com', 'JH123', 'Tomadong.png', '$2y$10$/HRRla.UAsKlmK13Bgw9W.ahfkJOz5LQICeEBI9gluSkrvGlA8qJq', '2026-06-02 04:15:30'),
+(7, 'doctor', 'Sarah', 'Taroy', 'sarahjanetaroy125@gmail.com', 'ST125', 'Taroy.png', '$2y$10$pBBAP2N3RPyHRIbPYXpmCOAvFTz9Ua3y84s99.aywk1lurCf2lXoy', '2026-06-02 04:17:29'),
+(8, 'doctor', 'Jody', 'Garduque', 'jodymalditagarduque@gmail.com', 'JG816', 'Garduque.png', '$2y$10$tsqLmLmD3KPZM8nhBQdK5ekn10hot1l4V8l1V8ibChBwEykcz1fo6', '2026-06-02 04:20:10'),
+(9, 'doctor', 'Khane', 'Bayani', 'khanebayani@gmail.com', 'KB33', 'Bayani.png', '$2y$10$Qj/d/Zm2Rh/n9I.697.SCOakRvtKyfRQQ2c.elBZoZUmwsXJjuHEG', '2026-06-02 04:21:58'),
+(10, 'doctor', 'Reymar', 'Macas', 'reymarmacas@gmail.com', 'RM112', 'Macas.png', '$2y$10$4Cfyn0g1fyQ3KyVpAI9D8eAe3zxPV1px/yxscBjv.C9E9bd5ROaMW', '2026-06-02 04:23:28'),
+(11, 'doctor', 'Jonalyn', 'Arcenal', 'arcenaljonalyn5@gmail.com', 'JA127', 'Arcenal.png', '$2y$10$b06Vvd4OmiGIjqxcaKCjyuxB1sPuaA.O7CPYC6uDPVgjQw3eddJT6', '2026-06-02 04:24:59'),
+(12, 'admin', 'Clinic', 'System', 'clinic.system@gmail.com', 'admin', 'admin.png', '$2y$10$3Eok67LqtfdZfK3whvQU5.zodJ9zyVT/9Ej2RYrWDsH932uKvseTG', '2026-06-02 04:28:19'),
+(18, 'patient', 'Prima', 'Toben', 'prima@gmail.com', 'prima', '', '$2y$10$QSXTITAaTArokN86gdHF7.RW9yZImyferNC/PNQLoLvT8NH6pEC9G', '2026-07-16 01:45:57'),
+(19, 'patient', 'Jessica', 'De Guzman', 'jess@gmail.com', 'jess', '', '$2y$10$AWtAQoMhBl75Nw2r.ud3G..2oME9ccbYTYKP9lCmA1gNJPvgE8W2.', '2026-07-18 10:47:17'),
+(21, 'doctor', 'Serj', 'Pagsolingan', 'serj@gmail.com', 'SP123', '1784539058_Pagsolingan.png', '$2y$10$xnZayxqQ/XBSyJH7x2lqeOHoFpGUYNLCwjOHafEufw.IKMoApf5Ue', '2026-07-20 09:17:38');
 
 --
 -- Indexes for dumped tables
@@ -300,6 +331,13 @@ ALTER TABLE `consultation_recommendations`
   ADD KEY `fk_recommendations_consultation` (`consultation_id`);
 
 --
+-- Indexes for table `doctors`
+--
+ALTER TABLE `doctors`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_doctors_user_id` (`user_id`);
+
+--
 -- Indexes for table `password_resets`
 --
 ALTER TABLE `password_resets`
@@ -327,7 +365,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `consultations`
@@ -348,22 +386,28 @@ ALTER TABLE `consultation_recommendations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
+-- AUTO_INCREMENT for table `doctors`
+--
+ALTER TABLE `doctors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Constraints for dumped tables
@@ -395,6 +439,12 @@ ALTER TABLE `consultation_medicines`
 --
 ALTER TABLE `consultation_recommendations`
   ADD CONSTRAINT `fk_recommendations_consultation` FOREIGN KEY (`consultation_id`) REFERENCES `consultations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `doctors`
+--
+ALTER TABLE `doctors`
+  ADD CONSTRAINT `fk_doctors_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -73,11 +73,7 @@
         </div>
 
         <div id="errorMsg" class="error">
-            <?php 
-            if(isset($_GET['error'])) { 
-                echo htmlspecialchars($_GET['error']); 
-            } 
-            ?>
+            <?php if(isset($_GET['error'])) { echo htmlspecialchars($_GET['error']);}?>
         </div>
 
         <button class="login-btn" type="submit" name="loginBtn">LOGIN</button>

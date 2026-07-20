@@ -60,63 +60,6 @@ function generateTimeSlots(startTime, endTime) {
     return slots;
 }
 
-// BOOK CONSULTATION
-document.addEventListener('DOMContentLoaded', function() {
-    const appointmentDate = document.getElementById('appointmentDate');
-    if (appointmentDate) {
-        appointmentDate.min = "<?php echo date('Y-m-d'); ?>";
-    }
-});
-
-document.getElementById('appointmentDate').addEventListener('change', function() {
-    const day = getDayName(this.value);
-    const doctorSelect = document.getElementById('doctorSelect');
-    const timeSelect = document.getElementById('timeSelect');
-    
-    doctorSelect.innerHTML = '<option value="">Loading...</option>';
-    timeSelect.innerHTML = '<option value="">Select a doctor first</option>';
-    
-    fetch('http://localhost/clinic1/controller/GetDoctors.php?day=' + encodeURIComponent(day))
-        .then(response => response.json())
-        .then(doctors => {
-            doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
-            if (doctors.length === 0) {
-                doctorSelect.innerHTML = '<option value="">No doctors available</option>';
-            } else {
-                doctors.forEach(doc => {
-                    const option = document.createElement('option');
-                    option.value = doc.id;
-                    option.text = 'Dr. ' + doc.first_name + ' ' + doc.last_name;
-                    option.dataset.start = doc.schedule_time_start;
-                    option.dataset.end = doc.schedule_time_end;
-                    doctorSelect.appendChild(option);
-                });
-            }
-        });
-});
-
-document.getElementById('doctorSelect').addEventListener('change', function() {
-    const selectedOption = this.options[this.selectedIndex];
-    const timeSelect = document.getElementById('timeSelect');
-    
-    if (!selectedOption.value) {
-        timeSelect.innerHTML = '<option value="">Select a doctor first</option>';
-        return;
-    }
-    
-    const startTime = selectedOption.dataset.start;
-    const endTime = selectedOption.dataset.end;
-    const slots = generateTimeSlots(timeToNumber(startTime), timeToNumber(endTime));
-    
-    timeSelect.innerHTML = '<option value="">Select Time</option>';
-    slots.forEach(slot => {
-        const option = document.createElement('option');
-        option.value = slot;
-        option.text = slot;
-        timeSelect.appendChild(option);
-    });
-});
-
 // VIEW APPOINTMENT FOLLOW-UP
 function handleDoctorChange() {
     handleDateChange();

@@ -8,10 +8,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 require_once 'c:/xampp/htdocs/clinic1/config/Database.php';
 require_once 'c:/xampp/htdocs/clinic1/config/Validation.php';
 require_once 'c:/xampp/htdocs/clinic1/model/User.php';
+require_once 'c:/xampp/htdocs/clinic1/model/Doctor.php';
 
 $database = new Database();
 $conn = $database->connect();
 $user = new User($conn);
+$doctor = new Doctor($conn);
 $validation = new Validation();
 
 // ADD STAFF (admin or doctor account, created by an admin)
@@ -26,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $confirm_password = $_POST['confirm_password'];
         $username         = !empty($_POST['username'])         ? trim($_POST['username'])         : "";
         $license_number   = !empty($_POST['license_number'])   ? trim($_POST['license_number'])   : "";
+        $specialization   = !empty($_POST['specialization'])   ? trim($_POST['specialization'])   : "";
         $schedule_days    = !empty($_POST['schedule_days'])    ? $_POST['schedule_days']           : array();
         $schedule_time_start = !empty($_POST['schedule_time_start']) ? $_POST['schedule_time_start'] : "";
         $schedule_time_end   = !empty($_POST['schedule_time_end'])   ? $_POST['schedule_time_end']   : "";
@@ -35,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             if ($role === 'admin') {
                 $validation->adminRegister($first_name, $last_name, $email, $username, $password, $confirm_password);
             } else {
-                $validation->doctorRegister($first_name, $last_name, $email, $license_number, $schedule_days, $schedule_time_start, $schedule_time_end, $password, $confirm_password);
+                $validation->doctorRegister($first_name, $last_name, $email, $username, $license_number, $specialization, $schedule_days, $schedule_time_start, $schedule_time_end, $password, $confirm_password);
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
@@ -55,13 +58,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             exit();
         }
 
-        if ($role === 'doctor' && $user->licenseExists($license_number)){
+        if ($role === 'doctor' && $doctor->licenseExists($license_number)){
             $_SESSION['error'] = "License number already exists.";
             header("Location: http://localhost/clinic1/view/admin/admin_staff.php?add=1");
             exit();
         }
 
-        if ($user->registerUser($role, $first_name, $last_name, $email, $username, $license_number, $schedule_days, $schedule_time_start, $schedule_time_end, $profile_photo, $password)){
+        $new_user_id = $user->registerUser($role, $first_name, $last_name, $email, $username, $profile_photo, $password);
+
+        if ($new_user_id){
+            if ($role === 'doctor'){
+                $doctor->insertDoctorInfo($new_user_id, $license_number, $specialization, $schedule_days, $schedule_time_start, $schedule_time_end);
+            }
             $_SESSION['success'] = "Staff account created successfully.";
             header("Location: http://localhost/clinic1/view/admin/admin_staff.php");
             exit();

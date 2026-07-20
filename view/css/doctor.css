@@ -983,3 +983,141 @@ body {
     color: #64748b;
     padding: 20px;
 }
+/* ==== MY PATIENTS: patient info + doctor-scoped history (view_patient style) ==== */
+
+.view-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+.view-buttons .back-link {
+    background: transparent;
+    color: #111;
+    border: 1px solid var(--border-color);
+    padding: 12px 30px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all .15s ease;
+}
+
+.view-buttons .back-link:hover {
+    background: var(--bg-light);
+}
+
+.patient-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+.patient-info-grid .info-card {
+    padding: 14px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.patient-info-grid .info-card:nth-child(odd) {
+    border-right: 1px solid #e2e8f0;
+}
+.patient-info-grid .info-card label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.patient-info-grid .info-card span {
+    font-size: 14px;
+    color: #1e293b;
+    font-weight: 500;
+}
+.info-card-full {
+    grid-column: span 2;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.info-card-full label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.info-card-full span {
+    font-size: 14px;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+/* History section */
+.history-section {
+    margin-top: 24px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+.history-header {
+    background: #17324d;
+    color: white;
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 15px;
+}
+.history-item {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 16px 20px;
+}
+.history-item:last-child { border-bottom: none; }
+.history-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.history-date {
+    font-weight: 700;
+    color: #17324d;
+    font-size: 14px;
+}
+.history-doctor {
+    font-size: 13px;
+    color: #64748b;
+}
+.history-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    font-size: 13px;
+}
+.history-col label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+.history-col ul {
+    margin: 0;
+    padding-left: 16px;
+    color: #1e293b;
+}
+.history-col p {
+    margin: 0;
+    color: #1e293b;
+}
+.empty-history {
+    padding: 20px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 14px;
+}

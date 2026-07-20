@@ -58,10 +58,6 @@ unset($_SESSION['error']);
         <h2>SIGNUP</h2>
     </div>
 
-    <?php if($error): ?>
-    <div class="error-box"><?php echo nl2br(htmlspecialchars($error)); ?></div>
-    <?php endif; ?>
-
     <form action="http://localhost/clinic1/controller/RegisterController.php" method="POST">
 
         <!-- name -->
@@ -105,6 +101,10 @@ unset($_SESSION['error']);
                 <input type="password" name="confirm_password" id="regPw2" required>
             </div>
         </div>
+
+        <?php if($error): ?>
+        <div class="error"><?php echo nl2br(htmlspecialchars($error)); ?></div>
+        <?php endif; ?>
 
         <button class="login-btn" type="submit" name="registerBtn">REGISTER</button>
 

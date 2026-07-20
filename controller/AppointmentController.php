@@ -40,6 +40,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             // Admin/front-desk booking (admin_patientRecord.php -> book_consultation.php)
             $patient_id = $_POST['patient_id'];
         }
+
+        // Guard against double-booking the same doctor/date/time slot (race condition safety net,
+        // on top of the client-side calendar/time picker that already greys out taken slots).
+        if ($appointment->isSlotTaken($doctor_id, $appointment_date, $appointment_time)){
+            $_SESSION['booking_error'] = "Sorry, that time slot was just taken by another patient. Please pick a different time.";
+            if ($is_patient_user){
+                header("Location: http://localhost/clinic1/view/patient/patient_request consultation.php");
+            } else {
+                $back_patient_id = $_POST['patient_id'] ?? '';
+                header("Location: http://localhost/clinic1/view/admin/book_consultation.php?patient_id=" . urlencode($back_patient_id));
+            }
+            exit();
+        }
         
         try {
             $result = $appointment->addAppointment($patient_id, $doctor_id, $appointment_date, $appointment_time, $purpose, $consultation_type, $complaint);

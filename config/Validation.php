@@ -52,14 +52,26 @@ class Validation {
         }
     }
 
-    public function doctorRegister($first_name, $last_name, $email, $license_number, $schedule_days, $schedule_time_start, $schedule_time_end, $password, $confirm_password) {
+    public function doctorRegister($first_name, $last_name, $email, $username, $license_number, $specialization, $schedule_days, $schedule_time_start, $schedule_time_end, $password, $confirm_password) {
         $this->validateRegisterShared($first_name, $last_name, $email, $password, $confirm_password);
 
+        if (empty($username)) {
+            throw new Exception("Username is required for doctor.");
+        }
+        if (!preg_match('/^[A-Za-z0-9_]+$/', $username)) {
+            throw new Exception("Username must contain only letters, numbers, or underscore.");
+        }
+        if (strlen($username) < 3 || strlen($username) > 30) {
+            throw new Exception("Username must be between 3 and 30 characters.");
+        }
         if (empty($license_number)) {
             throw new Exception("License number is required for doctor.");
         }
         if (!preg_match('/^[A-Za-z0-9\-]+$/', $license_number)) {
             throw new Exception("License number must be alphanumeric (letters, numbers, or dash).");
+        }
+        if (empty($specialization)) {
+            throw new Exception("Please select a specialization for the doctor.");
         }
         if (empty($schedule_days) || !is_array($schedule_days) || count($schedule_days) === 0) {
             throw new Exception("Please select at least one schedule day.");
@@ -154,8 +166,8 @@ class Validation {
         }
     }
 
-    public function doctorEdit($first_name, $last_name, $email, $license_number) {
-        if (empty($first_name) || empty($last_name) || empty($email) || empty($license_number)) {
+    public function doctorEdit($first_name, $last_name, $email, $username, $license_number, $specialization) {
+        if (empty($first_name) || empty($last_name) || empty($email) || empty($username) || empty($license_number)) {
             throw new Exception("All required fields must be filled out.");
         }
         if (!preg_match('/^[A-Za-z\s\-]+$/', $first_name)) {
@@ -167,8 +179,17 @@ class Validation {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Please enter a valid email address.");
         }
+        if (!preg_match('/^[A-Za-z0-9_]+$/', $username)) {
+            throw new Exception("Username must contain only letters, numbers, or underscore.");
+        }
+        if (strlen($username) < 3 || strlen($username) > 30) {
+            throw new Exception("Username must be between 3 and 30 characters.");
+        }
         if (!preg_match('/^[A-Za-z0-9\-]+$/', $license_number)) {
             throw new Exception("License number must be alphanumeric (letters, numbers, or dash).");
+        }
+        if (empty($specialization)) {
+            throw new Exception("Please select a specialization for the doctor.");
         }
     }
 }

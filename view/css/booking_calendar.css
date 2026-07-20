@@ -1,0 +1,299 @@
+/* ===== BOOKING FLOW (specialization -> doctor -> calendar -> time) ===== */
+/* Shared by patient_request consultation.php and admin/book_consultation.php */
+
+.booking-step {
+    margin-bottom: 22px;
+}
+
+.booking-step-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--primary-color, #2c3e50);
+    margin-bottom: 8px;
+}
+
+.booking-step-hint {
+    font-size: 12.5px;
+    color: #8a94a3;
+    margin: -4px 0 10px 0;
+}
+
+.booking-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color, #e0e2e6);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+    color: #2c3e50;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23708098'><path d='M5.5 7.5l4.5 4.5 4.5-4.5' stroke='%23708098' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 38px;
+}
+
+.booking-select:focus {
+    outline: none;
+    border-color: var(--primary-color, #2c3e50);
+    box-shadow: 0 0 0 3px rgba(44,62,80,0.12);
+}
+
+.booking-select:disabled {
+    background-color: #f4f5f7;
+    color: #a3adba;
+    cursor: not-allowed;
+}
+
+/* Selected doctor summary chip, shown once a doctor is picked */
+.doctor-summary-card {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color, #e0e2e6);
+    border-radius: 12px;
+    background: #f8fafc;
+    margin-top: 10px;
+}
+
+.doctor-summary-card.show { display: flex; }
+
+.doctor-summary-photo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #e2e8f0;
+    flex-shrink: 0;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px var(--border-color, #e0e2e6);
+}
+
+.doctor-summary-info h4 {
+    margin: 0 0 3px 0;
+    font-size: 15px;
+    color: var(--primary-color, #2c3e50);
+}
+
+.doctor-summary-info p {
+    margin: 0;
+    font-size: 12.5px;
+    color: #708098;
+}
+
+/* ===== CALENDAR ===== */
+.booking-calendar {
+    display: none;
+    border: 1px solid var(--border-color, #e0e2e6);
+    border-radius: 14px;
+    padding: 16px 18px 20px 18px;
+    background: #fff;
+    margin-top: 8px;
+}
+
+.booking-calendar.show { display: block; }
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.calendar-nav-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #e0e2e6);
+    background: #fff;
+    color: var(--primary-color, #2c3e50);
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s ease;
+}
+
+.calendar-nav-btn:hover { background: #f1f5f9; }
+
+.calendar-nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: #fff;
+}
+
+.calendar-month-label {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--primary-color, #2c3e50);
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.calendar-weekdays span {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    color: #9aa5b1;
+    text-transform: uppercase;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.calendar-day-empty { visibility: hidden; }
+
+.calendar-day {
+    position: relative;
+    border: 1px solid var(--border-color, #e0e2e6);
+    border-radius: 10px;
+    padding: 8px 4px 7px 4px;
+    text-align: center;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, transform .1s ease;
+    min-height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.calendar-day .day-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.calendar-day .day-slots {
+    font-size: 10px;
+    color: #16a34a;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.calendar-day:hover:not(.is-disabled) {
+    border-color: var(--primary-color, #2c3e50);
+    background: #f8fafc;
+    transform: translateY(-1px);
+}
+
+.calendar-day.is-selected {
+    border-color: var(--primary-color, #2c3e50);
+    background: var(--primary-color, #2c3e50);
+}
+
+.calendar-day.is-selected .day-number { color: #fff; }
+.calendar-day.is-selected .day-slots { color: #cfe0d8; }
+
+/* Full / not scheduled / past dates -> greyed out, unclickable */
+.calendar-day.is-disabled {
+    cursor: not-allowed;
+    background: repeating-linear-gradient(
+        135deg,
+        #f4f5f7,
+        #f4f5f7 6px,
+        #eceef1 6px,
+        #eceef1 12px
+    );
+    border-color: #e5e7eb;
+    opacity: 0.75;
+}
+
+.calendar-day.is-disabled .day-number { color: #b6bec9; }
+.calendar-day.is-disabled .day-slots { color: #b6bec9; }
+
+.calendar-loading,
+.calendar-empty-note {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 13px;
+    color: #8a94a3;
+    padding: 18px 0;
+}
+
+/* ===== TIME SLOTS ===== */
+.time-slots-wrap {
+    display: none;
+    margin-top: 8px;
+}
+
+.time-slots-wrap.show { display: block; }
+
+.time-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.time-slot {
+    border: 1px solid var(--border-color, #e0e2e6);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2c3e50;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+
+.time-slot:hover:not(.is-taken) {
+    border-color: var(--primary-color, #2c3e50);
+    background: #f8fafc;
+}
+
+.time-slot.is-selected {
+    background: var(--primary-color, #2c3e50);
+    border-color: var(--primary-color, #2c3e50);
+    color: #fff;
+}
+
+/* Taken slot -> the classic "disabled" grey look, not clickable */
+.time-slot.is-taken {
+    background: #f4f5f7;
+    border-color: #e5e7eb;
+    color: #b6bec9;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    text-decoration-color: #d7dce2;
+}
+
+.time-slots-empty {
+    font-size: 13px;
+    color: #8a94a3;
+    padding: 10px 2px;
+}
+
+.booking-error-box {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+    .time-slots-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+    .calendar-day { min-height: 48px; }
+}

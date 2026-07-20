@@ -6,17 +6,26 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
+require_once 'C:\xampp\htdocs\clinic1\config\DropdownOptions.php';
 require_once 'C:\xampp\htdocs\clinic1\model\Patient.php';
 require_once 'C:\xampp\htdocs\clinic1\model\User.php';
+require_once 'C:\xampp\htdocs\clinic1\model\Doctor.php';
 
 $database = new Database();
 $conn = $database->connect();
 $patient = new Patient($conn);
 $user = new User($conn);
+$doctorModel = new Doctor($conn);
 
 $user_info = $user->getUserById($_SESSION['user_id']);
 $patient_id = $_GET['patient_id'] ?? 0;
 $selected_patient = $patient_id ? $patient->getPatientById($patient_id) : null;
+
+// Specializations that currently have at least one doctor assigned -> feeds the first booking step
+$specializations = $doctorModel->getAllSpecializations();
+
+$booking_error = $_SESSION['booking_error'] ?? "";
+unset($_SESSION['booking_error']);
 
 // get date today
 $today = date('Y-m-d');
@@ -29,6 +38,7 @@ $today = date('Y-m-d');
     <title>Book Consultation</title>
     <link rel="stylesheet" href="../css/admin_dashboard.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/booking_calendar.css">
 </head>
 
 <body>
@@ -81,49 +91,92 @@ $today = date('Y-m-d');
                 </div>
 
                 <div class="form-group">
-                    <label>Complaint</label>
+                    <label>Complaint <span style="color:red">*</span></label>
                     <input type="text" name="complaint" placeholder="e.g. Fever, Headache" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Date</label>
-                    <input type="date" name="appointment_date" id="appointmentDate" min="<?php echo $today; ?>" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Doctor</label>
-                    <select id="doctorSelect" name="doctor_id" required>
-                        <option value="">Select a date first</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Time</label>
-                    <select id="timeSelect" name="appointment_time" required>
-                        <option value="">Select a doctor first</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Purpose</label>
+                    <label>Purpose <span style="color:red">*</span></label>
                     <select name="purpose" required>
-                        <option value="Check-up" selected>Check-up</option>
-                        <option value="Consultation">Consultation</option>
-                        <option value="Follow-up">Follow-up</option>
-                        <option value="Vaccination">Vaccination</option>
+                        <option value="" disabled selected>Select Purpose</option>
+                        <?php foreach (DropdownOptions::PURPOSES as $p): ?>
+                        <option value="<?php echo htmlspecialchars($p); ?>"><?php echo htmlspecialchars($p); ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Consultation Type</label>
+                    <label>Consultation Type <span style="color:red">*</span></label>
                     <select name="consultation_type" required>
-                        <option value="In Person" selected>In Person</option>
-                        <option value="Online">Online</option>
+                        <option value="" disabled selected>Select Consultation Type</option>
+                        <?php foreach (DropdownOptions::CONSULTATION_TYPES as $t): ?>
+                        <option value="<?php echo htmlspecialchars($t); ?>"><?php echo htmlspecialchars($t); ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
+
+                <?php if ($booking_error): ?>
+                <div class="booking-error-box span-2"><?php echo htmlspecialchars($booking_error); ?></div>
+                <?php endif; ?>
+
+                <!-- STEP 1: SPECIALIZATION -->
+                <div class="form-group span-2 booking-step">
+                    <label class="booking-step-label" for="specializationSelect">1. Choose a Specialization <span style="color:red">*</span></label>
+                    <select id="specializationSelect" class="booking-select">
+                        <option value="" disabled selected>Select Specialization</option>
+                        <?php foreach ($specializations as $spec): ?>
+                        <option value="<?php echo htmlspecialchars($spec); ?>"><?php echo htmlspecialchars($spec); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- STEP 2: DOCTOR -->
+                <div class="form-group span-2 booking-step">
+                    <label class="booking-step-label" for="doctorSelect">2. Choose a Doctor <span style="color:red">*</span></label>
+                    <select id="doctorSelect" class="booking-select" disabled>
+                        <option value="">Select a specialization first</option>
+                    </select>
+
+                    <div class="doctor-summary-card" id="doctorSummary">
+                        <img src="../../img/user.png" alt="Doctor" class="doctor-summary-photo" id="doctorSummaryPhoto">
+                        <div class="doctor-summary-info">
+                            <h4 id="doctorSummaryName">—</h4>
+                            <p id="doctorSummarySpec">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: DATE (CALENDAR) -->
+                <div class="form-group span-2 booking-step">
+                    <label class="booking-step-label">3. Choose a Date <span style="color:red">*</span></label>
+                    <p class="booking-step-hint">Greyed-out dates are either fully booked or outside the doctor's schedule.</p>
+
+                    <div class="booking-calendar" id="bookingCalendar">
+                        <div class="calendar-nav">
+                            <button type="button" class="calendar-nav-btn" id="calendarPrevBtn">&#8249;</button>
+                            <span class="calendar-month-label" id="calendarMonthLabel">—</span>
+                            <button type="button" class="calendar-nav-btn" id="calendarNextBtn">&#8250;</button>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid"></div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: TIME -->
+                <div class="form-group span-2 booking-step time-slots-wrap" id="timeSlotsWrap">
+                    <label class="booking-step-label">4. Choose a Time <span style="color:red">*</span> — <span id="selectedDateLabel"></span></label>
+                    <div class="time-slots-grid" id="timeSlotsGrid"></div>
+                </div>
+
+                <!-- Hidden fields actually submitted with the form -->
+                <input type="hidden" id="appointmentDate" name="appointment_date" required>
+                <input type="hidden" id="appointmentTime" name="appointment_time" required>
+                <input type="hidden" name="doctor_id" id="doctorIdHidden">
 
                 <div class="view-buttons span-2">
-                    <button type="submit" name="bookAppointment" class="save-btn">Confirm Appointment</button>
+                    <button type="submit" name="bookAppointment" class="save-btn" id="confirmBookingBtn" disabled>Confirm Appointment</button>
                     <a href="http://localhost/clinic1/view/admin/admin_patientRecord.php" class="back-link">Cancel</a>
                 </div>
 
@@ -135,7 +188,23 @@ $today = date('Y-m-d');
 
 </div>
 
-<script src="../js/admin.js"></script>
+<script>
+    window.BookingConfig = {
+        getDoctorsUrl: 'http://localhost/clinic1/controller/GetDoctors.php',
+        getAvailabilityUrl: 'http://localhost/clinic1/controller/GetAvailability.php',
+        uploadsPath: '../../uploads/',
+        defaultAvatarPath: '../../img/user.png',
+        dateInputId: 'appointmentDate',
+        timeInputId: 'appointmentTime'
+    };
+</script>
+<script src="../js/booking.js"></script>
+<script>
+    // Keep the hidden doctor_id input in sync with the doctor dropdown
+    document.getElementById('doctorSelect').addEventListener('change', function () {
+        document.getElementById('doctorIdHidden').value = this.value;
+    });
+</script>
 <script>
 function toggleUserMenu(btn){
     var menu = btn.closest('.user-menu');

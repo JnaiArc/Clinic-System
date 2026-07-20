@@ -6,6 +6,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
+require_once 'C:\xampp\htdocs\clinic1\config\DropdownOptions.php';
 require_once 'C:\xampp\htdocs\clinic1\model\User.php';
 
 $database = new Database();
@@ -130,12 +131,10 @@ unset($_SESSION['error']);
                             <input type="email" name="email" required placeholder="example@email.com">
                         </div>
 
-                        <!-- admin role-->
-                        <div id="adminFields" style="display: none;">
-                            <div class="form-group">
-                                <label>Username <span class="req">*</span></label>
-                                <input type="text" name="username" id="usernameInput">
-                            </div>
+                        <!-- username: common to both admin and doctor -->
+                        <div class="form-group">
+                            <label>Username <span class="req">*</span></label>
+                            <input type="text" name="username" id="usernameInput" required>
                         </div>
 
                         <!-- doctor role -->
@@ -146,17 +145,23 @@ unset($_SESSION['error']);
                                 <input type="text" name="license_number" id="licenseInput">
                             </div>
 
+                            <div class="form-group">
+                                <label>Specialization <span class="req">*</span></label>
+                                <select name="specialization" id="specializationInput">
+                                    <option value="" disabled selected>Select Specialization</option>
+                                    <?php foreach (DropdownOptions::SPECIALIZATIONS as $spec): ?>
+                                    <option value="<?php echo htmlspecialchars($spec); ?>"><?php echo htmlspecialchars($spec); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
                             <div class="form-group span-2">
                                 <label>Schedule Days <span class="req">*</span></label>
                                 <small style="color: #666; font-size: 11px;">Select available days</small>
                                 <div class="checkbox-group">
-                                    <label><input type="checkbox" name="schedule_days[]" value="Monday"> Monday</label>
-                                    <label><input type="checkbox" name="schedule_days[]" value="Tuesday"> Tuesday</label>
-                                    <label><input type="checkbox" name="schedule_days[]" value="Wednesday"> Wednesday</label>
-                                    <label><input type="checkbox" name="schedule_days[]" value="Thursday"> Thursday</label>
-                                    <label><input type="checkbox" name="schedule_days[]" value="Friday"> Friday</label>
-                                    <label><input type="checkbox" name="schedule_days[]" value="Saturday"> Saturday</label>
-                                    <label><input type="checkbox" name="schedule_days[]" value="Sunday"> Sunday</label>
+                                    <?php foreach (DropdownOptions::SCHEDULE_DAYS as $day): ?>
+                                    <label><input type="checkbox" name="schedule_days[]" value="<?php echo htmlspecialchars($day); ?>"> <?php echo htmlspecialchars($day); ?></label>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
 
@@ -164,13 +169,9 @@ unset($_SESSION['error']);
                                 <label>Start Time <span class="req">*</span></label>
                                 <select name="schedule_time_start" id="timeStart">
                                     <option value="">Select Start Time</option>
-                                    <option value="8:00 AM">8:00 AM</option>
-                                    <option value="9:00 AM">9:00 AM</option>
-                                    <option value="10:00 AM">10:00 AM</option>
-                                    <option value="11:00 AM">11:00 AM</option>
-                                    <option value="12:00 PM">12:00 PM</option>
-                                    <option value="1:00 PM">1:00 PM</option>
-                                    <option value="2:00 PM">2:00 PM</option>
+                                    <?php foreach (DropdownOptions::SCHEDULE_TIME_START as $t): ?>
+                                    <option value="<?php echo htmlspecialchars($t); ?>"><?php echo htmlspecialchars($t); ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
 
@@ -178,13 +179,9 @@ unset($_SESSION['error']);
                                 <label>End Time <span class="req">*</span></label>
                                 <select name="schedule_time_end" id="timeEnd">
                                     <option value="">Select End Time</option>
-                                    <option value="12:00 PM">12:00 PM</option>
-                                    <option value="1:00 PM">1:00 PM</option>
-                                    <option value="2:00 PM">2:00 PM</option>
-                                    <option value="3:00 PM">3:00 PM</option>
-                                    <option value="4:00 PM">4:00 PM</option>
-                                    <option value="5:00 PM">5:00 PM</option>
-                                    <option value="6:00 PM">6:00 PM</option>
+                                    <?php foreach (DropdownOptions::SCHEDULE_TIME_END as $t): ?>
+                                    <option value="<?php echo htmlspecialchars($t); ?>"><?php echo htmlspecialchars($t); ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
 
@@ -204,7 +201,6 @@ unset($_SESSION['error']);
                             <label>Confirm Password <span class="req">*</span></label>
                             <div class="pw-wrap">
                                 <input type="password" name="confirm_password" id="regPw2" required>
-                                <button type="button" class="eye-btn" onclick="togglePw('regPw2',this)" title="Show/Hide">&#128065;</button>
                             </div>
                         </div>
 
@@ -247,15 +243,24 @@ unset($_SESSION['error']);
                     <input type="email" name="email" value="<?php echo $edit_user['email']; ?>" required>
                 </div>
 
-                <?php if($edit_user['role'] == 'admin'): ?>
                 <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" value="<?php echo $edit_user['username']; ?>">
+                    <label>Username <span style="color:red">*</span></label>
+                    <input type="text" name="username" value="<?php echo htmlspecialchars($edit_user['username']); ?>" required minlength="3" maxlength="30" pattern="[A-Za-z0-9_]+">
                 </div>
-                <?php else: ?>
+
+                <?php if($edit_user['role'] == 'doctor'): ?>
                 <div class="form-group">
                     <label>License Number</label>
                     <input type="text" name="license_number" value="<?php echo $edit_user['license_number']; ?>">
+                </div>
+                <div class="form-group">
+                    <label>Specialization <span style="color:red">*</span></label>
+                    <select name="specialization">
+                        <option value="" disabled <?php echo empty($edit_user['specialization']) ? 'selected' : ''; ?>>Select Specialization</option>
+                        <?php foreach (DropdownOptions::SPECIALIZATIONS as $spec): ?>
+                        <option value="<?php echo htmlspecialchars($spec); ?>" <?php echo ($edit_user['specialization'] ?? '') === $spec ? 'selected' : ''; ?>><?php echo htmlspecialchars($spec); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Schedule Days</label>
@@ -265,8 +270,8 @@ unset($_SESSION['error']);
                     <label>Start Time</label>
                     <select name="schedule_time_start">
                         <option value="">Select Start Time</option>
-                        <?php $times = ['8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM']; foreach($times as $t): ?>
-                        <option value="<?php echo $t; ?>" <?php echo $edit_user['schedule_time_start']==$t?'selected':''; ?>><?php echo $t; ?></option>
+                        <?php foreach (DropdownOptions::SCHEDULE_TIME_START as $t): ?>
+                        <option value="<?php echo htmlspecialchars($t); ?>" <?php echo $edit_user['schedule_time_start']==$t?'selected':''; ?>><?php echo htmlspecialchars($t); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -274,8 +279,8 @@ unset($_SESSION['error']);
                     <label>End Time</label>
                     <select name="schedule_time_end">
                         <option value="">Select End Time</option>
-                        <?php $times_end = ['9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM']; foreach($times_end as $t): ?>
-                        <option value="<?php echo $t; ?>" <?php echo $edit_user['schedule_time_end']==$t?'selected':''; ?>><?php echo $t; ?></option>
+                        <?php foreach (DropdownOptions::SCHEDULE_TIME_END as $t): ?>
+                        <option value="<?php echo htmlspecialchars($t); ?>" <?php echo $edit_user['schedule_time_end']==$t?'selected':''; ?>><?php echo htmlspecialchars($t); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

@@ -2,10 +2,12 @@
 require_once 'c:/xampp/htdocs/clinic1/config/Database.php';
 require_once 'c:/xampp/htdocs/clinic1/config/Validation.php';
 require_once 'c:/xampp/htdocs/clinic1/model/User.php';
+require_once 'c:/xampp/htdocs/clinic1/model/Doctor.php';
 
 $database = new Database();
 $conn = $database->connect();
 $user = new User($conn);
+$doctor = new Doctor($conn);
 $validation = new Validation();
 
 // Redirect target for "My Profile" self-service actions, based on the logged-in user's own role.
@@ -30,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $last_name  = trim($_POST['last_name']);
         $email      = trim($_POST['email']);
 
-        // Doctors don't have a username field on their profile form anymore,
-        // so keep their existing username unchanged if it wasn't posted.
+        // Username is posted from every role's own "My Profile" form (admin, doctor,
+        // patient). Fall back to the current value only if it somehow wasn't posted.
         if (isset($_POST['username'])) {
             $username = trim($_POST['username']);
         } else {
@@ -108,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $email               = trim($_POST['email']);
         $username            = !empty($_POST['username'])         ? trim($_POST['username'])         : "";
         $license_number      = !empty($_POST['license_number'])   ? trim($_POST['license_number'])   : "";
+        $specialization      = !empty($_POST['specialization'])   ? trim($_POST['specialization'])   : "";
         $schedule_days       = !empty($_POST['schedule_days'])    ? $_POST['schedule_days']           : "";
         $schedule_time_start = !empty($_POST['schedule_time_start']) ? $_POST['schedule_time_start'] : "";
         $schedule_time_end   = !empty($_POST['schedule_time_end'])   ? $_POST['schedule_time_end']   : "";
@@ -116,7 +119,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             if ($role === 'admin') {
                 $validation->adminEdit($first_name, $last_name, $email, $username);
             } else {
-                $validation->doctorEdit($first_name, $last_name, $email, $license_number);
+                $validation->doctorEdit($first_name, $last_name, $email, $username, $license_number, $specialization);
+            }
+
+            if ($user->usernameExists($username, $id)) {
+                throw new Exception("That username is already in use.");
+            }
+            if ($role === 'doctor' && $doctor->licenseExists($license_number, $id)) {
+                throw new Exception("That license number is already in use.");
             }
         } catch (Exception $e) {
             session_start();
@@ -125,7 +135,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             exit();
         }
 
-        if ($user->updateUser($id, $role, $first_name, $last_name, $email, $username, $license_number, $schedule_days, $schedule_time_start, $schedule_time_end)){
+        if ($user->updateUser($id, $role, $first_name, $last_name, $email, $username)){
+            if ($role === 'doctor'){
+                $doctor->updateDoctorInfo($id, $license_number, $specialization, $schedule_days, $schedule_time_start, $schedule_time_end);
+            }
             header("Location: http://localhost/clinic1/view/admin/admin_staff.php");
             exit();
         }

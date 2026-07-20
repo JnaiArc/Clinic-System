@@ -7,19 +7,30 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'patient') {
 }
 
 require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
+require_once 'C:\xampp\htdocs\clinic1\config\DropdownOptions.php';
 require_once 'C:\xampp\htdocs\clinic1\model\Patient.php';
 require_once 'C:\xampp\htdocs\clinic1\model\Appointment.php';
+require_once 'C:\xampp\htdocs\clinic1\model\User.php';
+require_once 'C:\xampp\htdocs\clinic1\model\Doctor.php';
 
 $database = new Database();
 $conn = $database->connect();
 $patient = new Patient($conn);
 $appointment = new Appointment($conn);
+$userModel = new User($conn);
+$doctorModel = new Doctor($conn);
 
 $patient_data = $patient->getPatientByUserId($_SESSION['user_id']);
 $profile_complete = $patient->isProfileComplete($patient_data);
 
 $pending_requests = $profile_complete ? $appointment->getPatientCurrentAppointments($patient_data['id']) : null;
 $has_active_appointment = $profile_complete ? $appointment->hasActiveAppointment($patient_data['id']) : false;
+
+// Specializations that currently have at least one doctor assigned -> feeds the first booking step
+$specializations = $doctorModel->getAllSpecializations();
+
+$booking_error = $_SESSION['booking_error'] ?? "";
+unset($_SESSION['booking_error']);
 
 // get date today
 $today = date('Y-m-d');
@@ -38,6 +49,7 @@ $today = date('Y-m-d');
     <!-- CSS -->
     <link rel="stylesheet" href="../css/patient.css">
     <link rel="stylesheet" href="../css/patient_dashboardd.css">
+    <link rel="stylesheet" href="../css/booking_calendar.css">
     <?php include_once '../chatbot_widget.php'; ?>
 </head>
 
@@ -147,6 +159,10 @@ $today = date('Y-m-d');
                 <p class="subtitle">Book a consultation with one of our doctors</p>
                 <p class="required-note"><span style="color:red">*</span> Required Fields</p>
 
+                <?php if ($booking_error): ?>
+                <div class="booking-error-box"><?php echo htmlspecialchars($booking_error); ?></div>
+                <?php endif; ?>
+
                 <div class="form-grid">
 
                     <!-- Patient Name (auto, from profile) -->
@@ -161,36 +177,14 @@ $today = date('Y-m-d');
                         <input type="text" id="complaint" name="complaint" placeholder="e.g. Fever, Headache" required>
                     </div>
 
-                    <!-- Date -->
-                    <div class="field">
-                        <label for="appointmentDate">Date <span style="color:red">*</span></label>
-                        <input type="date" id="appointmentDate" name="appointment_date" min="<?php echo $today; ?>" required>
-                    </div>
-
-                    <!-- Doctor -->
-                    <div class="field">
-                        <label for="doctorSelect">Doctor <span style="color:red">*</span></label>
-                        <select id="doctorSelect" name="doctor_id" required>
-                            <option value="">Select a date first</option>
-                        </select>
-                    </div>
-
-                    <!-- Time -->
-                    <div class="field">
-                        <label for="timeSelect">Time <span style="color:red">*</span></label>
-                        <select id="timeSelect" name="appointment_time" required>
-                            <option value="">Select a doctor first</option>
-                        </select>
-                    </div>
-
                     <!-- Purpose -->
                     <div class="field">
                         <label for="purpose">Purpose <span style="color:red">*</span></label>
                         <select id="purpose" name="purpose" required>
-                            <option value="Check-up" selected>Check-up</option>
-                            <option value="Consultation">Consultation</option>
-                            <option value="Follow-up">Follow-up</option>
-                            <option value="Vaccination">Vaccination</option>
+                            <option value="" disabled selected>Select Purpose</option>
+                            <?php foreach (DropdownOptions::PURPOSES as $p): ?>
+                            <option value="<?php echo htmlspecialchars($p); ?>"><?php echo htmlspecialchars($p); ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
@@ -198,16 +192,76 @@ $today = date('Y-m-d');
                     <div class="field">
                         <label for="consultation_type">Consultation Type <span style="color:red">*</span></label>
                         <select id="consultation_type" name="consultation_type" required>
-                            <option value="In Person" selected>In Person</option>
-                            <option value="Online">Online</option>
+                            <option value="" disabled selected>Select Consultation Type</option>
+                            <?php foreach (DropdownOptions::CONSULTATION_TYPES as $t): ?>
+                            <option value="<?php echo htmlspecialchars($t); ?>"><?php echo htmlspecialchars($t); ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
                 </div>
 
+                <hr style="border:none; border-top:1px solid var(--border-color); margin:22px 0;">
+
+                <!-- STEP 1: SPECIALIZATION -->
+                <div class="booking-step">
+                    <label class="booking-step-label" for="specializationSelect">1. Choose a Specialization <span style="color:red">*</span></label>
+                    <select id="specializationSelect" class="booking-select">
+                        <option value="">Select Specialization</option>
+                        <?php foreach ($specializations as $spec): ?>
+                        <option value="<?php echo htmlspecialchars($spec); ?>"><?php echo htmlspecialchars($spec); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- STEP 2: DOCTOR -->
+                <div class="booking-step">
+                    <label class="booking-step-label" for="doctorSelect">2. Choose a Doctor <span style="color:red">*</span></label>
+                    <select id="doctorSelect" class="booking-select" disabled>
+                        <option value="">Select a specialization first</option>
+                    </select>
+
+                    <div class="doctor-summary-card" id="doctorSummary">
+                        <img src="../../img/user.png" alt="Doctor" class="doctor-summary-photo" id="doctorSummaryPhoto">
+                        <div class="doctor-summary-info">
+                            <h4 id="doctorSummaryName">—</h4>
+                            <p id="doctorSummarySpec">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: DATE (CALENDAR) -->
+                <div class="booking-step">
+                    <label class="booking-step-label">3. Choose a Date <span style="color:red">*</span></label>
+                    <p class="booking-step-hint">Greyed-out dates are either fully booked or outside the doctor's schedule.</p>
+
+                    <div class="booking-calendar" id="bookingCalendar">
+                        <div class="calendar-nav">
+                            <button type="button" class="calendar-nav-btn" id="calendarPrevBtn">&#8249;</button>
+                            <span class="calendar-month-label" id="calendarMonthLabel">—</span>
+                            <button type="button" class="calendar-nav-btn" id="calendarNextBtn">&#8250;</button>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid"></div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: TIME -->
+                <div class="booking-step time-slots-wrap" id="timeSlotsWrap">
+                    <label class="booking-step-label">4. Choose a Time <span style="color:red">*</span> — <span id="selectedDateLabel"></span></label>
+                    <div class="time-slots-grid" id="timeSlotsGrid"></div>
+                </div>
+
+                <!-- Hidden fields actually submitted with the form -->
+                <input type="hidden" id="appointmentDate" name="appointment_date" required>
+                <input type="hidden" id="appointmentTime" name="appointment_time" required>
+                <input type="hidden" name="doctor_id" id="doctorIdHidden">
+
                 <br>
                 <div class="button-group">
-                    <button type="submit" name="bookAppointment" class="btn-save">Confirm Appointment</button>
+                    <button type="submit" name="bookAppointment" class="btn-save" id="confirmBookingBtn" disabled>Confirm Appointment</button>
                     <a href="patient_dashboard.php" class="btn-cancel">Cancel</a>
                 </div>
             </div>
@@ -224,83 +278,21 @@ $today = date('Y-m-d');
 
 <?php if ($profile_complete && !$has_active_appointment): ?>
 <script>
-function getDayName(dateStr) {
-    const date = new Date(dateStr + 'T00:00:00');
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return days[date.getDay()];
-}
-
-function timeToNumber(time) {
-    const match = time.match(/(\d+):(\d+)\s+(AM|PM)/i);
-    if (!match) return 0;
-    let hour = parseInt(match[1]);
-    const ampm = match[3].toUpperCase();
-    if (ampm === 'PM' && hour !== 12) hour += 12;
-    if (ampm === 'AM' && hour === 12) hour = 0;
-    return hour;
-}
-
-function generateTimeSlots(startTime, endTime) {
-    const slots = [];
-    const start = parseInt(startTime);
-    const end = parseInt(endTime);
-    for (let i = start; i < end; i++) {
-        const hour = i > 12 ? i - 12 : i;
-        const ampm = i >= 12 ? 'PM' : 'AM';
-        slots.push(hour + ':00 ' + ampm);
-        slots.push(hour + ':30 ' + ampm);
-    }
-    return slots;
-}
-
-document.getElementById('appointmentDate').addEventListener('change', function() {
-    const day = getDayName(this.value);
-    const doctorSelect = document.getElementById('doctorSelect');
-    const timeSelect = document.getElementById('timeSelect');
-
-    doctorSelect.innerHTML = '<option value="">Loading...</option>';
-    timeSelect.innerHTML = '<option value="">Select a doctor first</option>';
-
-    fetch('http://localhost/clinic1/controller/GetDoctors.php?day=' + encodeURIComponent(day))
-        .then(response => response.json())
-        .then(doctors => {
-            doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
-            if (doctors.length === 0) {
-                doctorSelect.innerHTML = '<option value="">No doctors available</option>';
-            } else {
-                doctors.forEach(doc => {
-                    const option = document.createElement('option');
-                    option.value = doc.id;
-                    option.text = 'Dr. ' + doc.first_name + ' ' + doc.last_name;
-                    option.dataset.start = doc.schedule_time_start;
-                    option.dataset.end = doc.schedule_time_end;
-                    doctorSelect.appendChild(option);
-                });
-            }
-        });
-});
-
-document.getElementById('doctorSelect').addEventListener('change', function() {
-    const selectedOption = this.options[this.selectedIndex];
-    const timeSelect = document.getElementById('timeSelect');
-
-    if (!selectedOption.value) {
-        timeSelect.innerHTML = '<option value="">Select a doctor first</option>';
-        return;
-    }
-
-    const startTime = selectedOption.dataset.start;
-    const endTime = selectedOption.dataset.end;
-    const slots = generateTimeSlots(timeToNumber(startTime), timeToNumber(endTime));
-
-    timeSelect.innerHTML = '<option value="">Select Time</option>';
-    slots.forEach(slot => {
-        const option = document.createElement('option');
-        option.value = slot;
-        option.text = slot;
-        timeSelect.appendChild(option);
+    window.BookingConfig = {
+        getDoctorsUrl: 'http://localhost/clinic1/controller/GetDoctors.php',
+        getAvailabilityUrl: 'http://localhost/clinic1/controller/GetAvailability.php',
+        uploadsPath: '../../uploads/',
+        defaultAvatarPath: '../../img/user.png',
+        dateInputId: 'appointmentDate',
+        timeInputId: 'appointmentTime'
+    };
+</script>
+<script src="../js/booking.js"></script>
+<script>
+    // Keep the hidden doctor_id input in sync with the doctor dropdown
+    document.getElementById('doctorSelect').addEventListener('change', function () {
+        document.getElementById('doctorIdHidden').value = this.value;
     });
-});
 </script>
 <?php endif; ?>
 

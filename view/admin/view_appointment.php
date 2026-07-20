@@ -9,18 +9,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
 require_once 'C:\xampp\htdocs\clinic1\model\Appointment.php';
 require_once 'C:\xampp\htdocs\clinic1\model\User.php';
+require_once 'C:\xampp\htdocs\clinic1\model\Doctor.php';
 
 $database = new Database();
 $conn = $database->connect();
 $appointment = new Appointment($conn);
 $user = new User($conn);
+$doctorModel = new Doctor($conn);
 
 $user_info = $user->getUserById($_SESSION['user_id']);
 
 $appointment_id = (int)$_GET['id'];
 $appointment_data = $appointment->getAppointmentById($appointment_id);
 
-$doctors = $user->getAllDoctors();
+$doctors = $doctorModel->getAllDoctors();
 ?>
 
 <!DOCTYPE html>

@@ -49,6 +49,7 @@ unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['passw
             <a href="http://localhost/clinic1/view/doctor/doctor_dashboard.php" class="menu-item">Dashboard</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_appointments.php" class="menu-item">My Appointments</a>
             <a href="http://localhost/clinic1/view/doctor/doctor_followup.php" class="menu-item">Follow-Up Checkup</a>
+            <a href="http://localhost/clinic1/view/doctor/doctor_patients.php" class="menu-item">My Patients</a>
         </nav>
 
     </aside>
@@ -106,6 +107,11 @@ unset($_SESSION['profile_error'], $_SESSION['profile_success'], $_SESSION['passw
                             <div class="mp-field">
                                 <label>Email</label>
                                 <input type="email" name="email" value="<?php echo htmlspecialchars($doctor_info['email']); ?>" required>
+                            </div>
+                            <div class="mp-field">
+                                <label>Username</label>
+                                <input type="text" name="username" value="<?php echo htmlspecialchars($doctor_info['username']); ?>" required minlength="3" maxlength="30" pattern="[A-Za-z0-9_]+" title="Letters, numbers, or underscore only">
+                                <span class="mp-hint">This is what you use to log in — separate from your license number.</span>
                             </div>
                             <div class="mp-field">
                                 <label>License Number</label>

@@ -8,10 +8,6 @@ class User {
     public $last_name;
     public $email;
     public $username;
-    public $license_number;
-    public $schedule_days;
-    public $schedule_time_start;
-    public $schedule_time_end;
     public $profile_photo;
     public $password;
 
@@ -24,11 +20,11 @@ class User {
     // === USERS
     // === CRUD OPERATIONS
 
-    // CREATE/REGISTER USER
-    function registerUser($role, $first_name, $last_name, $email, $username, $license_number, $schedule_days, $schedule_time_start, $schedule_time_end, $profile_photo, $password){
+    // CREATE/REGISTER USER (basic account only — doctor-specific info now lives in the `doctors` table,
+    // see model/Doctor.php::insertDoctorInfo(), which the caller should run afterwards for role='doctor')
+    function registerUser($role, $first_name, $last_name, $email, $username, $profile_photo, $password){
         
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $days_string = is_array($schedule_days) ? implode(",", $schedule_days) : "";
 
         $photo_name = "";
         if($profile_photo && $profile_photo['name'] != ""){
@@ -38,8 +34,8 @@ class User {
             move_uploaded_file($profile_photo['tmp_name'], $target_file);
         }
 
-        $query = "INSERT INTO users (role, first_name, last_name, email, username, license_number, schedule_days, schedule_time_start, schedule_time_end, profile_photo, password) 
-                  VALUES (:role, :first_name, :last_name, :email, :username, :license_number, :schedule_days, :schedule_time_start, :schedule_time_end, :profile_photo, :password)";
+        $query = "INSERT INTO users (role, first_name, last_name, email, username, profile_photo, password) 
+                  VALUES (:role, :first_name, :last_name, :email, :username, :profile_photo, :password)";
         
         $stmt = $this->conn->prepare($query);
 
@@ -48,14 +44,11 @@ class User {
         $stmt->bindParam(":last_name", $last_name);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":username", $username);
-        $stmt->bindParam(":license_number", $license_number);
-        $stmt->bindParam(":schedule_days", $days_string);
-        $stmt->bindParam(":schedule_time_start", $schedule_time_start);
-        $stmt->bindParam(":schedule_time_end", $schedule_time_end);
         $stmt->bindParam(":profile_photo", $photo_name);
         $stmt->bindParam(":password", $hashed_password);
 
-        return $stmt->execute();
+        if (!$stmt->execute()) return false;
+        return $this->conn->lastInsertId();
     }
 
     // GET ALL USERS(READ)
@@ -67,25 +60,34 @@ class User {
     }
 
     // GET ALL STAFF (admin/doctor accounts only — excludes patient accounts)
+    // LEFT JOINed with `doctors` so doctor rows still carry specialization/license/schedule fields.
     function getAllStaff(){
-        $query = "SELECT * FROM users WHERE role IN ('admin', 'doctor') ORDER BY role, first_name ASC";
+        $query = "SELECT u.*, d.specialization, d.license_number, d.schedule_days, d.schedule_time_start, d.schedule_time_end
+                  FROM users u
+                  LEFT JOIN doctors d ON d.user_id = u.id
+                  WHERE u.role IN ('admin', 'doctor') ORDER BY u.role, u.first_name ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
     }
 
     // GET USER BY ID
+    // LEFT JOINed with `doctors` so callers that expect specialization/license/schedule keys
+    // (doctor my_profile, doctor_consultation, admin_staff edit form, GetAvailability) keep working unchanged.
     function getUserById($id){
-        $query = "SELECT * FROM users WHERE id = :id";
+        $query = "SELECT u.*, d.specialization, d.license_number, d.schedule_days, d.schedule_time_start, d.schedule_time_end
+                  FROM users u
+                  LEFT JOIN doctors d ON d.user_id = u.id
+                  WHERE u.id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // UPDATE USER
-    function updateUser($id, $role, $first_name, $last_name, $email, $username, $license_number, $schedule_days, $schedule_time_start, $schedule_time_end){
-        $query = "UPDATE users SET role = :role, first_name = :first_name, last_name = :last_name, email = :email, username = :username, license_number = :license_number, schedule_days = :schedule_days, schedule_time_start = :schedule_time_start, schedule_time_end = :schedule_time_end WHERE id = :id";
+    // UPDATE USER (basic account fields only — see model/Doctor.php::updateDoctorInfo() for doctor-specific fields)
+    function updateUser($id, $role, $first_name, $last_name, $email, $username){
+        $query = "UPDATE users SET role = :role, first_name = :first_name, last_name = :last_name, email = :email, username = :username WHERE id = :id";
         
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
@@ -94,10 +96,6 @@ class User {
         $stmt->bindParam(":last_name", $last_name);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":username", $username);
-        $stmt->bindParam(":license_number", $license_number);
-        $stmt->bindParam(":schedule_days", $schedule_days);
-        $stmt->bindParam(":schedule_time_start", $schedule_time_start);
-        $stmt->bindParam(":schedule_time_end", $schedule_time_end);
 
         return $stmt->execute();
     }
@@ -133,19 +131,12 @@ class User {
         return $stmt->rowCount() > 0;
     }
 
-    // CHECK IF LICENSE NUMBER EXISTS
-    function licenseExists($license_number){
-        if(empty($license_number)) return false;
-        $query = "SELECT id FROM users WHERE license_number = :license_number";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":license_number", $license_number);
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
-    }
-
-    // FIND USER BY USERNAME (admin/patient username, or doctor license number)
+    // FIND USER BY USERNAME (admin/doctor/patient all log in with their username now)
     function findByLogin($loginInput){
-        $query = "SELECT * FROM users WHERE username = :loginInput OR license_number = :loginInput";
+        $query = "SELECT u.*, d.license_number
+                  FROM users u
+                  LEFT JOIN doctors d ON d.user_id = u.id
+                  WHERE u.username = :loginInput";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":loginInput", $loginInput);
         $stmt->execute();
@@ -199,23 +190,5 @@ class User {
         $stmt->bindParam(":password", $hashed_password);
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
-    }
-
-    // === DOCTORS 
-
-    // GET ALL DOCTORS
-    function getAllDoctors(){
-        $query = "SELECT * FROM users WHERE role = 'doctor' ORDER BY first_name ASC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
-    }
-
-    // COUNT DOCTORS
-    function countDoctors(){
-        $query = "SELECT COUNT(*) as total FROM users WHERE role = 'doctor'";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     }
 }

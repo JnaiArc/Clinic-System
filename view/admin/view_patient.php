@@ -147,7 +147,7 @@ $history = $patient->getPatientConsultationHistory($id);
                 </div>
                 <div class="info-card">
                     <label>Age</label>
-                    <span><?php echo date('Y') - date('Y', strtotime($patient_data['birthdate'])); ?> years old</span>
+                    <span><?php echo (new DateTime($patient_data['birthdate']))->diff(new DateTime())->y; ?> years old</span>
                 </div>
                 <div class="info-card">
                     <label>Birthdate</label>

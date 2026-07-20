@@ -7,13 +7,24 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 require_once 'C:\xampp\htdocs\clinic1\config\Database.php';
 require_once 'C:\xampp\htdocs\clinic1\model\User.php';
+require_once 'C:\xampp\htdocs\clinic1\model\Doctor.php';
 
 $database = new Database();
 $conn = $database->connect();
 $user = new User($conn);
+$doctorModel = new Doctor($conn);
 
 $user_info = $user->getUserById($_SESSION['user_id']);
-$doctors_result = $user->getAllDoctors();
+$doctors_result = $doctorModel->getAllDoctors();
+$doctors = $doctors_result->fetchAll(PDO::FETCH_ASSOC);
+$specializations = $doctorModel->getAllSpecializations();
+
+// Turn a specialization label into a safe data-filter/class token, e.g. "Obstetrics & Gynecology" -> "obstetrics-gynecology"
+function specialtySlug($label) {
+    $slug = strtolower(trim($label));
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+    return trim($slug, '-');
+}
 ?>
 
 <!DOCTYPE html>
@@ -79,32 +90,48 @@ $doctors_result = $user->getAllDoctors();
                 Doctor List
             </div>
 
-            <table class="appointment-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>License Number</th>
-                        <th>Schedule Days</th>
-                        <th>Schedule Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($doctors_result->rowCount() > 0): ?>
-                        <?php while ($row = $doctors_result->fetch(PDO::FETCH_ASSOC)): ?>
-                        <tr>
-                            <td>Dr. <?php echo $row['first_name'].' '.$row['last_name']; ?></td>
-                            <td><?php echo $row['license_number']; ?></td>
-                            <td><?php echo $row['schedule_days']; ?></td>
-                            <td><?php echo $row['schedule_time_start'].' - '.$row['schedule_time_end']; ?></td>
-                        </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4" style="text-align: center; color: #64748b;">No doctors found</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+            <div class="doctor-specialist">
+
+                <div class="doctor-container">
+
+                    <!-- RIGHT SIDE: doctor cards, keeping the original table's info -->
+                    <div class="doctor-grid">
+
+                        <?php if (empty($doctors)): ?>
+                        <p style="color:#708098;">No doctors are registered yet.</p>
+                        <?php endif; ?>
+
+                        <?php foreach ($doctors as $row): ?>
+                        <?php
+                            $photo = !empty($row['profile_photo']) ? '../../uploads/'.$row['profile_photo'] : '../../img/user.png';
+                            $specLabel = !empty($row['specialization']) ? $row['specialization'] : 'General';
+                        ?>
+                        <div class="doctor-card" data-specialty="<?php echo specialtySlug($specLabel); ?>">
+
+                            <img src="<?php echo htmlspecialchars($photo); ?>" alt="Dr. <?php echo htmlspecialchars($row['first_name'].' '.$row['last_name']); ?>" style="object-fit:cover;">
+
+                            <div class="doctor-info">
+
+                                <h3>Dr. <?php echo htmlspecialchars($row['first_name'].' '.$row['last_name']); ?></h3>
+
+                                <p class="doc-spec"><?php echo htmlspecialchars($specLabel); ?></p>
+
+                                <div class="doc-meta">
+                                    <span><strong>License #:</strong> <?php echo htmlspecialchars($row['license_number']); ?></span>
+                                    <span><strong>Schedule Days:</strong> <?php echo htmlspecialchars($row['schedule_days']); ?></span>
+                                    <span><strong>Schedule Time:</strong> <?php echo htmlspecialchars($row['schedule_time_start'].' - '.$row['schedule_time_end']); ?></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <?php endforeach; ?>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </section>
 
@@ -112,6 +139,27 @@ $doctors_result = $user->getAllDoctors();
 
 </div>
 
+<script>
+const doctorSpecialtyButtons = document.querySelectorAll(".doctor-specialist .specialty-btn");
+const doctorSpecialtyCards = document.querySelectorAll(".doctor-specialist .doctor-card");
+
+doctorSpecialtyButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        doctorSpecialtyButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        const filter = button.dataset.filter;
+
+        doctorSpecialtyCards.forEach(card => {
+            if (filter === "all" || card.dataset.specialty === filter) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+});
+</script>
 
 <script>
 function toggleUserMenu(btn){
