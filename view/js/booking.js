@@ -30,7 +30,12 @@
     const timeHiddenInput = document.getElementById(cfg.timeInputId || 'appointmentTime');
     const submitBtn = document.getElementById('confirmBookingBtn');
 
-    if (!specializationSelect || !doctorSelect || !calendarGrid) return;
+    if (!cfg.fixedDoctorId && (!specializationSelect || !doctorSelect || !calendarGrid)) return;
+    if (cfg.fixedDoctorId && !calendarGrid) return;
+
+    function getDoctorId() {
+        return cfg.fixedDoctorId || (doctorSelect ? doctorSelect.value : '');
+    }
 
     const today = new Date();
     const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
@@ -40,19 +45,27 @@
 
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+    // Full day name -> short 3-letter label, used to build "Mon, Tue, Wed" style schedule summaries
+    const DAY_ABBR = { Sunday: 'Sun', Monday: 'Mon', Tuesday: 'Tue', Wednesday: 'Wed', Thursday: 'Thu', Friday: 'Fri', Saturday: 'Sat' };
+    function scheduleDaysLabel(daysStr) {
+        if (!daysStr) return '';
+        return daysStr.split(',').map(function (d) { return d.trim(); }).filter(Boolean)
+            .map(function (d) { return DAY_ABBR[d] || d; }).join(', ');
+    }
+
     function resetDownstream(fromStep) {
-        if (fromStep <= 1) {
+        if (fromStep <= 1 && doctorSelect) {
             doctorSelect.innerHTML = '<option value="">Select a specialization first</option>';
             doctorSelect.disabled = true;
         }
         if (fromStep <= 2) {
-            doctorSummary.classList.remove('show');
-            calendarWrap.classList.remove('show');
+            if (doctorSummary) doctorSummary.classList.remove('show');
+            if (calendarWrap) calendarWrap.classList.remove('show');
             calendarGrid.innerHTML = '';
         }
         if (fromStep <= 3) {
-            timeSlotsWrap.classList.remove('show');
-            timeSlotsGrid.innerHTML = '';
+            if (timeSlotsWrap) timeSlotsWrap.classList.remove('show');
+            if (timeSlotsGrid) timeSlotsGrid.innerHTML = '';
             selectedDate = null;
             if (selectedDateLabel) selectedDateLabel.textContent = '';
         }
@@ -62,58 +75,63 @@
     }
 
     // STEP 1: Specialization -> load doctors under it
-    specializationSelect.addEventListener('change', function () {
-        resetDownstream(1);
-        const spec = this.value;
-        if (!spec) {
-            doctorSelect.innerHTML = '<option value="">Select a specialization first</option>';
-            return;
-        }
-        doctorSelect.innerHTML = '<option value="">Loading doctors...</option>';
-        fetch(cfg.getDoctorsUrl + '?specialization=' + encodeURIComponent(spec))
-            .then(function (r) { return r.json(); })
-            .then(function (doctors) {
-                if (!doctors || !doctors.length) {
-                    doctorSelect.innerHTML = '<option value="">No doctors available under this specialization</option>';
-                    return;
-                }
-                doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
-                doctors.forEach(function (doc) {
-                    const opt = document.createElement('option');
-                    opt.value = doc.id;
-                    opt.text = 'Dr. ' + doc.first_name + ' ' + doc.last_name;
-                    opt.dataset.photo = doc.profile_photo || '';
-                    opt.dataset.spec = doc.specialization || '';
-                    opt.dataset.start = doc.schedule_time_start || '';
-                    opt.dataset.end = doc.schedule_time_end || '';
-                    opt.dataset.days = doc.schedule_days || '';
-                    doctorSelect.appendChild(opt);
+    if (specializationSelect && doctorSelect) {
+        specializationSelect.addEventListener('change', function () {
+            resetDownstream(1);
+            const spec = this.value;
+            if (!spec) {
+                doctorSelect.innerHTML = '<option value="">Select a specialization first</option>';
+                return;
+            }
+            doctorSelect.innerHTML = '<option value="">Loading doctors...</option>';
+            fetch(cfg.getDoctorsUrl + '?specialization=' + encodeURIComponent(spec))
+                .then(function (r) { return r.json(); })
+                .then(function (doctors) {
+                    if (!doctors || !doctors.length) {
+                        doctorSelect.innerHTML = '<option value="">No doctors available under this specialization</option>';
+                        return;
+                    }
+                    doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
+                    doctors.forEach(function (doc) {
+                        const opt = document.createElement('option');
+                        opt.value = doc.id;
+                        const daysLabel = scheduleDaysLabel(doc.schedule_days);
+                        opt.text = 'Dr. ' + doc.first_name + ' ' + doc.last_name + (daysLabel ? ' - ' + daysLabel : '');
+                        opt.dataset.photo = doc.profile_photo || '';
+                        opt.dataset.spec = doc.specialization || '';
+                        opt.dataset.start = doc.schedule_time_start || '';
+                        opt.dataset.end = doc.schedule_time_end || '';
+                        opt.dataset.days = doc.schedule_days || '';
+                        doctorSelect.appendChild(opt);
+                    });
+                    doctorSelect.disabled = false;
+                })
+                .catch(function () {
+                    doctorSelect.innerHTML = '<option value="">Failed to load doctors. Please try again.</option>';
                 });
-                doctorSelect.disabled = false;
-            })
-            .catch(function () {
-                doctorSelect.innerHTML = '<option value="">Failed to load doctors. Please try again.</option>';
-            });
-    });
+        });
+    }
 
     // STEP 2: Doctor -> show summary + calendar
-    doctorSelect.addEventListener('change', function () {
-        resetDownstream(2);
-        const opt = this.options[this.selectedIndex];
-        if (!this.value) return;
+    if (doctorSelect) {
+        doctorSelect.addEventListener('change', function () {
+            resetDownstream(2);
+            const opt = this.options[this.selectedIndex];
+            if (!this.value) return;
 
-        if (doctorSummaryPhoto) {
-            doctorSummaryPhoto.src = opt.dataset.photo ? (cfg.uploadsPath + opt.dataset.photo) : cfg.defaultAvatarPath;
-        }
-        if (doctorSummaryName) doctorSummaryName.textContent = opt.text;
-        if (doctorSummarySpec) doctorSummarySpec.textContent = opt.dataset.spec || '';
-        doctorSummary.classList.add('show');
+            if (doctorSummaryPhoto) {
+                doctorSummaryPhoto.src = opt.dataset.photo ? (cfg.uploadsPath + opt.dataset.photo) : cfg.defaultAvatarPath;
+            }
+            if (doctorSummaryName) doctorSummaryName.textContent = opt.text;
+            if (doctorSummarySpec) doctorSummarySpec.textContent = opt.dataset.spec || '';
+            if (doctorSummary) doctorSummary.classList.add('show');
 
-        viewYear = today.getFullYear();
-        viewMonth = today.getMonth() + 1;
-        calendarWrap.classList.add('show');
-        loadCalendar();
-    });
+            viewYear = today.getFullYear();
+            viewMonth = today.getMonth() + 1;
+            if (calendarWrap) calendarWrap.classList.add('show');
+            loadCalendar();
+        });
+    }
 
     // STEP 3: Calendar (date + remaining slots)
     function loadCalendar() {
@@ -123,7 +141,7 @@
         const isCurrentMonth = (viewYear === today.getFullYear() && viewMonth === (today.getMonth() + 1));
         calendarPrevBtn.disabled = isCurrentMonth;
 
-        const doctorId = doctorSelect.value;
+        const doctorId = getDoctorId();
         fetch(cfg.getAvailabilityUrl + '?action=calendar&doctor_id=' + encodeURIComponent(doctorId) + '&year=' + viewYear + '&month=' + viewMonth)
             .then(function (r) { return r.json(); })
             .then(function (data) { renderCalendar(data); })
@@ -152,11 +170,20 @@
             const info = data.days[dateStr];
             const dayNum = parseInt(dateStr.split('-')[2], 10);
 
+            // Days outside the doctor's schedule aren't shown at all (per-doctor calendar
+            // only displays the days the doctor actually works, e.g. Mon-Wed only).
+            if (!info.scheduled) {
+                const blank = document.createElement('div');
+                blank.className = 'calendar-day-empty';
+                calendarGrid.appendChild(blank);
+                return;
+            }
+
             const cell = document.createElement('div');
             cell.className = 'calendar-day';
             cell.dataset.date = dateStr;
 
-            const disabled = info.past || !info.scheduled || info.remaining <= 0;
+            const disabled = info.past || info.remaining <= 0;
             if (disabled) cell.classList.add('is-disabled');
 
             const numEl = document.createElement('div');
@@ -166,9 +193,7 @@
 
             const slotsEl = document.createElement('div');
             slotsEl.className = 'day-slots';
-            if (!info.scheduled) {
-                slotsEl.textContent = 'Closed';
-            } else if (!info.past && info.remaining <= 0) {
+            if (!info.past && info.remaining <= 0) {
                 slotsEl.textContent = 'Full';
             } else if (!info.past) {
                 slotsEl.textContent = info.remaining + ' left';
@@ -216,7 +241,7 @@
         timeSlotsWrap.classList.add('show');
         timeSlotsGrid.innerHTML = '<div class="calendar-loading">Loading time slots...</div>';
 
-        const doctorId = doctorSelect.value;
+        const doctorId = getDoctorId();
         fetch(cfg.getAvailabilityUrl + '?action=slots&doctor_id=' + encodeURIComponent(doctorId) + '&date=' + encodeURIComponent(dateStr))
             .then(function (r) { return r.json(); })
             .then(function (data) { renderTimeSlots(data); })
@@ -251,5 +276,10 @@
     }
 
     // Initial state
-    resetDownstream(1);
+    if (cfg.fixedDoctorId) {
+        if (calendarWrap) calendarWrap.classList.add('show');
+        loadCalendar();
+    } else {
+        resetDownstream(1);
+    }
 })();

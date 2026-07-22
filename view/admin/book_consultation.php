@@ -10,16 +10,22 @@ require_once 'C:\xampp\htdocs\clinic1\config\DropdownOptions.php';
 require_once 'C:\xampp\htdocs\clinic1\model\Patient.php';
 require_once 'C:\xampp\htdocs\clinic1\model\User.php';
 require_once 'C:\xampp\htdocs\clinic1\model\Doctor.php';
+require_once 'C:\xampp\htdocs\clinic1\model\Appointment.php';
 
 $database = new Database();
 $conn = $database->connect();
 $patient = new Patient($conn);
 $user = new User($conn);
 $doctorModel = new Doctor($conn);
+$appointment = new Appointment($conn);
 
 $user_info = $user->getUserById($_SESSION['user_id']);
 $patient_id = $_GET['patient_id'] ?? 0;
 $selected_patient = $patient_id ? $patient->getPatientById($patient_id) : null;
+
+// Prevent double-booking: check if this patient already has a pending/confirmed appointment
+$has_active_appointment = $patient_id ? $appointment->hasActiveAppointment($patient_id) : false;
+$existing_appointments = $patient_id ? $appointment->getPatientCurrentAppointments($patient_id) : null;
 
 // Specializations that currently have at least one doctor assigned -> feeds the first booking step
 $specializations = $doctorModel->getAllSpecializations();
@@ -82,6 +88,47 @@ $today = date('Y-m-d');
 
             <div class="section-header">Schedule Appointment</div>
 
+            <?php if ($has_active_appointment): ?>
+
+            <div class="booking-error-box" style="margin:20px 25px;">
+                <span style="color:red">*</span> This patient already has an upcoming appointment. To avoid double-booking, a new appointment can't be scheduled until it's completed or cancelled.
+            </div>
+
+            <?php if ($existing_appointments && $existing_appointments->rowCount() > 0): ?>
+            <div style="margin:0 25px 25px;">
+                <table class="appointment-table">
+                    <thead>
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Complaint</th>
+                            <th>Purpose</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $existing_appointments->fetch(PDO::FETCH_ASSOC)): ?>
+                        <tr>
+                            <td>Dr. <?php echo htmlspecialchars($row['doctor_name']); ?></td>
+                            <td><?php echo $row['complaint'] ? htmlspecialchars($row['complaint']) : '—'; ?></td>
+                            <td><?php echo htmlspecialchars($row['purpose']); ?></td>
+                            <td><?php echo date('F j, Y', strtotime($row['appointment_date'])); ?></td>
+                            <td><?php echo htmlspecialchars($row['consultation_type'] ?: 'In Person'); ?></td>
+                            <td><span class="status <?php echo strtolower($row['status']); ?>"><?php echo ucfirst($row['status']); ?></span></td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php endif; ?>
+
+            <div class="view-buttons" style="margin:0 25px 25px;">
+                <a href="http://localhost/clinic1/view/admin/admin_patientRecord.php" class="back-link">Back</a>
+            </div>
+
+            <?php else: ?>
+
             <form method="POST" action="http://localhost/clinic1/controller/AppointmentController.php" class="appointment-body">
                 
                 <div class="form-group">
@@ -92,7 +139,7 @@ $today = date('Y-m-d');
 
                 <div class="form-group">
                     <label>Complaint <span style="color:red">*</span></label>
-                    <input type="text" name="complaint" placeholder="e.g. Fever, Headache" required>
+                    <input type="text" name="complaint" placeholder="e.g. Fever, Shortness fo Breathe" required>
                 </div>
 
                 <div class="form-group">
@@ -124,8 +171,11 @@ $today = date('Y-m-d');
                     <label class="booking-step-label" for="specializationSelect">1. Choose a Specialization <span style="color:red">*</span></label>
                     <select id="specializationSelect" class="booking-select">
                         <option value="" disabled selected>Select Specialization</option>
-                        <?php foreach ($specializations as $spec): ?>
-                        <option value="<?php echo htmlspecialchars($spec); ?>"><?php echo htmlspecialchars($spec); ?></option>
+                        <?php foreach ($specializations as $spec):
+                            $specDesc = DropdownOptions::specializationDescription($spec);
+                            $optLabel = $specDesc ? ($spec . ' — ' . $specDesc) : $spec;
+                        ?>
+                        <option value="<?php echo htmlspecialchars($spec); ?>"><?php echo htmlspecialchars($optLabel); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -182,12 +232,15 @@ $today = date('Y-m-d');
 
             </form>
 
+            <?php endif; ?>
+
         </section>
 
     </main>
 
 </div>
 
+<?php if (!$has_active_appointment): ?>
 <script>
     window.BookingConfig = {
         getDoctorsUrl: 'http://localhost/clinic1/controller/GetDoctors.php',
@@ -205,6 +258,7 @@ $today = date('Y-m-d');
         document.getElementById('doctorIdHidden').value = this.value;
     });
 </script>
+<?php endif; ?>
 <script>
 function toggleUserMenu(btn){
     var menu = btn.closest('.user-menu');

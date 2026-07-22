@@ -22,6 +22,19 @@ $doctor_id = $_SESSION['user_id'];
 $appointment = $appointment_model->getAppointmentById($appointment_id);
 $doctor_info = $user_model->getUserById($doctor_id);
 
+if (!$appointment || (int)$appointment['doctor_id'] !== (int)$doctor_id) {
+    header("Location: http://localhost/clinic1/view/doctor/doctor_appointments.php");
+    exit();
+}
+
+// Guard: the doctor can't start a consultation before the patient's scheduled date arrives
+$today = date('Y-m-d');
+if ($appointment['appointment_date'] > $today && $appointment['status'] !== 'completed') {
+    $_SESSION['consult_error'] = "This appointment is scheduled for " . date('F j, Y', strtotime($appointment['appointment_date'])) . ". You can't start the consultation until that date.";
+    header("Location: http://localhost/clinic1/view/doctor/doctor_appointments.php");
+    exit();
+}
+
 $is_followup = ($appointment['purpose'] == 'Follow-up');
 $previous_consultation = null;
 $previous_medicines = null;
@@ -44,6 +57,7 @@ $age = $appointment['patient_birthdate'] ? (new DateTime($appointment['patient_b
     <meta charset="UTF-8">
     <title>Consultation</title>
     <link rel="stylesheet" href="../css/doctor.css">
+    <link rel="stylesheet" href="../css/booking_calendar.css">
 </head>
 
 <body>
@@ -181,16 +195,27 @@ $age = $appointment['patient_birthdate'] ? (new DateTime($appointment['patient_b
                     <label><input type="radio" name="followup_needed" value="yes" onchange="toggleFollowupDate()"> Yes, schedule follow-up</label>
                 </div>
                 <div id="followup-date-container" style="display:none; margin-top:15px;">
-                    <div style="margin-bottom:12px;">
-                        <label style="display:block; font-weight:600; margin-bottom:6px; color:#17324d;">Follow-Up Date</label>
-                        <input type="date" name="followup_date" id="followupDate" min="<?php echo date('Y-m-d'); ?>" onchange="generateFollowupTimes()" style="padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px;">
+                    <p class="booking-step-hint" style="margin-top:0;">Greyed-out dates are either fully booked or outside your schedule.</p>
+
+                    <div class="booking-calendar show" id="bookingCalendar">
+                        <div class="calendar-nav">
+                            <button type="button" class="calendar-nav-btn" id="calendarPrevBtn">&#8249;</button>
+                            <span class="calendar-month-label" id="calendarMonthLabel">—</span>
+                            <button type="button" class="calendar-nav-btn" id="calendarNextBtn">&#8250;</button>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid"></div>
                     </div>
-                    <div id="followup-time-container" style="display:none;">
-                        <label style="display:block; font-weight:600; margin-bottom:6px; color:#17324d;">Follow-Up Time</label>
-                        <select name="followup_time" id="followupTime" style="padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; min-width:200px;">
-                            <option value="">Select Time</option>
-                        </select>
+
+                    <div class="time-slots-wrap" id="timeSlotsWrap">
+                        <label style="display:block; font-weight:600; margin:15px 0 6px; color:#17324d;">Follow-Up Time — <span id="selectedDateLabel"></span></label>
+                        <div class="time-slots-grid" id="timeSlotsGrid"></div>
                     </div>
+
+                    <input type="hidden" name="followup_date" id="followupDate">
+                    <input type="hidden" name="followup_time" id="followupTime">
                 </div>
             </section>
 
@@ -207,7 +232,17 @@ $age = $appointment['patient_birthdate'] ? (new DateTime($appointment['patient_b
     var doctorScheduleDays = "<?php echo $doctor_info['schedule_days']; ?>".split(',').map(function(d){ return d.trim(); });
     var doctorStartTime = "<?php echo $doctor_info['schedule_time_start']; ?>";
     var doctorEndTime = "<?php echo $doctor_info['schedule_time_end']; ?>";
+
+    // Reuse the same booking calendar widget as patient/admin appointment booking,
+    // fixed to this doctor so only their own schedule days are shown.
+    window.BookingConfig = {
+        fixedDoctorId: <?php echo (int)$doctor_id; ?>,
+        getAvailabilityUrl: 'http://localhost/clinic1/controller/GetAvailability.php',
+        dateInputId: 'followupDate',
+        timeInputId: 'followupTime'
+    };
 </script>
+<script src="../js/booking.js"></script>
 <script src="../js/doctor.js"></script>
 
 

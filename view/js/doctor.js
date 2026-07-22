@@ -48,7 +48,6 @@ function removeRecommendation(b) {
 function toggleFollowupDate() {
     var r = document.getElementsByName('followup_needed');
     var dc = document.getElementById('followup-date-container');
-    var tc = document.getElementById('followup-time-container');
     var isYes = false;
     for (var i = 0; i < r.length; i++) {
         if (r[i].checked && r[i].value === 'yes') {
@@ -57,7 +56,6 @@ function toggleFollowupDate() {
         }
     }
     dc.style.display = isYes ? 'block' : 'none';
-    if (!isYes) tc.style.display = 'none';
 }
 
 // DATE TIME
@@ -66,60 +64,8 @@ function getDayName(d) {
     return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][da.getDay()];
 }
 
-function timeToHour(t) {
-    if (!t) return 8;
-    var p = t.match(/(\d+):(\d+)\s*(AM|PM)/i);
-    if (!p) return 8;
-    var h = parseInt(p[1]);
-    var ap = p[3].toUpperCase();
-    if (ap === 'PM' && h !== 12) h += 12;
-    if (ap === 'AM' && h === 12) h = 0;
-    return h;
-}
-
-// GENERATE FOLLOW-UP TIMES
-function generateFollowupTimes() {
-    var dv = document.getElementById('followupDate').value;
-    var tc = document.getElementById('followup-time-container');
-    var ts = document.getElementById('followupTime');
-    
-    if (!dv) {
-        tc.style.display = 'none';
-        return;
-    }
-    
-    var dn = getDayName(dv);
-    if (doctorScheduleDays.indexOf(dn) === -1) {
-        tc.style.display = 'none';
-        alert('The selected date (' + dn + ') is not a scheduled day for this doctor.');
-        document.getElementById('followupDate').value = '';
-        return;
-    }
-    
-    var sh = timeToHour(doctorStartTime);
-    var eh = timeToHour(doctorEndTime);
-    ts.innerHTML = '<option value="">Select Time</option>';
-    
-    for (var h = sh; h < eh; h++) {
-        var ho = h > 12 ? h - 12 : (h === 0 ? 12 : h);
-        var ampm = h >= 12 ? 'PM' : 'AM';
-        var sl = [':00', ':30'];
-        for (var s = 0; s < sl.length; s++) {
-            var la = ho + sl[s] + ' ' + ampm;
-            var opt = document.createElement('option');
-            opt.value = la;
-            opt.text = la;
-            ts.appendChild(opt);
-        }
-    }
-    tc.style.display = 'block';
-}
-
 // DOCTOR CONS
 document.addEventListener('DOMContentLoaded', function() {
-    var fd = document.getElementById('followupDate');
-    if (fd) fd.min = new Date().toISOString().split('T')[0];
-
     // Validate followup date+time before submit
     var form = document.querySelector('form');
     if (form) {

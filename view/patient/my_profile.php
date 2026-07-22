@@ -188,5 +188,6 @@ document.addEventListener('click', function(e){
 });
 </script>
 
+<script src="../js/input-restrictions.js"></script>
 </body>
 </html>

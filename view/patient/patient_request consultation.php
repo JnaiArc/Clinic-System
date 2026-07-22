@@ -174,7 +174,7 @@ $today = date('Y-m-d');
                     <!-- Complaint (free text) -->
                     <div class="field">
                         <label for="complaint">Complaint <span style="color:red">*</span></label>
-                        <input type="text" id="complaint" name="complaint" placeholder="e.g. Fever, Headache" required>
+                        <input type="text" id="complaint" name="complaint" placeholder="e.g. Headache, Shortness of Breathe" required>
                     </div>
 
                     <!-- Purpose -->
@@ -208,8 +208,11 @@ $today = date('Y-m-d');
                     <label class="booking-step-label" for="specializationSelect">1. Choose a Specialization <span style="color:red">*</span></label>
                     <select id="specializationSelect" class="booking-select">
                         <option value="">Select Specialization</option>
-                        <?php foreach ($specializations as $spec): ?>
-                        <option value="<?php echo htmlspecialchars($spec); ?>"><?php echo htmlspecialchars($spec); ?></option>
+                        <?php foreach ($specializations as $spec):
+                            $specDesc = DropdownOptions::specializationDescription($spec);
+                            $optLabel = $specDesc ? ($spec . ' — ' . $specDesc) : $spec;
+                        ?>
+                        <option value="<?php echo htmlspecialchars($spec); ?>"><?php echo htmlspecialchars($optLabel); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

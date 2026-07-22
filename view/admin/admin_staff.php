@@ -337,6 +337,7 @@ unset($_SESSION['error']);
 
 
 <script src="../js/login.js"></script>
+<script src="../js/input-restrictions.js"></script>
 
 <script>
 function toggleUserMenu(btn){

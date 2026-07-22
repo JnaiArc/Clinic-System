@@ -156,6 +156,12 @@ body {
     text-align: right;
 }
 
+.dashboard-side {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
 .slot-card {
     background: white;
     border-radius: 18px;
@@ -163,6 +169,29 @@ body {
     text-align: center;
     padding: 30px;
     height: fit-content;
+}
+
+/* ONLINE CONSULTATION CARD (patient home, shown when next appointment is Online) */
+.meet-schedule {
+    color: var(--header-color);
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.meet-cta {
+    background: #f0f3f6;
+    border: 1px solid #dbe3ea;
+}
+
+.meet-cta:hover {
+    background: #e2e8f0;
+}
+
+.meet-note {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 15px;
 }
 
 .slot-card h2 {

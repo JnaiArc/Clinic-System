@@ -13,7 +13,8 @@ class Mailer {
     const SENDER_NAME        = "SwiftCare Clinic";
 
     // SEND OTP CODE TO A USER'S EMAIL. Returns true on success, false on failure.
-    public static function sendOtp($toEmail, $otp_code){
+    // $purpose: 'password_reset' (default) or 'registration' — controls the subject/body wording.
+    public static function sendOtp($toEmail, $otp_code, $purpose = 'password_reset'){
         $mail = new PHPMailer(true);
 
         try {
@@ -29,8 +30,14 @@ class Mailer {
             $mail->addAddress($toEmail);
 
             $mail->isHTML(false);
-            $mail->Subject = 'SwiftCare Clinic - Password Reset Code';
-            $mail->Body    = "Your verification code is: " . $otp_code . "\r\nThis code will expire in 5 minutes.\r\n\r\nIf you did not request this, you can ignore this email.";
+
+            if ($purpose === 'registration') {
+                $mail->Subject = 'SwiftCare Clinic - Verify Your Email';
+                $mail->Body    = "Thanks for signing up with SwiftCare Clinic!\r\n\r\nYour email verification code is: " . $otp_code . "\r\nThis code will expire in 5 minutes.\r\n\r\nIf you did not request this, you can ignore this email.";
+            } else {
+                $mail->Subject = 'SwiftCare Clinic - Password Reset Code';
+                $mail->Body    = "Your verification code is: " . $otp_code . "\r\nThis code will expire in 5 minutes.\r\n\r\nIf you did not request this, you can ignore this email.";
+            }
 
             $mail->send();
             return true;

@@ -144,18 +144,38 @@ $next_appointment = $patient_data ? $appointment->getNextAppointmentForPatient($
 
             </div>
 
-            <!-- PATIENT PROFILE -->
-            <div class="slot-card">
+            <div class="dashboard-side">
 
-                <p class="pp-eyebrow">Patient Profile</p>
+                <!-- PATIENT PROFILE -->
+                <div class="slot-card">
 
-                <?php if ($profile_complete): ?>
-                    <h2 class="pp-name"><?php echo htmlspecialchars($patient_data['first_name'].' '.$patient_data['last_name']); ?></h2>
-                    <a href="patient_profile.php" class="btn-book" style="margin-top:16px; display:inline-block;">View Profile</a>
-                <?php else: ?>
-                    <h2 class="pp-name"><?php echo htmlspecialchars($user_info['first_name'].' '.$user_info['last_name']); ?></h2>
-                    <p style="color:#dc2626; margin-top:10px;"><span style="color:red">*</span> Please complete your patient profile first before booking a consultation.</p>
-                    <a href="patient_profile.php" class="btn-book" style="margin-top:10px; display:inline-block;">Complete Profile</a>
+                    <p class="pp-eyebrow">Patient Profile</p>
+
+                    <?php if ($profile_complete): ?>
+                        <h2 class="pp-name"><?php echo htmlspecialchars($patient_data['first_name'].' '.$patient_data['last_name']); ?></h2>
+                        <a href="patient_profile.php" class="btn-book" style="margin-top:16px; display:inline-block;">View Profile</a>
+                    <?php else: ?>
+                        <h2 class="pp-name"><?php echo htmlspecialchars($user_info['first_name'].' '.$user_info['last_name']); ?></h2>
+                        <p style="color:#dc2626; margin-top:10px;"><span style="color:red">*</span> Please complete your patient profile first before booking a consultation.</p>
+                        <a href="patient_profile.php" class="btn-book" style="margin-top:10px; display:inline-block;">Complete Profile</a>
+                    <?php endif; ?>
+
+                </div>
+
+                <?php if ($next_appointment && strtolower($next_appointment['consultation_type'] ?? '') === 'online'): ?>
+                <!-- ONLINE CONSULTATION (design only — becomes active on the scheduled date/time, wired up later) -->
+                <div class="slot-card">
+
+                    <p class="pp-eyebrow">Online Consultation</p>
+
+                    <p class="meet-schedule">
+                        <?php echo date('F j, Y', strtotime($next_appointment['appointment_date'])); ?> &middot; <?php echo htmlspecialchars($next_appointment['appointment_time']); ?>
+                    </p>
+
+                    <a href="#" class="btn-book meet-cta" style="margin-top:16px; display:inline-block;" onclick="return false;" aria-disabled="true">Join Google Meet</a>
+                    <p class="meet-note">Available only at the scheduled date and time.</p>
+
+                </div>
                 <?php endif; ?>
 
             </div>

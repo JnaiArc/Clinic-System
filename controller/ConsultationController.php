@@ -2,9 +2,11 @@
 session_start();
 
 require_once 'c:/xampp/htdocs/clinic1/config/Database.php';
+require_once 'c:/xampp/htdocs/clinic1/model/Appointment.php';
 
 $database = new Database();
 $conn = $database->connect();
+$appointment_model = new Appointment($conn);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     
@@ -15,6 +17,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $findings = $_POST['findings'];
         $followup_needed = $_POST['followup_needed'];
         $followup_date = !empty($_POST['followup_date']) ? $_POST['followup_date'] : null;
+
+        // Guard: can't complete a consultation before the appointment's scheduled date arrives
+        $existing_appointment = $appointment_model->getAppointmentById($appointment_id);
+        if (!$existing_appointment || (int)$existing_appointment['doctor_id'] !== (int)$_SESSION['user_id']) {
+            header("Location: http://localhost/clinic1/view/doctor/doctor_appointments.php");
+            exit();
+        }
+        if ($existing_appointment['appointment_date'] > date('Y-m-d') && $existing_appointment['status'] !== 'completed') {
+            $_SESSION['consult_error'] = "This appointment is scheduled for " . date('F j, Y', strtotime($existing_appointment['appointment_date'])) . ". You can't complete the consultation until that date.";
+            header("Location: http://localhost/clinic1/view/doctor/doctor_appointments.php");
+            exit();
+        }
         
         // Insert consultation
         $query = "INSERT INTO consultations (appointment_id, doctor_id, patient_id, findings, followup_needed, followup_date, status) 

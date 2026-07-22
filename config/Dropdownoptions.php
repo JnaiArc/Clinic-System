@@ -9,6 +9,19 @@ class DropdownOptions {
         'Obstetrics & Gynecology',
     ];
 
+    // Short explanation shown beside each specialization so patients know which one to pick
+    const SPECIALIZATION_DESCRIPTIONS = [
+        'Pediatrics'               => 'Care for infants, children, and teens',
+        'General Medicine'         => 'General check-ups and common illnesses',
+        'Internal Medicine'        => 'Diagnosis and treatment of adult diseases',
+        'Obstetrics & Gynecology'  => "Women's health, pregnancy, and reproductive care",
+    ];
+
+    // Safely look up a specialization's short description (falls back to empty string)
+    public static function specializationDescription($specialization) {
+        return self::SPECIALIZATION_DESCRIPTIONS[$specialization] ?? '';
+    }
+
     // Appointment "Purpose" dropdown
     const PURPOSES = [
         'Check-up',

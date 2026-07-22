@@ -24,6 +24,9 @@ $upcoming_appointments = $appointment_model->getDoctorUpcomingOnly($doc_id);
 $followup_appointments = $appointment_model->getDoctorFollowUps($doc_id);
 $all_appointments      = $appointment_model->getDoctorAllTodayAndFuture($doc_id);
 $completed_appointments = $appointment_model->getDoctorCompletedAppointments($doc_id);
+
+$consult_error = $_SESSION['consult_error'] ?? '';
+unset($_SESSION['consult_error']);
 ?>
 
 <!DOCTYPE html>
@@ -76,6 +79,12 @@ $completed_appointments = $appointment_model->getDoctorCompletedAppointments($do
                 </div>
             </div>
         </header>
+
+        <?php if ($consult_error): ?>
+        <div style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:12px 16px; border-radius:10px; font-size:13.5px; margin-bottom:16px;">
+            <?php echo htmlspecialchars($consult_error); ?>
+        </div>
+        <?php endif; ?>
 
         <!-- TABS -->
         <div class="tabs-container">
@@ -145,7 +154,11 @@ $completed_appointments = $appointment_model->getDoctorCompletedAppointments($do
                                 <td><?php echo $row['purpose']; ?></td>
                                 <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
                                 <td>
+                                    <?php if($row['appointment_date'] > date('Y-m-d')): ?>
+                                    <span class="action-btn view-btn" style="background:#e2e8f0; color:#94a3b8; cursor:not-allowed; pointer-events:none;" title="Available on <?php echo date('M j, Y', strtotime($row['appointment_date'])); ?>">Not Yet</span>
+                                    <?php else: ?>
                                     <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">Consult</a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <?php endwhile; ?>
@@ -173,7 +186,11 @@ $completed_appointments = $appointment_model->getDoctorCompletedAppointments($do
                                 <td><?php echo $row['purpose']; ?></td>
                                 <td><span class="status <?php echo $row['status']; ?>"><?php echo ucfirst($row['status']); ?></span></td>
                                 <td>
+                                    <?php if($row['appointment_date'] > date('Y-m-d')): ?>
+                                    <span class="action-btn view-btn" style="background:#e2e8f0; color:#94a3b8; cursor:not-allowed; pointer-events:none;" title="Available on <?php echo date('M j, Y', strtotime($row['appointment_date'])); ?>">Not Yet</span>
+                                    <?php else: ?>
                                     <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">Consult</a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <?php endwhile; ?>
@@ -203,6 +220,8 @@ $completed_appointments = $appointment_model->getDoctorCompletedAppointments($do
                                 <td>
                                     <?php if($row['status'] == 'missed'): ?>
                                     <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View</a>
+                                    <?php elseif($row['appointment_date'] > date('Y-m-d')): ?>
+                                    <span class="action-btn view-btn" style="background:#e2e8f0; color:#94a3b8; cursor:not-allowed; pointer-events:none;" title="Available on <?php echo date('M j, Y', strtotime($row['appointment_date'])); ?>">Not Yet</span>
                                     <?php else: ?>
                                     <a href="http://localhost/clinic1/view/doctor/doctor_consultation.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">Consult</a>
                                     <?php endif; ?>
